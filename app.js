@@ -1,5 +1,5 @@
 const SUPABASE_URL = "https://fgmvmbjnoyagnpygcbky.supabase.co";
-const SUPABASE_KEY = "ここにPublishable keyを貼る";
+const SUPABASE_KEY = "sb_publishable_pePa2xjccUZB6xpneNhCRQ_pJJ5fn6h";
 
 const rows = document.getElementById("rows");
 const template = document.getElementById("dayTemplate");
