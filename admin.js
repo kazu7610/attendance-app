@@ -587,12 +587,22 @@ function getConstructionNo(siteId) {
 ========================================= */
 
 function makeDisplaySiteName(item) {
+
+  /*
+    一般現場
+  */
+
   if (item.site_type === "一般") {
     return (
       getSiteName(item.site_id) ||
       "一般現場未選択"
     );
   }
+
+
+  /*
+    雑工事
+  */
 
   if (item.site_type === "雑工事") {
     const parts = [];
@@ -615,9 +625,21 @@ function makeDisplaySiteName(item) {
     );
   }
 
+
+  /*
+    休み
+  */
+
+  if (item.site_type === "休み") {
+    return (
+      item.leave_type ||
+      "休暇区分未選択"
+    );
+  }
+
+
   return "";
 }
-
 
 /* =========================================
    入力のある日か判定
