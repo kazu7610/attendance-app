@@ -1300,8 +1300,12 @@ function makeAttendanceRecords(status) {
         item.date,
 
       site_type:
-        item.siteType || "",
-
+  item.siteType ||
+  (
+    item.leaveType
+      ? "休み"
+      : ""
+  ),
       site_id:
         item.siteId
           ? Number(item.siteId)
