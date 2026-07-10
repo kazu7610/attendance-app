@@ -959,6 +959,22 @@ function getRowSiteData(row) {
         workDepartment
       );
 
+    if (siteType === "休み") {
+  const leaveType =
+    row
+      .querySelector(".leave-type")
+      .value;
+
+  return {
+    siteType: "休み",
+    siteId: "",
+    siteDisplayName: leaveType,
+    siteInputCode: "",
+    miscCompany: "",
+    miscDepartment: "",
+    miscName: ""
+  };
+} 
     return {
       siteType: "雑工事",
 
