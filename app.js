@@ -1567,6 +1567,7 @@ function restoreAttendanceRow(
 
   changeSiteType(row);
 
+  /* 一般 */
   if (
     item.site_type === "一般"
   ) {
@@ -1578,10 +1579,11 @@ function restoreAttendanceRow(
         : "";
   }
 
+  /* 雑工事 */
   if (
     item.site_type === "雑工事"
   ) {
-    
+
     row
       .querySelector(".misc-company")
       .value =
@@ -1600,30 +1602,33 @@ function restoreAttendanceRow(
       item.misc_name || "";
   }
 
+  /* 休み */
+  if (
+    item.site_type === "休み"
+  ) {
+    row
+      .querySelector(".leave-type")
+      .value =
+      item.leave_type || "";
+  }
+
+  /* 時間 */
   row
     .querySelector(".start")
     .value =
     item.start_time || "";
 
   row
-     if (
-  item.site_type === "休み"
-) {
-  row
-    .querySelector(".leave-type")
-    .value =
-    item.leave_type || "";
-}
     .querySelector(".end")
     .value =
     item.end_time || "";
 
+  /* 備考 */
   row
     .querySelector(".note")
     .value =
     item.note || "";
 }
-
 
 /* =========================================
    Supabaseから対象月を読込
