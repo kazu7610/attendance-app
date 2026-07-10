@@ -1316,8 +1316,8 @@ function makeAttendanceRecords(status) {
       misc_name:
         item.miscName || "",
 
-       leave_type:
-  item.leaveType || "",
+      leave_type:
+        item.leaveType || "",
 
       start_time:
         item.start || "",
@@ -1336,52 +1336,92 @@ function makeAttendanceRecords(status) {
 
 
 /* =========================================
-   対象月の既存データ削除
+   Supabaseへ保存
 ========================================= */
 
-async function deleteExistingAttendance() {
-  /*
-    対象月の締め期間を取得する。
-
-    例：
-    対象月 2026-07
-    2026-06-21 ～ 2026-07-20
-
-    Supabase検索では、
-    終了日の翌日未満として指定する。
-  */
-
-  const range =
-    getAttendanceRange(month.value);
-
-  const url =
-    `${SUPABASE_URL}/rest/v1/attendance` +
-    `?employee_id=eq.${employee.value}` +
-    `&work_date=gte.${range.firstDay}` +
-    `&work_date=lt.${range.nextFirstDay}`;
-
-  const response =
-    await fetch(url, {
-      method: "DELETE",
-
-      headers: {
-        ...supabaseHeaders(),
-        Prefer: "return=minimal"
-      }
-    });
-
-  if (!response.ok) {
-    const errorText =
-      await response.text();
-
-    console.error(errorText);
-
-    throw new Error(
-      "既存データの削除に失敗しました"
+async function saveAttendanceWithStatus(
+  status,
+  successMessage
+) {
+  if (!department.value) {
+    alert(
+      "部を選択してください"
     );
+
+    return false;
+  }
+
+  if (!employee.value) {
+    alert(
+      "氏名を選択してください"
+    );
+
+    return false;
+  }
+
+  if (!month.value) {
+    alert(
+      "対象月を選択してください"
+    );
+
+    return false;
+  }
+
+  const records =
+    makeAttendanceRecords(status);
+
+  saveButton.disabled = true;
+  submitButton.disabled = true;
+
+  try {
+    await deleteExistingAttendance();
+
+    const url =
+      `${SUPABASE_URL}/rest/v1/attendance`;
+
+    const response =
+      await fetch(url, {
+        method: "POST",
+
+        headers: {
+          ...supabaseHeaders(),
+          Prefer: "return=minimal"
+        },
+
+        body:
+          JSON.stringify(records)
+      });
+
+    if (!response.ok) {
+      const errorText =
+        await response.text();
+
+      console.error(errorText);
+
+      throw new Error(
+        "出勤簿の保存に失敗しました"
+      );
+    }
+
+    currentStatus = status;
+
+    applyStatusToScreen();
+
+    alert(successMessage);
+
+    return true;
+
+  } catch (error) {
+    console.error(error);
+
+    alert(error.message);
+
+    return false;
+
+  } finally {
+    applyStatusToScreen();
   }
 }
-
 
 /* =========================================
    Supabaseへ保存
