@@ -41,12 +41,23 @@
         >
       </label>
 
-      <button
-        id="reload"
-        type="button"
-      >
-        更新
-      </button>
+      <div class="buttons">
+
+        <button
+          id="reload"
+          type="button"
+        >
+          更新
+        </button>
+
+        <button
+          id="exportAllCsv"
+          type="button"
+        >
+          全員分CSV出力
+        </button>
+
+      </div>
 
     </section>
 
@@ -60,11 +71,13 @@
     >
 
       <div class="title">
+
         <h2>提出状況</h2>
 
         <span id="submissionSummary">
           0 / 0人
         </span>
+
       </div>
 
       <div id="attendanceList">
@@ -85,11 +98,13 @@
       <div class="admin-detail-header">
 
         <div>
+
           <h2 id="detailEmployeeName">
             出勤簿詳細
           </h2>
 
           <p id="detailStatus"></p>
+
         </div>
 
         <button
