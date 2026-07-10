@@ -1,5 +1,5 @@
 const SUPABASE_URL = "https://fgmvmbjnoyagnpygcbky.supabase.co";
-const SUPABASE_KEY = "sb_publishable_pePa2xjccUZB6xpJJ5fn6h";
+const SUPABASE_KEY = "sb_publishable_pePa2xjccUZB6xpneNhCRQ_pJJ5fn6h";
 
 const month = document.getElementById("month");
 const attendanceList = document.getElementById("attendanceList");
