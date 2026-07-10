@@ -31,15 +31,16 @@ const month =
 const summary =
   document.getElementById("summary");
 
+const saveButton =
+  document.getElementById("saveLocal");
+
 
 /* =========================================
    読み込んだデータ
 ========================================= */
 
 let employees = [];
-
 let sites = [];
-
 let holidays = {};
 
 
@@ -76,30 +77,34 @@ const weeks = [
 
 
 /* =========================================
+   Supabase共通ヘッダー
+========================================= */
+
+function supabaseHeaders() {
+  return {
+    apikey: SUPABASE_KEY,
+    Authorization: `Bearer ${SUPABASE_KEY}`,
+    "Content-Type": "application/json"
+  };
+}
+
+
+/* =========================================
    社員マスタ読込
 ========================================= */
 
 async function loadEmployees() {
-
   const url =
     `${SUPABASE_URL}/rest/v1/employees` +
     `?select=id,department,name,active` +
     `&order=department.asc,id.asc`;
 
-  const response = await fetch(
-    url,
-    {
-      headers: {
-        apikey: SUPABASE_KEY,
-        Authorization: `Bearer ${SUPABASE_KEY}`
-      }
-    }
-  );
+  const response = await fetch(url, {
+    headers: supabaseHeaders()
+  });
 
   if (!response.ok) {
-    throw new Error(
-      "社員マスタの読込に失敗しました"
-    );
+    throw new Error("社員マスタの読込に失敗しました");
   }
 
   employees = await response.json();
@@ -117,7 +122,6 @@ async function loadEmployees() {
 ========================================= */
 
 async function loadSites() {
-
   const url =
     `${SUPABASE_URL}/rest/v1/sites` +
     `?select=` +
@@ -127,20 +131,12 @@ async function loadSites() {
     `&visible=eq.true` +
     `&order=display_order.asc`;
 
-  const response = await fetch(
-    url,
-    {
-      headers: {
-        apikey: SUPABASE_KEY,
-        Authorization: `Bearer ${SUPABASE_KEY}`
-      }
-    }
-  );
+  const response = await fetch(url, {
+    headers: supabaseHeaders()
+  });
 
   if (!response.ok) {
-    throw new Error(
-      "現場マスタの読込に失敗しました"
-    );
+    throw new Error("現場マスタの読込に失敗しました");
   }
 
   sites = await response.json();
@@ -152,26 +148,17 @@ async function loadSites() {
 ========================================= */
 
 async function loadHolidays() {
-
   const url =
     `${SUPABASE_URL}/rest/v1/holidays` +
     `?select=date,day_type,note` +
     `&order=date.asc`;
 
-  const response = await fetch(
-    url,
-    {
-      headers: {
-        apikey: SUPABASE_KEY,
-        Authorization: `Bearer ${SUPABASE_KEY}`
-      }
-    }
-  );
+  const response = await fetch(url, {
+    headers: supabaseHeaders()
+  });
 
   if (!response.ok) {
-    throw new Error(
-      "休日カレンダーの読込に失敗しました"
-    );
+    throw new Error("休日カレンダーの読込に失敗しました");
   }
 
   const data = await response.json();
@@ -189,11 +176,8 @@ async function loadHolidays() {
 ========================================= */
 
 function makeDepartmentOptions() {
-
   department.innerHTML =
-    '<option value="">' +
-    '部を選択してください' +
-    '</option>';
+    '<option value="">部を選択してください</option>';
 
   const departments = [
     ...new Set(
@@ -203,26 +187,18 @@ function makeDepartmentOptions() {
     )
   ];
 
-  departments.forEach(
-    departmentName => {
+  departments.forEach(departmentName => {
+    const option =
+      document.createElement("option");
 
-      const option =
-        document.createElement("option");
+    option.value = departmentName;
+    option.textContent = departmentName;
 
-      option.value =
-        departmentName;
-
-      option.textContent =
-        departmentName;
-
-      department.appendChild(option);
-    }
-  );
+    department.appendChild(option);
+  });
 
   employee.innerHTML =
-    '<option value="">' +
-    '先に部を選択してください' +
-    '</option>';
+    '<option value="">先に部を選択してください</option>';
 
   employee.disabled = true;
 }
@@ -232,54 +208,38 @@ function makeDepartmentOptions() {
    氏名プルダウン作成
 ========================================= */
 
-function makeEmployeeOptions(
-  selectedDepartment
-) {
-
+function makeEmployeeOptions(selectedDepartment) {
   employee.innerHTML = "";
 
   if (!selectedDepartment) {
-
     employee.innerHTML =
-      '<option value="">' +
-      '先に部を選択してください' +
-      '</option>';
+      '<option value="">先に部を選択してください</option>';
 
     employee.disabled = true;
-
     return;
   }
 
   const filteredEmployees =
     employees.filter(
       item =>
-        item.department ===
-        selectedDepartment
+        item.department === selectedDepartment
     );
 
   employee.innerHTML =
-    '<option value="">' +
-    '氏名を選択してください' +
-    '</option>';
+    '<option value="">氏名を選択してください</option>';
 
   filteredEmployees.forEach(item => {
-
     const option =
       document.createElement("option");
 
     /*
-      保存値には社員IDを使う。
+      valueには社員IDを入れる。
       表示は社員名にする。
     */
 
-    option.value =
-      String(item.id);
-
-    option.textContent =
-      item.name;
-
-    option.dataset.name =
-      item.name;
+    option.value = String(item.id);
+    option.textContent = item.name;
+    option.dataset.name = item.name;
 
     employee.appendChild(option);
   });
@@ -293,13 +253,10 @@ function makeEmployeeOptions(
 ========================================= */
 
 function selectedEmployeeName() {
-
   const selectedOption =
-    employee.options[
-      employee.selectedIndex
-    ];
+    employee.options[employee.selectedIndex];
 
-  if (!selectedOption) {
+  if (!selectedOption || !employee.value) {
     return "";
   }
 
@@ -316,20 +273,13 @@ function selectedEmployeeName() {
 ========================================= */
 
 function currentMonth() {
+  const date = new Date();
 
-  const date =
-    new Date();
-
-  const year =
-    date.getFullYear();
+  const year = date.getFullYear();
 
   const monthValue =
-    String(
-      date.getMonth() + 1
-    ).padStart(
-      2,
-      "0"
-    );
+    String(date.getMonth() + 1)
+      .padStart(2, "0");
 
   return `${year}-${monthValue}`;
 }
@@ -340,11 +290,7 @@ function currentMonth() {
 ========================================= */
 
 function daysInMonth(yearMonth) {
-
-  const [
-    year,
-    monthValue
-  ] =
+  const [year, monthValue] =
     yearMonth
       .split("-")
       .map(Number);
@@ -358,18 +304,35 @@ function daysInMonth(yearMonth) {
 
 
 /* =========================================
+   翌月の1日を作成
+========================================= */
+
+function nextMonthFirstDay(yearMonth) {
+  const [year, monthValue] =
+    yearMonth
+      .split("-")
+      .map(Number);
+
+  const nextDate =
+    new Date(year, monthValue, 1);
+
+  const nextYear =
+    nextDate.getFullYear();
+
+  const nextMonth =
+    String(nextDate.getMonth() + 1)
+      .padStart(2, "0");
+
+  return `${nextYear}-${nextMonth}-01`;
+}
+
+
+/* =========================================
    曜日情報
 ========================================= */
 
-function dateInfo(
-  yearMonth,
-  day
-) {
-
-  const [
-    year,
-    monthValue
-  ] =
+function dateInfo(yearMonth, day) {
+  const [year, monthValue] =
     yearMonth
       .split("-")
       .map(Number);
@@ -392,22 +355,15 @@ function dateInfo(
    時刻プルダウン作成
 ========================================= */
 
-function setTimeOptions(
-  selectElement
-) {
-
+function setTimeOptions(selectElement) {
   selectElement.innerHTML = "";
 
   times.forEach(time => {
-
     const option =
       document.createElement("option");
 
-    option.value =
-      time;
-
-    option.textContent =
-      time;
+    option.value = time;
+    option.textContent = time;
 
     selectElement.appendChild(option);
   });
@@ -418,36 +374,21 @@ function setTimeOptions(
    一般現場プルダウン作成
 ========================================= */
 
-function setGeneralSiteOptions(
-  selectElement
-) {
-
+function setGeneralSiteOptions(selectElement) {
   selectElement.innerHTML =
-    '<option value="">' +
-    '現場を選択してください' +
-    '</option>';
+    '<option value="">現場を選択してください</option>';
 
   const generalSites =
     sites.filter(
-      item =>
-        item.site_type === "一般"
+      item => item.site_type === "一般"
     );
 
   generalSites.forEach(site => {
-
     const option =
       document.createElement("option");
 
-    /*
-      valueにはsitesテーブルのIDを保存する。
-      表示にはdisplay_nameを使う。
-    */
-
-    option.value =
-      String(site.id);
-
-    option.textContent =
-      site.display_name;
+    option.value = String(site.id);
+    option.textContent = site.display_name;
 
     option.dataset.displayName =
       site.display_name || "";
@@ -461,11 +402,10 @@ function setGeneralSiteOptions(
 
 
 /* =========================================
-   現場を検索するための文字列
+   現場検索用文字列
 ========================================= */
 
 function siteSearchText(site) {
-
   return [
     site.display_name,
     site.input_code,
@@ -482,29 +422,15 @@ function siteSearchText(site) {
    雑工事に対応するsitesデータを探す
 ========================================= */
 
-function findMiscSite(
-  company,
-  workDepartment
-) {
-
+function findMiscSite(company, workDepartment) {
   const miscSites =
     sites.filter(
-      item =>
-        item.site_type === "雑工事"
+      item => item.site_type === "雑工事"
     );
 
-  /*
-    三機
-    三機という文字と担当部の文字が
-    入っている現場を探す。
-  */
-
   if (company === "三機") {
-
     return miscSites.find(site => {
-
-      const text =
-        siteSearchText(site);
+      const text = siteSearchText(site);
 
       return (
         text.includes("三機") &&
@@ -515,18 +441,9 @@ function findMiscSite(
     }) || null;
   }
 
-  /*
-    自社
-    「自社＋担当部」または
-    「工事部雑」「技術部雑」を探す。
-  */
-
   if (company === "自社") {
-
     return miscSites.find(site => {
-
-      const text =
-        siteSearchText(site);
+      const text = siteSearchText(site);
 
       return (
         (
@@ -545,15 +462,8 @@ function findMiscSite(
     }) || null;
   }
 
-  /*
-    STS・三晃・朝日は
-    会社名を含む雑工事を探す。
-  */
-
   return miscSites.find(site => {
-
-    const text =
-      siteSearchText(site);
+    const text = siteSearchText(site);
 
     return text.includes(
       company.toLowerCase()
@@ -567,144 +477,67 @@ function findMiscSite(
 ========================================= */
 
 function changeSiteType(row) {
-
   const siteType =
-    row.querySelector(
-      ".site-type"
-    ).value;
+    row.querySelector(".site-type").value;
 
   const generalSiteWrap =
-    row.querySelector(
-      ".general-site-wrap"
-    );
+    row.querySelector(".general-site-wrap");
 
   const miscCompanyWrap =
-    row.querySelector(
-      ".misc-company-wrap"
-    );
+    row.querySelector(".misc-company-wrap");
 
   const miscDepartmentWrap =
-    row.querySelector(
-      ".misc-department-wrap"
-    );
+    row.querySelector(".misc-department-wrap");
 
   const miscNameWrap =
-    row.querySelector(
-      ".misc-name-wrap"
-    );
+    row.querySelector(".misc-name-wrap");
 
-  /*
-    いったん全部隠す。
-  */
-
-  generalSiteWrap
-    .classList
-    .add("hidden");
-
-  miscCompanyWrap
-    .classList
-    .add("hidden");
-
-  miscDepartmentWrap
-    .classList
-    .add("hidden");
-
-  miscNameWrap
-    .classList
-    .add("hidden");
-
-
-  /*
-    一般を選択した場合
-  */
+  generalSiteWrap.classList.add("hidden");
+  miscCompanyWrap.classList.add("hidden");
+  miscDepartmentWrap.classList.add("hidden");
+  miscNameWrap.classList.add("hidden");
 
   if (siteType === "一般") {
-
-    generalSiteWrap
-      .classList
-      .remove("hidden");
-
+    generalSiteWrap.classList.remove("hidden");
     return;
   }
 
-
-  /*
-    雑工事を選択した場合
-  */
-
   if (siteType === "雑工事") {
-
-    miscCompanyWrap
-      .classList
-      .remove("hidden");
-
+    miscCompanyWrap.classList.remove("hidden");
     changeMiscCompany(row);
   }
 }
 
 
 /* =========================================
-   雑工事会社による表示切替
+   雑工事区分による表示切替
 ========================================= */
 
 function changeMiscCompany(row) {
-
   const company =
-    row.querySelector(
-      ".misc-company"
-    ).value;
+    row.querySelector(".misc-company").value;
 
   const miscDepartmentWrap =
-    row.querySelector(
-      ".misc-department-wrap"
-    );
+    row.querySelector(".misc-department-wrap");
 
   const miscNameWrap =
-    row.querySelector(
-      ".misc-name-wrap"
-    );
+    row.querySelector(".misc-name-wrap");
 
-  miscDepartmentWrap
-    .classList
-    .add("hidden");
-
-  miscNameWrap
-    .classList
-    .add("hidden");
-
-
-  /*
-    会社がまだ選ばれていない。
-  */
+  miscDepartmentWrap.classList.add("hidden");
+  miscNameWrap.classList.add("hidden");
 
   if (!company) {
     return;
   }
 
-
-  /*
-    三機・自社は担当部も選択する。
-  */
-
   if (
     company === "三機" ||
     company === "自社"
   ) {
-
-    miscDepartmentWrap
-      .classList
-      .remove("hidden");
+    miscDepartmentWrap.classList.remove("hidden");
   }
 
-
-  /*
-    雑工事名入力欄は
-    会社選択後に表示する。
-  */
-
-  miscNameWrap
-    .classList
-    .remove("hidden");
+  miscNameWrap.classList.remove("hidden");
 }
 
 
@@ -713,22 +546,12 @@ function changeMiscCompany(row) {
 ========================================= */
 
 function getRowSiteData(row) {
-
   const siteType =
-    row.querySelector(
-      ".site-type"
-    ).value;
-
-  /*
-    一般現場
-  */
+    row.querySelector(".site-type").value;
 
   if (siteType === "一般") {
-
     const selectElement =
-      row.querySelector(
-        ".general-site"
-      );
+      row.querySelector(".general-site");
 
     const selectedOption =
       selectElement.options[
@@ -737,43 +560,28 @@ function getRowSiteData(row) {
 
     return {
       siteType: "一般",
-      siteId:
-        selectElement.value || "",
+      siteId: selectElement.value || "",
       siteDisplayName:
-        selectedOption
-          ?.dataset
-          ?.displayName || "",
+        selectedOption?.dataset?.displayName || "",
       siteInputCode:
-        selectedOption
-          ?.dataset
-          ?.inputCode || "",
+        selectedOption?.dataset?.inputCode || "",
       miscCompany: "",
       miscDepartment: "",
       miscName: ""
     };
   }
 
-
-  /*
-    雑工事
-  */
-
   if (siteType === "雑工事") {
-
     const company =
-      row.querySelector(
-        ".misc-company"
-      ).value;
+      row.querySelector(".misc-company").value;
 
     const workDepartment =
-      row.querySelector(
-        ".misc-department"
-      ).value;
+      row.querySelector(".misc-department").value;
 
     const miscName =
-      row.querySelector(
-        ".misc-name"
-      ).value.trim();
+      row.querySelector(".misc-name")
+        .value
+        .trim();
 
     const matchedSite =
       findMiscSite(
@@ -783,31 +591,27 @@ function getRowSiteData(row) {
 
     return {
       siteType: "雑工事",
+
       siteId:
         matchedSite
           ? String(matchedSite.id)
           : "",
+
       siteDisplayName:
         matchedSite
           ? matchedSite.display_name
           : company,
+
       siteInputCode:
         matchedSite
           ? matchedSite.input_code || ""
           : "",
-      miscCompany:
-        company,
-      miscDepartment:
-        workDepartment,
-      miscName:
-        miscName
+
+      miscCompany: company,
+      miscDepartment: workDepartment,
+      miscName: miscName
     };
   }
-
-
-  /*
-    未選択
-  */
 
   return {
     siteType: "",
@@ -822,31 +626,14 @@ function getRowSiteData(row) {
 
 
 /* =========================================
-   ローカル保存用キー
-========================================= */
-
-function storageKey() {
-
-  return (
-    "koujibu-attendance:" +
-    `${department.value}:` +
-    `${employee.value}:` +
-    `${month.value}`
-  );
-}
-
-
-/* =========================================
    日別入力欄作成
 ========================================= */
 
 function renderRows() {
-
   rows.innerHTML = "";
 
   const yearMonth =
-    month.value ||
-    currentMonth();
+    month.value || currentMonth();
 
   const count =
     daysInMonth(yearMonth);
@@ -856,22 +643,14 @@ function renderRows() {
     day <= count;
     day++
   ) {
-
     const node =
-      template
-        .content
-        .cloneNode(true);
+      template.content.cloneNode(true);
 
     const row =
-      node.querySelector(
-        ".day-row"
-      );
+      node.querySelector(".day-row");
 
     const info =
-      dateInfo(
-        yearMonth,
-        day
-      );
+      dateInfo(yearMonth, day);
 
     const dateText =
       `${yearMonth}-` +
@@ -880,28 +659,12 @@ function renderRows() {
     const holiday =
       holidays[dateText];
 
-    row.dataset.day =
-      String(day);
-
-    row.dataset.date =
-      dateText;
-
-
-    /*
-      日曜日は赤文字
-    */
+    row.dataset.day = String(day);
+    row.dataset.date = dateText;
 
     if (info.weekNo === 0) {
-
-      row.classList.add(
-        "sunday"
-      );
+      row.classList.add("sunday");
     }
-
-
-    /*
-      休日・祝日は休日クラスを付ける
-    */
 
     if (
       holiday &&
@@ -910,27 +673,14 @@ function renderRows() {
         holiday.day_type === "祝日"
       )
     ) {
-
-      row.classList.add(
-        "company-holiday"
-      );
+      row.classList.add("company-holiday");
     }
 
+    row.querySelector(".day")
+      .textContent = `${day}日`;
 
-    row
-      .querySelector(".day")
-      .textContent =
-      `${day}日`;
-
-    row
-      .querySelector(".week")
-      .textContent =
-      `(${info.weekText})`;
-
-
-    /*
-      時刻プルダウン
-    */
+    row.querySelector(".week")
+      .textContent = `(${info.weekText})`;
 
     setTimeOptions(
       row.querySelector(".start")
@@ -940,62 +690,30 @@ function renderRows() {
       row.querySelector(".end")
     );
 
-
-    /*
-      一般現場プルダウン
-    */
-
     setGeneralSiteOptions(
-      row.querySelector(
-        ".general-site"
-      )
+      row.querySelector(".general-site")
     );
 
-
-    /*
-      区分変更
-    */
-
-    row
-      .querySelector(".site-type")
+    row.querySelector(".site-type")
       .addEventListener(
         "change",
         () => {
-
           changeSiteType(row);
-
           updateSummary();
         }
       );
 
-
-    /*
-      雑工事会社変更
-    */
-
-    row
-      .querySelector(".misc-company")
+    row.querySelector(".misc-company")
       .addEventListener(
         "change",
         () => {
-
           changeMiscCompany(row);
-
           updateSummary();
         }
       );
 
-
-    /*
-      その他の入力変更
-    */
-
-    row
-      .querySelectorAll(
-        "select,input"
-      )
+    row.querySelectorAll("select,input")
       .forEach(element => {
-
         element.addEventListener(
           "change",
           updateSummary
@@ -1007,11 +725,8 @@ function renderRows() {
         );
       });
 
-
     rows.appendChild(node);
   }
-
-  loadLocal();
 
   updateSummary();
 }
@@ -1022,24 +737,16 @@ function renderRows() {
 ========================================= */
 
 function collectData() {
-
   const data = [];
 
-  document
-    .querySelectorAll(
-      ".day-row"
-    )
+  document.querySelectorAll(".day-row")
     .forEach(row => {
-
       const siteData =
         getRowSiteData(row);
 
       data.push({
-        day:
-          row.dataset.day,
-
-        date:
-          row.dataset.date,
+        day: row.dataset.day,
+        date: row.dataset.date,
 
         siteType:
           siteData.siteType,
@@ -1063,19 +770,13 @@ function collectData() {
           siteData.miscName,
 
         start:
-          row
-            .querySelector(".start")
-            .value,
+          row.querySelector(".start").value,
 
         end:
-          row
-            .querySelector(".end")
-            .value,
+          row.querySelector(".end").value,
 
         note:
-          row
-            .querySelector(".note")
-            .value
+          row.querySelector(".note").value
       });
     });
 
@@ -1084,180 +785,293 @@ function collectData() {
 
 
 /* =========================================
-   この端末へ保存
+   attendance保存用データ作成
 ========================================= */
 
-function saveLocal() {
+function makeAttendanceRecords() {
+  const employeeId =
+    Number(employee.value);
 
-  if (!department.value) {
+  return collectData().map(item => {
+    return {
+      employee_id: employeeId,
+      work_date: item.date,
 
-    alert(
-      "部を選択してください"
-    );
+      /*
+        空欄でもテーブルのNOT NULLに対応できるよう、
+        空文字として保存する。
+      */
 
-    return;
-  }
+      site_type:
+        item.siteType || "",
 
-  if (!employee.value) {
+      site_id:
+        item.siteId
+          ? Number(item.siteId)
+          : null,
 
-    alert(
-      "氏名を選択してください"
-    );
+      misc_company:
+        item.miscCompany || "",
 
-    return;
-  }
+      misc_department:
+        item.miscDepartment || "",
 
-  localStorage.setItem(
-    storageKey(),
-    JSON.stringify(
-      collectData()
-    )
-  );
+      misc_name:
+        item.miscName || "",
 
-  alert(
-    "この端末に保存しました"
-  );
+      start_time:
+        item.start || "",
+
+      end_time:
+        item.end || "",
+
+      note:
+        item.note || ""
+    };
+  });
 }
 
 
 /* =========================================
-   保存データの画面反映
+   対象月の既存データ削除
 ========================================= */
 
-function restoreRowData(
-  row,
-  item
-) {
+async function deleteExistingAttendance() {
+  const firstDay =
+    `${month.value}-01`;
 
+  const nextFirstDay =
+    nextMonthFirstDay(month.value);
+
+  const url =
+    `${SUPABASE_URL}/rest/v1/attendance` +
+    `?employee_id=eq.${employee.value}` +
+    `&work_date=gte.${firstDay}` +
+    `&work_date=lt.${nextFirstDay}`;
+
+  const response = await fetch(url, {
+    method: "DELETE",
+
+    headers: {
+      ...supabaseHeaders(),
+      Prefer: "return=minimal"
+    }
+  });
+
+  if (!response.ok) {
+    const errorText =
+      await response.text();
+
+    console.error(errorText);
+
+    throw new Error(
+      "既存データの削除に失敗しました"
+    );
+  }
+}
+
+
+/* =========================================
+   Supabaseへ保存
+========================================= */
+
+async function saveAttendance() {
+  if (!department.value) {
+    alert("部を選択してください");
+    return;
+  }
+
+  if (!employee.value) {
+    alert("氏名を選択してください");
+    return;
+  }
+
+  if (!month.value) {
+    alert("対象月を選択してください");
+    return;
+  }
+
+  const records =
+    makeAttendanceRecords();
+
+  const originalText =
+    saveButton.textContent;
+
+  saveButton.disabled = true;
+  saveButton.textContent = "保存中…";
+
+  try {
+    /*
+      同じ社員・同じ月の古いデータを削除して、
+      今の画面内容を保存する。
+    */
+
+    await deleteExistingAttendance();
+
+    const url =
+      `${SUPABASE_URL}/rest/v1/attendance`;
+
+    const response = await fetch(url, {
+      method: "POST",
+
+      headers: {
+        ...supabaseHeaders(),
+        Prefer: "return=minimal"
+      },
+
+      body: JSON.stringify(records)
+    });
+
+    if (!response.ok) {
+      const errorText =
+        await response.text();
+
+      console.error(errorText);
+
+      throw new Error(
+        "出勤簿の保存に失敗しました"
+      );
+    }
+
+    alert(
+      `${selectedEmployeeName()}さんの` +
+      `${month.value}分を保存しました`
+    );
+
+  } catch (error) {
+    console.error(error);
+    alert(error.message);
+
+  } finally {
+    saveButton.disabled = false;
+    saveButton.textContent = originalText;
+  }
+}
+
+
+/* =========================================
+   保存データを1日分の画面へ反映
+========================================= */
+
+function restoreAttendanceRow(row, item) {
   if (!item) {
     return;
   }
 
-
-  /*
-    区分
-  */
-
-  row
-    .querySelector(".site-type")
-    .value =
-    item.siteType || "";
+  row.querySelector(".site-type").value =
+    item.site_type || "";
 
   changeSiteType(row);
 
-
-  /*
-    一般現場
-  */
-
-  if (
-    item.siteType === "一般"
-  ) {
-
-    row
-      .querySelector(".general-site")
-      .value =
-      item.siteId || "";
+  if (item.site_type === "一般") {
+    row.querySelector(".general-site").value =
+      item.site_id
+        ? String(item.site_id)
+        : "";
   }
 
-
-  /*
-    雑工事
-  */
-
-  if (
-    item.siteType === "雑工事"
-  ) {
-
-    row
-      .querySelector(".misc-company")
-      .value =
-      item.miscCompany || "";
+  if (item.site_type === "雑工事") {
+    row.querySelector(".misc-company").value =
+      item.misc_company || "";
 
     changeMiscCompany(row);
 
-    row
-      .querySelector(".misc-department")
-      .value =
-      item.miscDepartment || "";
+    row.querySelector(".misc-department").value =
+      item.misc_department || "";
 
-    row
-      .querySelector(".misc-name")
-      .value =
-      item.miscName || "";
+    row.querySelector(".misc-name").value =
+      item.misc_name || "";
   }
 
+  row.querySelector(".start").value =
+    item.start_time || "";
 
-  /*
-    時刻・備考
-  */
+  row.querySelector(".end").value =
+    item.end_time || "";
 
-  row
-    .querySelector(".start")
-    .value =
-    item.start || "";
-
-  row
-    .querySelector(".end")
-    .value =
-    item.end || "";
-
-  row
-    .querySelector(".note")
-    .value =
+  row.querySelector(".note").value =
     item.note || "";
 }
 
 
 /* =========================================
-   この端末から読込
+   Supabaseから対象月を読込
 ========================================= */
 
-function loadLocal() {
-
-  if (
-    !department.value ||
-    !employee.value
-  ) {
+async function loadAttendance() {
+  if (!employee.value || !month.value) {
+    updateSummary();
     return;
   }
 
-  const raw =
-    localStorage.getItem(
-      storageKey()
+  const firstDay =
+    `${month.value}-01`;
+
+  const nextFirstDay =
+    nextMonthFirstDay(month.value);
+
+  const url =
+    `${SUPABASE_URL}/rest/v1/attendance` +
+    `?select=*` +
+    `&employee_id=eq.${employee.value}` +
+    `&work_date=gte.${firstDay}` +
+    `&work_date=lt.${nextFirstDay}` +
+    `&order=work_date.asc`;
+
+  const response = await fetch(url, {
+    headers: supabaseHeaders()
+  });
+
+  if (!response.ok) {
+    const errorText =
+      await response.text();
+
+    console.error(errorText);
+
+    throw new Error(
+      "出勤簿の読込に失敗しました"
     );
-
-  if (!raw) {
-    return;
   }
 
-  let data;
+  const attendanceData =
+    await response.json();
+
+  const dataByDate = {};
+
+  attendanceData.forEach(item => {
+    dataByDate[item.work_date] = item;
+  });
+
+  document.querySelectorAll(".day-row")
+    .forEach(row => {
+      const item =
+        dataByDate[row.dataset.date];
+
+      restoreAttendanceRow(row, item);
+    });
+
+  updateSummary();
+}
+
+
+/* =========================================
+   画面を作り直してクラウドデータ読込
+========================================= */
+
+async function refreshAttendanceScreen() {
+  renderRows();
+
+  if (!employee.value) {
+    return;
+  }
 
   try {
-
-    data =
-      JSON.parse(raw);
+    await loadAttendance();
 
   } catch (error) {
-
     console.error(error);
-
-    return;
+    alert(error.message);
   }
-
-  document
-    .querySelectorAll(
-      ".day-row"
-    )
-    .forEach(
-      (row, index) => {
-
-        restoreRowData(
-          row,
-          data[index]
-        );
-      }
-    );
 }
 
 
@@ -1266,10 +1080,8 @@ function loadLocal() {
 ========================================= */
 
 function updateSummary() {
-
   const count =
     collectData().filter(item => {
-
       return (
         item.siteType ||
         item.siteId ||
@@ -1292,22 +1104,13 @@ function updateSummary() {
 ========================================= */
 
 function exportCsv() {
-
   if (!department.value) {
-
-    alert(
-      "部を選択してください"
-    );
-
+    alert("部を選択してください");
     return;
   }
 
   if (!employee.value) {
-
-    alert(
-      "氏名を選択してください"
-    );
-
+    alert("氏名を選択してください");
     return;
   }
 
@@ -1328,12 +1131,9 @@ function exportCsv() {
     "備考"
   ];
 
-  const lines = [
-    header
-  ];
+  const lines = [header];
 
   collectData().forEach(item => {
-
     const hasInput =
       item.siteType ||
       item.siteId ||
@@ -1369,17 +1169,11 @@ function exportCsv() {
   const csv =
     lines
       .map(row => {
-
         return row
           .map(value => {
-
             const escapedValue =
-              String(
-                value ?? ""
-              ).replaceAll(
-                '"',
-                '""'
-              );
+              String(value ?? "")
+                .replaceAll('"', '""');
 
             return `"${escapedValue}"`;
           })
@@ -1389,25 +1183,19 @@ function exportCsv() {
 
   const blob =
     new Blob(
-      [
-        "\ufeff" + csv
-      ],
+      ["\ufeff" + csv],
       {
-        type:
-          "text/csv;charset=utf-8"
+        type: "text/csv;charset=utf-8"
       }
     );
 
   const url =
-    URL.createObjectURL(
-      blob
-    );
+    URL.createObjectURL(blob);
 
   const link =
     document.createElement("a");
 
-  link.href =
-    url;
+  link.href = url;
 
   link.download =
     `出勤簿_` +
@@ -1425,14 +1213,12 @@ function exportCsv() {
    イベント設定
 ========================================= */
 
-month.value =
-  currentMonth();
+month.value = currentMonth();
 
 
 department.addEventListener(
   "change",
   () => {
-
     makeEmployeeOptions(
       department.value
     );
@@ -1444,13 +1230,13 @@ department.addEventListener(
 
 employee.addEventListener(
   "change",
-  renderRows
+  refreshAttendanceScreen
 );
 
 
 month.addEventListener(
   "change",
-  renderRows
+  refreshAttendanceScreen
 );
 
 
@@ -1458,7 +1244,7 @@ document
   .getElementById("makeRows")
   .addEventListener(
     "click",
-    renderRows
+    refreshAttendanceScreen
   );
 
 
@@ -1466,7 +1252,7 @@ document
   .getElementById("saveLocal")
   .addEventListener(
     "click",
-    saveLocal
+    saveAttendance
   );
 
 
@@ -1488,14 +1274,9 @@ Promise.all([
   loadHolidays()
 ])
   .then(() => {
-
     renderRows();
   })
   .catch(error => {
-
     console.error(error);
-
-    alert(
-      error.message
-    );
+    alert(error.message);
   });
