@@ -91,7 +91,84 @@ function currentMonth() {
 ========================================= */
 
 function nextMonthFirstDay(yearMonth) {
-  const [year, monthValue] =
+/* =========================================
+   締め日設定
+========================================= */
+
+const CLOSING_DAY = 20;
+
+
+/* =========================================
+   日付をYYYY-MM-DD形式へ変換
+========================================= */
+
+function formatDateValue(date) {
+
+  const year =
+    date.getFullYear();
+
+  const month =
+    String(
+      date.getMonth() + 1
+    ).padStart(2, "0");
+
+  const day =
+    String(
+      date.getDate()
+    ).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+
+}
+
+
+/* =========================================
+   締め期間取得
+========================================= */
+
+function getAttendanceRange(yearMonth){
+
+  const [
+    year,
+    month
+  ] =
+    yearMonth
+      .split("-")
+      .map(Number);
+
+  const startDate =
+    new Date(
+      year,
+      month - 2,
+      CLOSING_DAY + 1
+    );
+
+  const endDate =
+    new Date(
+      year,
+      month - 1,
+      CLOSING_DAY
+    );
+
+  const nextDate =
+    new Date(endDate);
+
+  nextDate.setDate(
+    nextDate.getDate() + 1
+  );
+
+  return {
+
+    firstDay:
+      formatDateValue(startDate),
+
+    nextFirstDay:
+      formatDateValue(nextDate)
+
+  };
+
+}
+   const [year, monthValue] =
     yearMonth
       .split("-")
       .map(Number);
@@ -213,17 +290,22 @@ async function loadMonthlyAttendance() {
     return;
   }
 
-  const firstDay =
-    `${month.value}-01`;
+  /*
+    20日締めの検索期間を取得する。
 
-  const nextFirstDay =
-    nextMonthFirstDay(month.value);
+    例：
+    対象月 2026-07
+    2026-06-21 ～ 2026-07-20
+  */
+
+  const range =
+    getAttendanceRange(month.value);
 
   const url =
     `${SUPABASE_URL}/rest/v1/attendance` +
     `?select=*` +
-    `&work_date=gte.${firstDay}` +
-    `&work_date=lt.${nextFirstDay}` +
+    `&work_date=gte.${range.firstDay}` +
+    `&work_date=lt.${range.nextFirstDay}` +
     `&order=employee_id.asc,work_date.asc`;
 
   const response =
