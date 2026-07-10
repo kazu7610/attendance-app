@@ -37,9 +37,18 @@ const detailStatus =
 const attendanceDetail =
   document.getElementById("attendanceDetail");
 
+const reloadButton =
+  document.getElementById("reload");
+
+const exportAllCsvButton =
+  document.getElementById("exportAllCsv");
+
+const closeDetailButton =
+  document.getElementById("closeDetail");
+
 
 /* =========================================
-   読込データ
+   読み込んだデータ
 ========================================= */
 
 let employees = [];
@@ -60,21 +69,25 @@ function supabaseHeaders() {
 
 
 /* =========================================
-   現在月
+   現在の年月
 ========================================= */
 
 function currentMonth() {
   const date = new Date();
 
-  return (
-    `${date.getFullYear()}-` +
-    `${String(date.getMonth() + 1).padStart(2, "0")}`
-  );
+  const year =
+    date.getFullYear();
+
+  const monthValue =
+    String(date.getMonth() + 1)
+      .padStart(2, "0");
+
+  return `${year}-${monthValue}`;
 }
 
 
 /* =========================================
-   翌月1日
+   翌月1日を取得
 ========================================= */
 
 function nextMonthFirstDay(yearMonth) {
@@ -90,15 +103,19 @@ function nextMonthFirstDay(yearMonth) {
       1
     );
 
-  return (
-    `${nextDate.getFullYear()}-` +
-    `${String(nextDate.getMonth() + 1).padStart(2, "0")}-01`
-  );
+  const nextYear =
+    nextDate.getFullYear();
+
+  const nextMonth =
+    String(nextDate.getMonth() + 1)
+      .padStart(2, "0");
+
+  return `${nextYear}-${nextMonth}-01`;
 }
 
 
 /* =========================================
-   日付表示
+   日付を日本語表示
 ========================================= */
 
 function formatDate(dateText) {
@@ -162,7 +179,8 @@ async function loadEmployees() {
 async function loadSites() {
   const url =
     `${SUPABASE_URL}/rest/v1/sites` +
-    `?select=id,display_name,input_code`;
+    `?select=` +
+    `id,display_name,input_code,site_type`;
 
   const response =
     await fetch(url, {
@@ -186,10 +204,15 @@ async function loadSites() {
 
 
 /* =========================================
-   対象月の出勤簿読込
+   対象月の全出勤簿読込
 ========================================= */
 
 async function loadMonthlyAttendance() {
+  if (!month.value) {
+    monthlyAttendance = [];
+    return;
+  }
+
   const firstDay =
     `${month.value}-01`;
 
@@ -221,6 +244,19 @@ async function loadMonthlyAttendance() {
 
   monthlyAttendance =
     await response.json();
+}
+
+
+/* =========================================
+   社員情報取得
+========================================= */
+
+function getEmployee(employeeId) {
+  return employees.find(
+    item =>
+      Number(item.id) ===
+      Number(employeeId)
+  ) || null;
 }
 
 
@@ -272,7 +308,7 @@ function getEmployeeStatus(employeeId) {
 
 
 /* =========================================
-   状態表示
+   状態表示情報
 ========================================= */
 
 function statusInfo(status) {
@@ -280,6 +316,7 @@ function statusInfo(status) {
     return {
       icon: "🔒",
       text: "締切済",
+      csvText: "締切済",
       className: "status-locked"
     };
   }
@@ -288,6 +325,7 @@ function statusInfo(status) {
     return {
       icon: "🟢",
       text: "提出済",
+      csvText: "提出済",
       className: "status-submitted"
     };
   }
@@ -296,6 +334,7 @@ function statusInfo(status) {
     return {
       icon: "🟡",
       text: "一時保存",
+      csvText: "一時保存",
       className: "status-draft"
     };
   }
@@ -303,7 +342,45 @@ function statusInfo(status) {
   return {
     icon: "⚪",
     text: "未保存",
+    csvText: "未保存",
     className: "status-not-saved"
+  };
+}
+
+
+/* =========================================
+   部ごとの提出人数取得
+========================================= */
+
+function getDepartmentSubmissionCount(
+  departmentName
+) {
+  const departmentEmployees =
+    employees.filter(
+      employee =>
+        employee.department ===
+        departmentName
+    );
+
+  const submittedCount =
+    departmentEmployees.filter(
+      employee => {
+        const status =
+          getEmployeeStatus(employee.id);
+
+        return (
+          status === "submitted" ||
+          status === "locked"
+        );
+      }
+    ).length;
+
+  return {
+    submitted:
+      submittedCount,
+
+    total:
+      departmentEmployees.length
   };
 }
 
@@ -316,7 +393,6 @@ function renderAttendanceStatus() {
   attendanceList.innerHTML = "";
 
   let currentDepartment = "";
-
   let submittedCount = 0;
 
   employees.forEach(employee => {
@@ -340,6 +416,11 @@ function renderAttendanceStatus() {
       currentDepartment =
         employee.department;
 
+      const count =
+        getDepartmentSubmissionCount(
+          currentDepartment
+        );
+
       const departmentTitle =
         document.createElement("h3");
 
@@ -347,7 +428,8 @@ function renderAttendanceStatus() {
         "admin-department-title";
 
       departmentTitle.textContent =
-        currentDepartment;
+        `${currentDepartment}（` +
+        `${count.submitted} / ${count.total}人）`;
 
       attendanceList.appendChild(
         departmentTitle
@@ -360,7 +442,9 @@ function renderAttendanceStatus() {
     button.type = "button";
 
     button.className =
-      `employee-row employee-status-button ${info.className}`;
+      `employee-row ` +
+      `employee-status-button ` +
+      `${info.className}`;
 
     button.innerHTML = `
       <span class="employee-status-icon">
@@ -368,7 +452,7 @@ function renderAttendanceStatus() {
       </span>
 
       <span class="employee-status-name">
-        ${employee.name}
+        ${escapeHtml(employee.name)}
       </span>
 
       <span class="employee-status-text">
@@ -392,26 +476,51 @@ function renderAttendanceStatus() {
 
 
 /* =========================================
-   現場名取得
+   現場情報取得
+========================================= */
+
+function getSite(siteId) {
+  if (!siteId) {
+    return null;
+  }
+
+  return sites.find(
+    item =>
+      Number(item.id) ===
+      Number(siteId)
+  ) || null;
+}
+
+
+/* =========================================
+   一般現場名取得
 ========================================= */
 
 function getSiteName(siteId) {
-  if (!siteId) {
-    return "";
-  }
-
   const site =
-    sites.find(
-      item =>
-        Number(item.id) ===
-        Number(siteId)
-    );
+    getSite(siteId);
 
   if (!site) {
     return "";
   }
 
   return site.display_name || "";
+}
+
+
+/* =========================================
+   CSV用現場コード取得
+========================================= */
+
+function getSiteInputCode(siteId) {
+  const site =
+    getSite(siteId);
+
+  if (!site) {
+    return "";
+  }
+
+  return site.input_code || "";
 }
 
 
@@ -491,7 +600,8 @@ function showEmployeeDetail(employee) {
     `${info.icon} ${info.text}`;
 
   detailStatus.className =
-    `admin-detail-status ${info.className}`;
+    `admin-detail-status ` +
+    `${info.className}`;
 
   attendanceDetail.innerHTML = "";
 
@@ -502,9 +612,13 @@ function showEmployeeDetail(employee) {
 
   if (inputDays.length === 0) {
     attendanceDetail.innerHTML =
-      '<p class="empty-message">入力データはありません。</p>';
+      '<p class="empty-message">' +
+      '入力データはありません。' +
+      '</p>';
 
-    detailSection.classList.remove("hidden");
+    detailSection.classList.remove(
+      "hidden"
+    );
 
     detailSection.scrollIntoView({
       behavior: "smooth",
@@ -520,7 +634,8 @@ function showEmployeeDetail(employee) {
 
     const timeText =
       item.start_time || item.end_time
-        ? `${item.start_time || "未入力"} ～ ${item.end_time || "未入力"}`
+        ? `${item.start_time || "未入力"} ～ ` +
+          `${item.end_time || "未入力"}`
         : "時刻未入力";
 
     const card =
@@ -531,19 +646,19 @@ function showEmployeeDetail(employee) {
 
     card.innerHTML = `
       <div class="attendance-detail-date">
-        ${formatDate(item.work_date)}
+        ${escapeHtml(formatDate(item.work_date))}
       </div>
 
       <div class="attendance-detail-content">
 
         <div>
           <strong>現場：</strong>
-          ${siteName || "未入力"}
+          ${escapeHtml(siteName || "未入力")}
         </div>
 
         <div>
           <strong>時間：</strong>
-          ${timeText}
+          ${escapeHtml(timeText)}
         </div>
 
         ${
@@ -551,7 +666,7 @@ function showEmployeeDetail(employee) {
             ? `
               <div>
                 <strong>備考：</strong>
-                ${item.note}
+                ${escapeHtml(item.note)}
               </div>
             `
             : ""
@@ -563,7 +678,9 @@ function showEmployeeDetail(employee) {
     attendanceDetail.appendChild(card);
   });
 
-  detailSection.classList.remove("hidden");
+  detailSection.classList.remove(
+    "hidden"
+  );
 
   detailSection.scrollIntoView({
     behavior: "smooth",
@@ -577,13 +694,186 @@ function showEmployeeDetail(employee) {
 ========================================= */
 
 function closeEmployeeDetail() {
-  detailSection.classList.add("hidden");
+  detailSection.classList.add(
+    "hidden"
+  );
+
   attendanceDetail.innerHTML = "";
 
   statusSection.scrollIntoView({
     behavior: "smooth",
     block: "start"
   });
+}
+
+
+/* =========================================
+   HTML表示用文字エスケープ
+========================================= */
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+
+/* =========================================
+   CSV用文字エスケープ
+========================================= */
+
+function escapeCsv(value) {
+  const text =
+    String(value ?? "")
+      .replaceAll('"', '""');
+
+  return `"${text}"`;
+}
+
+
+/* =========================================
+   CSVダウンロード
+========================================= */
+
+function downloadCsv(
+  rows,
+  fileName
+) {
+  const csvText =
+    "\ufeff" +
+    rows
+      .map(row =>
+        row
+          .map(escapeCsv)
+          .join(",")
+      )
+      .join("\n");
+
+  const blob =
+    new Blob(
+      [csvText],
+      {
+        type:
+          "text/csv;charset=utf-8"
+      }
+    );
+
+  const url =
+    URL.createObjectURL(blob);
+
+  const link =
+    document.createElement("a");
+
+  link.href = url;
+  link.download = fileName;
+
+  document.body.appendChild(link);
+
+  link.click();
+  link.remove();
+
+  URL.revokeObjectURL(url);
+}
+
+
+/* =========================================
+   全員分CSV作成
+========================================= */
+
+function exportAllCsv() {
+  if (!month.value) {
+    alert(
+      "対象月を選択してください"
+    );
+
+    return;
+  }
+
+  if (monthlyAttendance.length === 0) {
+    alert(
+      "対象月の出勤簿データがありません"
+    );
+
+    return;
+  }
+
+  const csvRows = [];
+
+  csvRows.push([
+    "部",
+    "氏名",
+    "対象月",
+    "日付",
+    "区分",
+    "現場コード",
+    "現場名",
+    "雑工事区分",
+    "担当部",
+    "雑工事名",
+    "開始",
+    "終了",
+    "備考",
+    "提出状態"
+  ]);
+
+  monthlyAttendance.forEach(item => {
+    const employee =
+      getEmployee(item.employee_id);
+
+    if (!employee) {
+      return;
+    }
+
+    const employeeStatus =
+      getEmployeeStatus(employee.id);
+
+    const status =
+      statusInfo(employeeStatus);
+
+    let siteCode = "";
+    let siteName = "";
+
+    if (item.site_type === "一般") {
+      siteCode =
+        getSiteInputCode(item.site_id);
+
+      siteName =
+        getSiteName(item.site_id);
+    }
+
+    if (item.site_type === "雑工事") {
+      siteCode =
+        getSiteInputCode(item.site_id);
+
+      siteName =
+        makeDisplaySiteName(item);
+    }
+
+    csvRows.push([
+      employee.department || "",
+      employee.name || "",
+      month.value,
+      item.work_date || "",
+      item.site_type || "",
+      siteCode,
+      siteName,
+      item.misc_company || "",
+      item.misc_department || "",
+      item.misc_name || "",
+      item.start_time || "",
+      item.end_time || "",
+      item.note || "",
+      status.csvText
+    ]);
+  });
+
+  downloadCsv(
+    csvRows,
+    `出勤簿_全員_${month.value}.csv`
+  );
 }
 
 
@@ -598,7 +888,15 @@ async function loadAdminScreen() {
   submissionSummary.textContent =
     "読込中...";
 
-  detailSection.classList.add("hidden");
+  detailSection.classList.add(
+    "hidden"
+  );
+
+  reloadButton.disabled = true;
+  exportAllCsvButton.disabled = true;
+
+  reloadButton.textContent =
+    "読込中…";
 
   try {
     await Promise.all([
@@ -613,10 +911,19 @@ async function loadAdminScreen() {
     console.error(error);
 
     attendanceList.innerHTML =
-      `<p class="error-message">${error.message}</p>`;
+      `<p class="error-message">` +
+      `${escapeHtml(error.message)}` +
+      `</p>`;
 
     submissionSummary.textContent =
       "読込失敗";
+
+  } finally {
+    reloadButton.disabled = false;
+    exportAllCsvButton.disabled = false;
+
+    reloadButton.textContent =
+      "更新";
   }
 }
 
@@ -629,12 +936,10 @@ month.value =
   currentMonth();
 
 
-document
-  .getElementById("reload")
-  .addEventListener(
-    "click",
-    loadAdminScreen
-  );
+reloadButton.addEventListener(
+  "click",
+  loadAdminScreen
+);
 
 
 month.addEventListener(
@@ -643,12 +948,16 @@ month.addEventListener(
 );
 
 
-document
-  .getElementById("closeDetail")
-  .addEventListener(
-    "click",
-    closeEmployeeDetail
-  );
+closeDetailButton.addEventListener(
+  "click",
+  closeEmployeeDetail
+);
+
+
+exportAllCsvButton.addEventListener(
+  "click",
+  exportAllCsv
+);
 
 
 /* =========================================
