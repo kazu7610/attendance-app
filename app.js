@@ -719,6 +719,26 @@ function changeSiteType(row) {
       ".misc-name-wrap"
     );
 
+  const leaveTypeWrap =
+    row.querySelector(
+      ".leave-type-wrap"
+    );
+
+  const startSelect =
+    row.querySelector(".start");
+
+  const endSelect =
+    row.querySelector(".end");
+
+  const leaveTypeSelect =
+    row.querySelector(
+      ".leave-type"
+    );
+
+  /*
+    いったん全部隠す
+  */
+
   generalSiteWrap
     .classList
     .add("hidden");
@@ -735,13 +755,38 @@ function changeSiteType(row) {
     .classList
     .add("hidden");
 
+  leaveTypeWrap
+    .classList
+    .add("hidden");
+
+  /*
+    一般
+  */
+
   if (siteType === "一般") {
     generalSiteWrap
       .classList
       .remove("hidden");
 
+    if (!startSelect.value) {
+      startSelect.value = "8:00";
+    }
+
+    if (!endSelect.value) {
+      endSelect.value = "17:00";
+    }
+
+    leaveTypeSelect.value = "";
+
+    startSelect.disabled = false;
+    endSelect.disabled = false;
+
     return;
   }
+
+  /*
+    雑工事
+  */
 
   if (siteType === "雑工事") {
     miscCompanyWrap
@@ -749,9 +794,53 @@ function changeSiteType(row) {
       .remove("hidden");
 
     changeMiscCompany(row);
-  }
-}
 
+    if (!startSelect.value) {
+      startSelect.value = "8:00";
+    }
+
+    if (!endSelect.value) {
+      endSelect.value = "17:00";
+    }
+
+    leaveTypeSelect.value = "";
+
+    startSelect.disabled = false;
+    endSelect.disabled = false;
+
+    return;
+  }
+
+  /*
+    休み
+  */
+
+  if (siteType === "休み") {
+    leaveTypeWrap
+      .classList
+      .remove("hidden");
+
+    startSelect.value = "";
+    endSelect.value = "";
+
+    startSelect.disabled = true;
+    endSelect.disabled = true;
+
+    return;
+  }
+
+  /*
+    未選択
+  */
+
+  leaveTypeSelect.value = "";
+
+  startSelect.value = "";
+  endSelect.value = "";
+
+  startSelect.disabled = false;
+  endSelect.disabled = false;
+}
 
 /* =========================================
    雑工事区分の表示切替
