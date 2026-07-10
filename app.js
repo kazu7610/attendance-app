@@ -1240,6 +1240,11 @@ function collectData() {
         miscName:
           siteData.miscName,
 
+         leaveType:
+  row
+    .querySelector(".leave-type")
+    .value,
+
         start:
           row
             .querySelector(".start")
@@ -1293,6 +1298,9 @@ function makeAttendanceRecords(status) {
 
       misc_name:
         item.miscName || "",
+
+       leave_type:
+  item.leaveType || "",
 
       start_time:
         item.start || "",
@@ -1573,6 +1581,7 @@ function restoreAttendanceRow(
   if (
     item.site_type === "雑工事"
   ) {
+    
     row
       .querySelector(".misc-company")
       .value =
@@ -1597,6 +1606,14 @@ function restoreAttendanceRow(
     item.start_time || "";
 
   row
+     if (
+  item.site_type === "休み"
+) {
+  row
+    .querySelector(".leave-type")
+    .value =
+    item.leave_type || "";
+}
     .querySelector(".end")
     .value =
     item.end_time || "";
@@ -1812,6 +1829,7 @@ function getInputCount() {
       item.miscCompany ||
       item.miscDepartment ||
       item.miscName ||
+       item.leaveType ||
       item.start ||
       item.end ||
       item.note
