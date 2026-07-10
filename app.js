@@ -55,7 +55,11 @@ let holidays = {};
 */
 
 let currentStatus = "draft";
+/* =========================================
+   締め日設定
+========================================= */
 
+const CLOSING_DAY = 20;
 
 /* =========================================
    時刻・曜日
@@ -64,20 +68,31 @@ let currentStatus = "draft";
 const times = [
   "",
   "休み",
+  "0:00",
+  "1:00",
+  "2:00",
+  "3:00",
+  "4:00",
+  "5:00",
+  "6:00",
+  "7:00",
   "8:00",
-  "8:30",
   "9:00",
+  "10:00",
+  "11:00",
   "12:00",
   "13:00",
+  "14:00",
+  "15:00",
+  "16:00",
   "17:00",
-  "17:30",
   "18:00",
-  "18:30",
   "19:00",
   "20:00",
-  "21:00"
+  "21:00",
+  "22:00",
+  "23:00"
 ];
-
 const weeks = [
   "日",
   "月",
@@ -329,7 +344,128 @@ function currentMonth() {
 /* =========================================
    月の日数
 ========================================= */
+/* =========================================
+   日付をYYYY-MM-DD形式に変換
+========================================= */
 
+function formatDateValue(date) {
+  const year =
+    date.getFullYear();
+
+  const monthValue =
+    String(date.getMonth() + 1)
+      .padStart(2, "0");
+
+  const dayValue =
+    String(date.getDate())
+      .padStart(2, "0");
+
+  return `${year}-${monthValue}-${dayValue}`;
+}
+
+
+/* =========================================
+   締め期間を取得
+   例：2026-07
+   → 2026-06-21 ～ 2026-07-20
+========================================= */
+
+function getAttendancePeriod(yearMonth) {
+  const [
+    year,
+    monthValue
+  ] =
+    yearMonth
+      .split("-")
+      .map(Number);
+
+  /*
+    開始日：
+    対象月の前月21日
+  */
+
+  const startDate =
+    new Date(
+      year,
+      monthValue - 2,
+      CLOSING_DAY + 1
+    );
+
+  /*
+    終了日：
+    対象月の20日
+  */
+
+  const endDate =
+    new Date(
+      year,
+      monthValue - 1,
+      CLOSING_DAY
+    );
+
+  const period = [];
+
+  const currentDate =
+    new Date(startDate);
+
+  while (currentDate <= endDate) {
+    period.push({
+      date:
+        formatDateValue(currentDate),
+
+      day:
+        currentDate.getDate(),
+
+      month:
+        currentDate.getMonth() + 1,
+
+      weekNo:
+        currentDate.getDay(),
+
+      weekText:
+        weeks[currentDate.getDay()]
+    });
+
+    currentDate.setDate(
+      currentDate.getDate() + 1
+    );
+  }
+
+  return period;
+}
+
+
+/* =========================================
+   Supabase検索用の締め期間
+========================================= */
+
+function getAttendanceRange(yearMonth) {
+  const period =
+    getAttendancePeriod(yearMonth);
+
+  const firstDay =
+    period[0].date;
+
+  const lastDateText =
+    period[period.length - 1].date;
+
+  const nextDate =
+    new Date(
+      `${lastDateText}T00:00:00`
+    );
+
+  nextDate.setDate(
+    nextDate.getDate() + 1
+  );
+
+  return {
+    firstDay:
+      firstDay,
+
+    nextFirstDay:
+      formatDateValue(nextDate)
+  };
+}
 function daysInMonth(yearMonth) {
   const [
     year,
@@ -782,123 +918,160 @@ function renderRows() {
     month.value ||
     currentMonth();
 
-  const count =
-    daysInMonth(yearMonth);
+  /*
+    20日締めの期間を取得する。
 
-  for (
-    let day = 1;
-    day <= count;
-    day++
-  ) {
-    const node =
-      template
-        .content
-        .cloneNode(true);
+    例：
+    対象月 2026-07
+    2026-06-21 ～ 2026-07-20
+  */
 
-    const row =
-      node.querySelector(
-        ".day-row"
+  const attendancePeriod =
+    getAttendancePeriod(yearMonth);
+
+  attendancePeriod.forEach(
+    periodDay => {
+
+      const node =
+        template
+          .content
+          .cloneNode(true);
+
+      const row =
+        node.querySelector(
+          ".day-row"
+        );
+
+      const holiday =
+        holidays[periodDay.date];
+
+      /*
+        保存・読込に使う日付
+      */
+
+      row.dataset.day =
+        String(periodDay.day);
+
+      row.dataset.date =
+        periodDay.date;
+
+      /*
+        日曜日は赤文字
+      */
+
+      if (periodDay.weekNo === 0) {
+        row.classList.add(
+          "sunday"
+        );
+      }
+
+      /*
+        休日・祝日は休日表示
+      */
+
+      if (
+        holiday &&
+        (
+          holiday.day_type === "休日" ||
+          holiday.day_type === "祝日"
+        )
+      ) {
+        row.classList.add(
+          "company-holiday"
+        );
+      }
+
+      /*
+        日付表示
+
+        月をまたぐので、
+        6/21、7/1のように月も表示する。
+      */
+
+      row
+        .querySelector(".day")
+        .textContent =
+        `${periodDay.month}/${periodDay.day}`;
+
+      row
+        .querySelector(".week")
+        .textContent =
+        `(${periodDay.weekText})`;
+
+      /*
+        時刻プルダウン
+      */
+
+      setTimeOptions(
+        row.querySelector(".start")
       );
 
-    const info =
-      dateInfo(
-        yearMonth,
-        day
+      setTimeOptions(
+        row.querySelector(".end")
       );
 
-    const dateText =
-      `${yearMonth}-` +
-      `${String(day).padStart(2, "0")}`;
+      /*
+        一般現場プルダウン
+      */
 
-    const holiday =
-      holidays[dateText];
-
-    row.dataset.day =
-      String(day);
-
-    row.dataset.date =
-      dateText;
-
-    if (info.weekNo === 0) {
-      row.classList.add(
-        "sunday"
-      );
-    }
-
-    if (
-      holiday &&
-      (
-        holiday.day_type === "休日" ||
-        holiday.day_type === "祝日"
-      )
-    ) {
-      row.classList.add(
-        "company-holiday"
-      );
-    }
-
-    row
-      .querySelector(".day")
-      .textContent =
-      `${day}日`;
-
-    row
-      .querySelector(".week")
-      .textContent =
-      `(${info.weekText})`;
-
-    setTimeOptions(
-      row.querySelector(".start")
-    );
-
-    setTimeOptions(
-      row.querySelector(".end")
-    );
-
-    setGeneralSiteOptions(
-      row.querySelector(
-        ".general-site"
-      )
-    );
-
-    row
-      .querySelector(".site-type")
-      .addEventListener(
-        "change",
-        () => {
-          changeSiteType(row);
-          updateSummary();
-        }
+      setGeneralSiteOptions(
+        row.querySelector(
+          ".general-site"
+        )
       );
 
-    row
-      .querySelector(".misc-company")
-      .addEventListener(
-        "change",
-        () => {
-          changeMiscCompany(row);
-          updateSummary();
-        }
-      );
+      /*
+        一般・雑工事の切替
+      */
 
-    row
-      .querySelectorAll(
-        "select,input"
-      )
-      .forEach(element => {
-        element.addEventListener(
+      row
+        .querySelector(".site-type")
+        .addEventListener(
           "change",
-          updateSummary
+          () => {
+            changeSiteType(row);
+            updateSummary();
+          }
         );
 
-        element.addEventListener(
-          "input",
-          updateSummary
-        );
-      });
+      /*
+        雑工事区分の切替
+      */
 
-    rows.appendChild(node);
-  }
+      row
+        .querySelector(".misc-company")
+        .addEventListener(
+          "change",
+          () => {
+            changeMiscCompany(row);
+            updateSummary();
+          }
+        );
+
+      /*
+        入力件数の更新
+      */
+
+      row
+        .querySelectorAll(
+          "select,input"
+        )
+        .forEach(element => {
+
+          element.addEventListener(
+            "change",
+            updateSummary
+          );
+
+          element.addEventListener(
+            "input",
+            updateSummary
+          );
+        });
+
+      rows.appendChild(node);
+    }
+  );
 
   applyStatusToScreen();
   updateSummary();
@@ -1021,19 +1194,25 @@ function makeAttendanceRecords(status) {
 ========================================= */
 
 async function deleteExistingAttendance() {
-  const firstDay =
-    `${month.value}-01`;
+  /*
+    対象月の締め期間を取得する。
 
-  const nextFirstDay =
-    nextMonthFirstDay(
-      month.value
-    );
+    例：
+    対象月 2026-07
+    2026-06-21 ～ 2026-07-20
+
+    Supabase検索では、
+    終了日の翌日未満として指定する。
+  */
+
+  const range =
+    getAttendanceRange(month.value);
 
   const url =
     `${SUPABASE_URL}/rest/v1/attendance` +
     `?employee_id=eq.${employee.value}` +
-    `&work_date=gte.${firstDay}` +
-    `&work_date=lt.${nextFirstDay}`;
+    `&work_date=gte.${range.firstDay}` +
+    `&work_date=lt.${range.nextFirstDay}`;
 
   const response =
     await fetch(url, {
@@ -1325,20 +1504,23 @@ async function loadAttendance() {
     return;
   }
 
-  const firstDay =
-    `${month.value}-01`;
+  /*
+    対象月の締め期間を取得する。
 
-  const nextFirstDay =
-    nextMonthFirstDay(
-      month.value
-    );
+    例：
+    対象月 2026-07
+    2026-06-21 ～ 2026-07-20
+  */
+
+  const range =
+    getAttendanceRange(month.value);
 
   const url =
     `${SUPABASE_URL}/rest/v1/attendance` +
     `?select=*` +
     `&employee_id=eq.${employee.value}` +
-    `&work_date=gte.${firstDay}` +
-    `&work_date=lt.${nextFirstDay}` +
+    `&work_date=gte.${range.firstDay}` +
+    `&work_date=lt.${range.nextFirstDay}` +
     `&order=work_date.asc`;
 
   const response =
@@ -1363,7 +1545,7 @@ async function loadAttendance() {
 
   /*
     1件でも保存データがあれば、
-    そのstatusを月全体の状態として使う。
+    そのstatusを締め期間全体の状態として使う。
   */
 
   if (
@@ -1380,6 +1562,11 @@ async function loadAttendance() {
     dataByDate[item.work_date] =
       item;
   });
+
+  /*
+    画面の日付と保存日付を照合し、
+    各日の入力内容を復元する。
+  */
 
   document
     .querySelectorAll(".day-row")
@@ -1398,7 +1585,6 @@ async function loadAttendance() {
   applyStatusToScreen();
   updateSummary();
 }
-
 
 /* =========================================
    提出状態を画面へ反映
