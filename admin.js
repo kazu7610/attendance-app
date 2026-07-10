@@ -234,7 +234,7 @@ async function loadSites() {
   const url =
     `${SUPABASE_URL}/rest/v1/sites` +
     `?select=` +
-    `id,display_name,input_code,site_type`;
+    `id,display_name,input_code,construction_no,site_type`;
 
   const response =
     await fetch(url, {
@@ -571,7 +571,7 @@ function getSiteName(siteId) {
    CSV用現場コード取得
 ========================================= */
 
-function getSiteInputCode(siteId) {
+function getConstructionNo(siteId) {
   const site =
     getSite(siteId);
 
@@ -579,9 +579,8 @@ function getSiteInputCode(siteId) {
     return "";
   }
 
-  return site.input_code || "";
+  return site.construction_no || "";
 }
-
 
 /* =========================================
    表示用現場名作成
@@ -867,7 +866,7 @@ function exportAllCsv() {
     "対象月",
     "日付",
     "区分",
-    "現場コード",
+    "工事番号",
     "現場名",
     "雑工事区分",
     "担当部",
@@ -897,7 +896,7 @@ function exportAllCsv() {
 
     if (item.site_type === "一般") {
       siteCode =
-        getSiteInputCode(item.site_id);
+        getConstructionNo(item.site_id);
 
       siteName =
         getSiteName(item.site_id);
@@ -905,7 +904,7 @@ function exportAllCsv() {
 
     if (item.site_type === "雑工事") {
       siteCode =
-        getSiteInputCode(item.site_id);
+        getConstructionNo(item.site_id);
 
       siteName =
         makeDisplaySiteName(item);
