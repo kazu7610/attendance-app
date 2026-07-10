@@ -2,54 +2,116 @@
 <html lang="ja">
 
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="utf-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
 
-<title>管理画面</title>
+  <title>工事部ポータル - 管理画面</title>
 
-<link rel="stylesheet" href="style.css">
-
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
 </head>
 
 <body>
 
-<header>
+  <header>
     <h1>工事部ポータル</h1>
-    <p>管理画面</p>
-</header>
+    <p>出勤簿管理</p>
+  </header>
 
-<main>
+  <main>
 
-<section class="card">
+    <!-- ==============================
+         対象月
+    ============================== -->
+    <section class="card">
 
-<h2>出勤簿管理</h2>
+      <h2>出勤簿管理</h2>
 
-<label>
-対象月
-<input id="month" type="month">
-</label>
+      <label>
+        対象月
 
-<button id="reload">
-更新
-</button>
+        <input
+          id="month"
+          type="month"
+        >
+      </label>
 
-</section>
+      <button
+        id="reload"
+        type="button"
+      >
+        更新
+      </button>
 
-<section class="card">
+    </section>
 
-<h2>提出状況</h2>
 
-<div id="attendanceList">
+    <!-- ==============================
+         提出状況一覧
+    ============================== -->
+    <section
+      id="statusSection"
+      class="card"
+    >
 
-読込中...
+      <div class="title">
+        <h2>提出状況</h2>
 
-</div>
+        <span id="submissionSummary">
+          0 / 0人
+        </span>
+      </div>
 
-</section>
+      <div id="attendanceList">
+        読込中...
+      </div>
 
-</main>
+    </section>
 
-<script src="admin.js"></script>
+
+    <!-- ==============================
+         個人出勤簿詳細
+    ============================== -->
+    <section
+      id="detailSection"
+      class="card hidden"
+    >
+
+      <div class="admin-detail-header">
+
+        <div>
+          <h2 id="detailEmployeeName">
+            出勤簿詳細
+          </h2>
+
+          <p id="detailStatus"></p>
+        </div>
+
+        <button
+          id="closeDetail"
+          class="secondary-button"
+          type="button"
+        >
+          一覧へ戻る
+        </button>
+
+      </div>
+
+      <div
+        id="attendanceDetail"
+        class="attendance-detail"
+      ></div>
+
+    </section>
+
+  </main>
+
+  <script src="admin.js"></script>
 
 </body>
 
