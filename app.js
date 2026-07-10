@@ -1723,8 +1723,22 @@ function applyStatusToScreen() {
     inputElements.forEach(element => {
       element.disabled = false;
     });
+     /*
+  区分が「休み」の日は、
+  開始・終了を再び操作不可にする
+*/
 
-    saveButton.disabled = false;
+document
+  .querySelectorAll(".day-row")
+  .forEach(row => {
+    const siteType =
+      row.querySelector(".site-type").value;
+
+    if (siteType === "休み") {
+      row.querySelector(".start").disabled = true;
+      row.querySelector(".end").disabled = true;
+    }
+  });
     saveButton.textContent = "一時保存";
 
     submitButton.disabled = false;
