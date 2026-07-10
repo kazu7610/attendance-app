@@ -1,102 +1,274 @@
 <!doctype html>
 <html lang="ja">
+
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
   <title>工事部ポータル - 出勤簿</title>
-  <link rel="stylesheet" href="style.css">
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
 </head>
 
 <body>
+
   <header>
     <h1>工事部ポータル</h1>
     <p>出勤簿 Ver0.1</p>
   </header>
 
   <main>
+
+    <!-- ==============================
+         基本情報
+    ============================== -->
     <section class="card">
+
       <h2>基本情報</h2>
 
       <label>
         部
+
         <select id="department">
-          <option value="">部を選択してください</option>
+          <option value="">
+            部を選択してください
+          </option>
         </select>
       </label>
 
       <label>
         氏名
-        <select id="employee" disabled>
-          <option value="">先に部を選択してください</option>
+
+        <select
+          id="employee"
+          disabled
+        >
+          <option value="">
+            先に部を選択してください
+          </option>
         </select>
       </label>
 
       <label>
         対象月
-        <input id="month" type="month">
+
+        <input
+          id="month"
+          type="month"
+        >
       </label>
 
       <div class="buttons">
-        <button id="makeRows">月を表示</button>
-        <button id="saveLocal">保存</button>
-        <button id="exportCsv">CSV出力</button>
+
+        <button
+          id="makeRows"
+          type="button"
+        >
+          月を表示
+        </button>
+
+        <button
+          id="saveLocal"
+          type="button"
+        >
+          保存
+        </button>
+
+        <button
+          id="exportCsv"
+          type="button"
+        >
+          CSV出力
+        </button>
+
       </div>
+
     </section>
 
+
+    <!-- ==============================
+         勤務入力
+    ============================== -->
     <section class="card">
+
       <div class="title">
+
         <h2>勤務入力</h2>
-        <span id="summary">0件入力</span>
+
+        <span id="summary">
+          0件入力
+        </span>
+
       </div>
+
       <div id="rows"></div>
+
     </section>
+
   </main>
 
+
+  <!-- ==============================
+       1日分の入力テンプレート
+  ============================== -->
   <template id="dayTemplate">
+
     <div class="day-row">
+
+      <!-- 日付 -->
       <div class="date-box">
+
         <div class="day"></div>
+
         <div class="week"></div>
+
       </div>
 
+
+      <!-- 一般／雑工事 -->
       <label>
-        現場
-        <select class="site">
-          <option value=""></option>
-          <option value="S001" data-type="normal">トヨタスポーツ</option>
-          <option value="S002" data-type="normal">キャッスル</option>
-          <option value="S003" data-type="normal">イビデン河間</option>
-          <option value="SK001" data-type="normal">N3</option>
-          <option value="SZ001" data-type="misc">三機雑工事</option>
-          <option value="SKZ001" data-type="misc">三晃雑工事</option>
-          <option value="ASZ001" data-type="misc">朝日雑工事</option>
-          <option value="NSZ001" data-type="misc">西原雑工事</option>
-          <option value="SOZ001" data-type="misc">自社雑工事</option>
+        区分
+
+        <select class="site-type">
+
+          <option value="">
+            選択してください
+          </option>
+
+          <option value="一般">
+            一般
+          </option>
+
+          <option value="雑工事">
+            雑工事
+          </option>
+
         </select>
       </label>
 
-      <label class="misc hidden">
-        雑工事名
-        <input class="miscName" type="text" placeholder="例：市大">
+
+      <!-- 一般現場 -->
+      <label class="general-site-wrap hidden">
+        現場
+
+        <select class="general-site">
+
+          <option value="">
+            現場を選択してください
+          </option>
+
+        </select>
       </label>
 
+
+      <!-- 雑工事会社 -->
+      <label class="misc-company-wrap hidden">
+        雑工事区分
+
+        <select class="misc-company">
+
+          <option value="">
+            選択してください
+          </option>
+
+          <option value="三機">
+            三機
+          </option>
+
+          <option value="STS">
+            STS
+          </option>
+
+          <option value="三晃">
+            三晃
+          </option>
+
+          <option value="朝日">
+            朝日
+          </option>
+
+          <option value="自社">
+            自社
+          </option>
+
+        </select>
+      </label>
+
+
+      <!-- 工事部／技術部 -->
+      <label class="misc-department-wrap hidden">
+        担当部
+
+        <select class="misc-department">
+
+          <option value="">
+            選択してください
+          </option>
+
+          <option value="工事部">
+            工事部
+          </option>
+
+          <option value="技術部">
+            技術部
+          </option>
+
+        </select>
+      </label>
+
+
+      <!-- 雑工事名 -->
+      <label class="misc-name-wrap hidden">
+        雑工事名
+
+        <input
+          class="misc-name"
+          type="text"
+          placeholder="例：市大"
+        >
+      </label>
+
+
+      <!-- 開始時刻 -->
       <label>
         開始
+
         <select class="start"></select>
       </label>
 
+
+      <!-- 終了時刻 -->
       <label>
         終了
+
         <select class="end"></select>
       </label>
 
+
+      <!-- 備考 -->
       <label>
         備考
-        <input class="note" type="text">
+
+        <input
+          class="note"
+          type="text"
+        >
       </label>
+
     </div>
+
   </template>
 
+
   <script src="app.js"></script>
+
 </body>
+
 </html>
