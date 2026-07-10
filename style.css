@@ -155,3 +155,12 @@
   }
 
 }
+/* ==========================
+   休み
+========================== */
+
+.leave-day .site-type,
+.leave-day .leave-type{
+    color:#d32f2f;
+    font-weight:bold;
+}
