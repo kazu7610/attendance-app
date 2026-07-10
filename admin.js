@@ -652,6 +652,7 @@ function hasAttendanceInput(item) {
     item.misc_company ||
     item.misc_department ||
     item.misc_name ||
+     item.leave_type ||
     item.start_time ||
     item.end_time ||
     item.note
