@@ -1109,6 +1109,34 @@ function renderRows() {
         )
       );
 
+       /*
+  会社カレンダーが休日・祝日の場合は、
+  自動で「休み・休日」を設定する
+*/
+
+if (
+  holiday &&
+  (
+    holiday.day_type === "休日" ||
+    holiday.day_type === "祝日"
+  )
+) {
+  row
+    .querySelector(".site-type")
+    .value = "休み";
+
+  row
+    .querySelector(".leave-type")
+    .value = "休日";
+
+  /*
+    休暇区分を表示し、
+    開始・終了を空欄かつ操作不可にする
+  */
+
+  changeSiteType(row);
+}
+
       /*
         一般・雑工事の切替
       */
