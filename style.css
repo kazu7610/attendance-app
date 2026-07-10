@@ -7,10 +7,9 @@
   color:#dc2626;
 }
 
-/* 会社休日・祝日は薄い赤背景 */
-.company-holiday{
+/* 会社休日・祝日は日付部分だけ薄い赤背景 */
+.company-holiday .date-box{
   background:#fee2e2;
-  border-radius:10px;
-  padding-left:8px;
-  padding-right:8px;
+  border-radius:8px;
+  padding:8px;
 }
