@@ -739,6 +739,7 @@ function changeSiteType(row) {
     いったん全部隠す
   */
 
+  row.classList.remove("leave-day"); 
   generalSiteWrap
     .classList
     .add("hidden");
@@ -816,6 +817,9 @@ function changeSiteType(row) {
   */
 
   if (siteType === "休み") {
+
+     row.classList.add("leave-day");
+     
     leaveTypeWrap
       .classList
       .remove("hidden");
