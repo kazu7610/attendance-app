@@ -14,7 +14,7 @@ const times = ["", "休み", "8:00", "8:30", "9:00", "12:00", "13:00", "17:00", 
 const weeks = ["日", "月", "火", "水", "木", "金", "土"];
 
 async function loadEmployees() {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/employees?select=id,department,name,active&order=department.asc,name.asc`, {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/employees?select=id,department,name,active&order=department.asc,id.asc`, {
     headers: {
       apikey: SUPABASE_KEY,
       Authorization: `Bearer ${SUPABASE_KEY}`
