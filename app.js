@@ -1338,92 +1338,39 @@ function makeAttendanceRecords(status) {
   });
 }
 
-
 /* =========================================
-   Supabaseへ保存
+   対象期間の既存データ削除
 ========================================= */
 
-async function saveAttendanceWithStatus(
-  status,
-  successMessage
-) {
-  if (!department.value) {
-    alert(
-      "部を選択してください"
+async function deleteExistingAttendance() {
+  const range =
+    getAttendanceRange(month.value);
+
+  const url =
+    `${SUPABASE_URL}/rest/v1/attendance` +
+    `?employee_id=eq.${employee.value}` +
+    `&work_date=gte.${range.firstDay}` +
+    `&work_date=lt.${range.nextFirstDay}`;
+
+  const response =
+    await fetch(url, {
+      method: "DELETE",
+
+      headers: {
+        ...supabaseHeaders(),
+        Prefer: "return=minimal"
+      }
+    });
+
+  if (!response.ok) {
+    const errorText =
+      await response.text();
+
+    console.error(errorText);
+
+    throw new Error(
+      "既存データの削除に失敗しました"
     );
-
-    return false;
-  }
-
-  if (!employee.value) {
-    alert(
-      "氏名を選択してください"
-    );
-
-    return false;
-  }
-
-  if (!month.value) {
-    alert(
-      "対象月を選択してください"
-    );
-
-    return false;
-  }
-
-  const records =
-    makeAttendanceRecords(status);
-
-  saveButton.disabled = true;
-  submitButton.disabled = true;
-
-  try {
-    await deleteExistingAttendance();
-
-    const url =
-      `${SUPABASE_URL}/rest/v1/attendance`;
-
-    const response =
-      await fetch(url, {
-        method: "POST",
-
-        headers: {
-          ...supabaseHeaders(),
-          Prefer: "return=minimal"
-        },
-
-        body:
-          JSON.stringify(records)
-      });
-
-    if (!response.ok) {
-      const errorText =
-        await response.text();
-
-      console.error(errorText);
-
-      throw new Error(
-        "出勤簿の保存に失敗しました"
-      );
-    }
-
-    currentStatus = status;
-
-    applyStatusToScreen();
-
-    alert(successMessage);
-
-    return true;
-
-  } catch (error) {
-    console.error(error);
-
-    alert(error.message);
-
-    return false;
-
-  } finally {
-    applyStatusToScreen();
   }
 }
 
