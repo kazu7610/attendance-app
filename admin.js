@@ -167,29 +167,7 @@ function getAttendanceRange(yearMonth){
   };
 
 }
-   const [year, monthValue] =
-    yearMonth
-      .split("-")
-      .map(Number);
-
-  const nextDate =
-    new Date(
-      year,
-      monthValue,
-      1
-    );
-
-  const nextYear =
-    nextDate.getFullYear();
-
-  const nextMonth =
-    String(nextDate.getMonth() + 1)
-      .padStart(2, "0");
-
-  return `${nextYear}-${nextMonth}-01`;
-}
-
-
+  
 /* =========================================
    日付を日本語表示
 ========================================= */
