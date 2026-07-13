@@ -609,3 +609,260 @@ body {
   font-weight: 600;
   line-height: 1.5;
 }
+/* =========================================
+   ログイン画面
+========================================= */
+
+.login-page {
+  min-height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #eef4ff 0%,
+      #f7f9fc 45%,
+      #f3f4f6 100%
+    );
+
+  box-sizing: border-box;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 440px;
+
+  padding: 28px 24px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #0b1736 0%,
+      #132850 55%,
+      #1d3a72 100%
+    );
+
+  border-radius: 22px;
+
+  box-shadow:
+    0 18px 40px rgba(15, 23, 42, 0.20);
+
+  box-sizing: border-box;
+}
+
+.login-title-area {
+  margin-bottom: 24px;
+  color: #ffffff;
+}
+
+.login-title-area h1 {
+  margin: 0;
+
+  font-size: 24px;
+  line-height: 1.35;
+}
+
+.login-title-area p {
+  margin: 8px 0 0;
+
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+
+  color: rgba(255, 255, 255, 0.84);
+}
+
+.login-card label {
+  display: block;
+
+  margin-bottom: 18px;
+
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.login-card select {
+  width: 100%;
+  min-height: 52px;
+
+  margin-top: 8px;
+  padding: 0 14px;
+
+  background: #ffffff;
+  color: #1f2937;
+
+  border: none;
+  border-radius: 14px;
+
+  font-size: 16px;
+
+  box-sizing: border-box;
+}
+
+.login-card select:disabled {
+  background: #e5e7eb;
+  color: #6b7280;
+}
+
+#loginButton {
+  width: 100%;
+  min-height: 54px;
+
+  margin-top: 6px;
+  padding: 14px 18px;
+
+  border: none;
+  border-radius: 16px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #3b82f6 0%,
+      #2563eb 100%
+    );
+
+  color: #ffffff;
+
+  font-size: 17px;
+  font-weight: bold;
+
+  box-shadow:
+    0 10px 24px rgba(37, 99, 235, 0.30);
+}
+
+#loginButton:hover {
+  opacity: 0.94;
+}
+
+#loginButton:active {
+  transform: translateY(1px);
+}
+
+.login-message {
+  min-height: 24px;
+
+  margin: 16px 0 0;
+
+  color: #fecaca;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .login-page {
+    align-items: flex-start;
+    padding: 28px 14px;
+  }
+
+  .login-card {
+    padding: 24px 18px;
+    border-radius: 18px;
+  }
+
+  .login-title-area h1 {
+    font-size: 23px;
+  }
+}
+/* =========================================
+   本日の予定カード
+========================================= */
+
+.schedule-card {
+  display: block;
+
+  padding: 20px;
+
+  background: #ffffff;
+  color: #1f2937;
+
+  border: 1px solid #dbeafe;
+  border-radius: 22px;
+
+  text-decoration: none;
+
+  box-shadow:
+    0 14px 30px rgba(15, 23, 42, 0.10);
+
+  box-sizing: border-box;
+}
+
+.schedule-card:hover {
+  transform: translateY(-2px);
+}
+
+.schedule-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  margin-bottom: 16px;
+}
+
+.schedule-card-label {
+  margin: 0 0 4px;
+
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.schedule-card h2 {
+  margin: 0;
+
+  color: #111827;
+  font-size: 20px;
+}
+
+.schedule-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 52px;
+  height: 52px;
+
+  background: #eff6ff;
+
+  border-radius: 16px;
+
+  font-size: 28px;
+}
+
+#todayScheduleList {
+  min-height: 56px;
+}
+
+.schedule-empty-message {
+  margin: 0;
+
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.schedule-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-top: 16px;
+  padding-top: 14px;
+
+  border-top: 1px solid #e5e7eb;
+
+  color: #2563eb;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.schedule-card-footer span {
+  font-size: 24px;
+}

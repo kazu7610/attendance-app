@@ -105,6 +105,41 @@ const exportAllCsvButton =
 const closeDetailButton =
   document.getElementById("closeDetail");
 
+  const scheduleDate =
+  document.getElementById(
+    "scheduleDate"
+  );
+
+const scheduleStartTime =
+  document.getElementById(
+    "scheduleStartTime"
+  );
+
+const scheduleTitle =
+  document.getElementById(
+    "scheduleTitle"
+  );
+
+const scheduleDetails =
+  document.getElementById(
+    "scheduleDetails"
+  );
+
+const scheduleTargetScope =
+  document.getElementById(
+    "scheduleTargetScope"
+  );
+
+const addScheduleButton =
+  document.getElementById(
+    "addSchedule"
+  );
+
+const scheduleMessage =
+  document.getElementById(
+    "scheduleMessage"
+  );
+
 
 /* =========================================
    読み込んだデータ
@@ -1065,6 +1100,103 @@ function exportAllCsv() {
   );
 }
 
+/* =========================================
+   予定登録
+========================================= */
+
+async function addSchedule() {
+  scheduleMessage.textContent = "";
+
+  if (!scheduleDate.value) {
+    scheduleMessage.textContent =
+      "日付を選択してください";
+
+    return;
+  }
+
+  if (!scheduleTitle.value.trim()) {
+    scheduleMessage.textContent =
+      "予定名を入力してください";
+
+    return;
+  }
+
+  addScheduleButton.disabled = true;
+  addScheduleButton.textContent =
+    "登録中...";
+
+  const record = {
+    schedule_date:
+      scheduleDate.value,
+
+    start_time:
+      scheduleStartTime.value || null,
+
+    title:
+      scheduleTitle.value.trim(),
+
+    details:
+      scheduleDetails.value.trim(),
+
+    target_scope:
+      scheduleTargetScope.value || "all"
+  };
+
+  try {
+    const url =
+      `${SUPABASE_URL}/rest/v1/schedules`;
+
+    const response =
+      await fetch(url, {
+        method: "POST",
+
+        headers: {
+          ...supabaseHeaders(),
+          "Content-Type":
+            "application/json",
+          Prefer:
+            "return=minimal"
+        },
+
+        body:
+          JSON.stringify(record)
+      });
+
+    if (!response.ok) {
+      const errorText =
+        await response.text();
+
+      console.error(errorText);
+
+      throw new Error(
+        "予定の登録に失敗しました"
+      );
+    }
+
+    scheduleMessage.textContent =
+      "予定を登録しました";
+
+    scheduleDate.value = "";
+    scheduleStartTime.value = "";
+    scheduleTitle.value = "";
+    scheduleDetails.value = "";
+    scheduleTargetScope.value =
+      "all";
+
+  } catch (error) {
+    console.error(error);
+
+    scheduleMessage.textContent =
+      error.message;
+
+  } finally {
+    addScheduleButton.disabled =
+      false;
+
+    addScheduleButton.textContent =
+      "予定を登録";
+  }
+}
 
 /* =========================================
    管理画面全体読込
@@ -1141,7 +1273,10 @@ closeDetailButton.addEventListener(
   "click",
   closeEmployeeDetail
 );
-
+addScheduleButton.addEventListener(
+  "click",
+  addSchedule
+);
 
 exportAllCsvButton.addEventListener(
   "click",

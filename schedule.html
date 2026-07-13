@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>
+    綜合エンジニアリング㈱ Staff Portal 予定表
+  </title>
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
+</head>
+
+<body>
+
+  <main class="schedule-page">
+
+    <header class="page-header">
+
+      <div>
+        <h1>
+          綜合エンジニアリング㈱
+          <span class="portal-subtitle">
+            Staff Portal
+          </span>
+        </h1>
+
+        <p>月間予定表</p>
+      </div>
+
+      <a
+        href="home.html"
+        class="home-back-button"
+      >
+        ホームへ戻る
+      </a>
+
+    </header>
+
+
+    <section class="card">
+
+      <div class="schedule-page-title">
+
+        <div>
+          <p class="schedule-card-label">
+            MONTHLY SCHEDULE
+          </p>
+
+          <h2>今月の予定</h2>
+        </div>
+
+        <span class="schedule-card-icon">
+          📅
+        </span>
+
+      </div>
+
+
+      <label>
+        対象月
+
+        <input
+          id="scheduleMonth"
+          type="month"
+        >
+      </label>
+
+
+      <div
+        id="monthlyScheduleList"
+        class="monthly-schedule-list"
+      >
+        <p class="schedule-empty-message">
+          予定を読み込み中...
+        </p>
+      </div>
+
+    </section>
+
+  </main>
+
+  <script src="schedule.js"></script>
+
+</body>
+</html>

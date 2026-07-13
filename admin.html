@@ -78,6 +78,96 @@
 
     </section>
 
+    <!-- ==============================
+     予定登録
+============================== -->
+<section class="card">
+
+  <h2>予定登録</h2>
+
+  <label>
+    日付
+
+    <input
+      id="scheduleDate"
+      type="date"
+    >
+  </label>
+
+  <label>
+    開始時刻
+
+    <input
+      id="scheduleStartTime"
+      type="time"
+    >
+  </label>
+
+  <label>
+    予定名
+
+    <input
+      id="scheduleTitle"
+      type="text"
+      placeholder="例：安全会議"
+    >
+  </label>
+
+  <label>
+    詳細
+
+    <input
+      id="scheduleDetails"
+      type="text"
+      placeholder="例：会議室で実施"
+    >
+  </label>
+
+  <label>
+    対象
+
+    <select id="scheduleTargetScope">
+
+      <option value="all">
+        全員
+      </option>
+
+      <option value="工事部">
+        工事部
+      </option>
+
+      <option value="技術部">
+        技術部
+      </option>
+
+      <option value="営業">
+        営業
+      </option>
+
+      <option value="総務">
+        総務
+      </option>
+
+    </select>
+  </label>
+
+  <div class="buttons">
+
+    <button
+      id="addSchedule"
+      type="button"
+    >
+      予定を登録
+    </button>
+
+  </div>
+
+  <p
+    id="scheduleMessage"
+    class="schedule-message"
+  ></p>
+
+</section>
 
     <!-- ==============================
          提出状況一覧
