@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>工事部ポータル</title>
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
+</head>
+
+<body>
+
+  <main class="home-page">
+
+    <header class="home-header">
+      <div>
+        <h1>工事部ポータル</h1>
+
+        <p id="welcomeMessage">
+          読み込み中...
+        </p>
+      </div>
+
+      <button
+        id="logoutButton"
+        type="button"
+        class="logout-button"
+      >
+        ログアウト
+      </button>
+    </header>
+
+
+    <section class="home-menu">
+
+      <a
+        href="index.html"
+        class="home-menu-card"
+      >
+        <div class="home-menu-icon">
+          📋
+        </div>
+
+        <div class="home-menu-text">
+          <h2>出勤簿</h2>
+          <p>勤務時間・現場を入力</p>
+        </div>
+
+        <span class="home-menu-arrow">
+          〉
+        </span>
+      </a>
+
+
+      <button
+        type="button"
+        class="home-menu-card coming-soon"
+        disabled
+      >
+        <div class="home-menu-icon">
+          💡
+        </div>
+
+        <div class="home-menu-text">
+          <h2>向上提案</h2>
+          <p>準備中</p>
+        </div>
+
+        <span class="home-menu-arrow">
+          〉
+        </span>
+      </button>
+
+
+      <button
+        type="button"
+        class="home-menu-card coming-soon"
+        disabled
+      >
+        <div class="home-menu-icon">
+          ⚠️
+        </div>
+
+        <div class="home-menu-text">
+          <h2>ヒヤリハット</h2>
+          <p>準備中</p>
+        </div>
+
+        <span class="home-menu-arrow">
+          〉
+        </span>
+      </button>
+
+
+      <button
+        type="button"
+        class="home-menu-card coming-soon"
+        disabled
+      >
+        <div class="home-menu-icon">
+          📝
+        </div>
+
+        <div class="home-menu-text">
+          <h2>日報</h2>
+          <p>準備中</p>
+        </div>
+
+        <span class="home-menu-arrow">
+          〉
+        </span>
+      </button>
+
+
+      <a
+        href="admin.html"
+        id="adminMenu"
+        class="home-menu-card hidden"
+      >
+        <div class="home-menu-icon">
+          ⚙️
+        </div>
+
+        <div class="home-menu-text">
+          <h2>管理画面</h2>
+          <p>管理者専用</p>
+        </div>
+
+        <span class="home-menu-arrow">
+          〉
+        </span>
+      </a>
+
+    </section>
+
+  </main>
+
+  <script src="home.js"></script>
+
+</body>
+</html>

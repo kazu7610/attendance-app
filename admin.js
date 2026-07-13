@@ -1,4 +1,63 @@
 /* =========================================
+   管理画面の権限確認
+========================================= */
+
+function getLoginUser() {
+  const savedUser =
+    localStorage.getItem(
+      "portalLoginUser"
+    );
+
+  if (!savedUser) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(savedUser);
+
+  } catch (error) {
+    console.error(error);
+
+    return null;
+  }
+}
+
+function checkAdminAccess() {
+  const loginUser =
+    getLoginUser();
+
+  /*
+    ログインしていない場合
+  */
+
+  if (!loginUser) {
+    window.location.href =
+      "login.html";
+
+    return false;
+  }
+
+  /*
+    管理権限がない場合
+  */
+
+  if (
+    !loginUser.adminScope ||
+    loginUser.adminScope === "none"
+  ) {
+    alert(
+      "管理画面を開く権限がありません"
+    );
+
+    window.location.href =
+      "home.html";
+
+    return false;
+  }
+
+  return true;
+}
+/* =========================================
    Supabase接続設定
 ========================================= */
 
@@ -1094,4 +1153,6 @@ exportAllCsvButton.addEventListener(
    初期読込
 ========================================= */
 
-loadAdminScreen();
+if (checkAdminAccess()) {
+  loadAdminScreen();
+}

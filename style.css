@@ -164,3 +164,55 @@
     color:#d32f2f;
     font-weight:bold;
 }
+
+/* =========================================
+   出勤簿ヘッダー
+========================================= */
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.home-back-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 42px;
+  padding: 10px 16px;
+
+  color: #ffffff;
+  background-color: #1f5fae;
+
+  border: 1px solid #1f5fae;
+  border-radius: 8px;
+
+  font-weight: bold;
+  text-decoration: none;
+
+  box-sizing: border-box;
+}
+
+.home-back-button:hover {
+  opacity: 0.85;
+}
+
+.home-back-button:active {
+  transform: translateY(1px);
+}
+
+/* スマホでは縦に並べる */
+
+@media (max-width: 600px) {
+  .page-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .home-back-button {
+    width: 100%;
+  }
+}

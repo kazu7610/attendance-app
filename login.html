@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>工事部ポータル ログイン</title>
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
+</head>
+
+<body>
+
+  <main class="login-page">
+
+    <section class="login-card">
+
+      <div class="login-title-area">
+        <h1>工事部ポータル</h1>
+        <p>社員ログイン</p>
+      </div>
+
+      <label>
+        部
+
+        <select id="loginDepartment">
+          <option value="">
+            部を選択してください
+          </option>
+        </select>
+      </label>
+
+      <label>
+        氏名
+
+        <select
+          id="loginEmployee"
+          disabled
+        >
+          <option value="">
+            先に部を選択してください
+          </option>
+        </select>
+      </label>
+
+      <button
+        id="loginButton"
+        type="button"
+      >
+        ログイン
+      </button>
+
+      <p
+        id="loginMessage"
+        class="login-message"
+      ></p>
+
+    </section>
+
+  </main>
+
+  <script src="login.js"></script>
+
+</body>
+</html>

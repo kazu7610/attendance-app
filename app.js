@@ -2060,8 +2060,83 @@ Promise.all([
   loadSites(),
   loadHolidays()
 ])
-  .then(() => {
+  .then(async () => {
+    /*
+      ログイン情報を取得
+    */
+
+    const savedLoginUser =
+      localStorage.getItem(
+        "portalLoginUser"
+      );
+
+    /*
+      ログイン情報がない場合は、
+      ログイン画面へ戻す
+    */
+
+    if (!savedLoginUser) {
+      window.location.href =
+        "login.html";
+
+      return;
+    }
+
+    let loginUser;
+
+    try {
+      loginUser =
+        JSON.parse(savedLoginUser);
+
+    } catch (error) {
+      console.error(error);
+
+      localStorage.removeItem(
+        "portalLoginUser"
+      );
+
+      window.location.href =
+        "login.html";
+
+      return;
+    }
+
+    /*
+      ログインした人の部を選択
+    */
+
+    department.value =
+      loginUser.department || "";
+
+    /*
+      選んだ部に所属する社員一覧を作る
+    */
+
+    makeEmployeeOptions(
+      department.value
+    );
+
+    /*
+      ログインした本人を選択
+    */
+
+    employee.value =
+      String(loginUser.id);
+
+    /*
+      ログインした本人で固定する
+    */
+
+     department.disabled = true;
+     employee.disabled = true;
+    /*
+      日付欄を作り、
+      本人の保存データを読み込む
+    */
+
     renderRows();
+
+    await loadAttendance();
   })
   .catch(error => {
     console.error(error);
