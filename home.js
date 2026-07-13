@@ -334,3 +334,18 @@ logoutButton.addEventListener(
 ========================================= */
 
 showHomeScreen();
+
+// 本日の予定カードに今日の日付を表示
+function displayTodayDate() {
+  const today = new Date();
+
+  const monthElement = document.getElementById("todayDateMonth");
+  const dayElement = document.getElementById("todayDateDay");
+
+  if (!monthElement || !dayElement) return;
+
+  monthElement.textContent = `${today.getMonth() + 1}月`;
+  dayElement.textContent = today.getDate();
+}
+
+displayTodayDate();

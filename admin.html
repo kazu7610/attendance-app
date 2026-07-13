@@ -78,12 +78,21 @@
 
     </section>
 
-    <!-- ==============================
-     予定登録
+   <!-- ==============================
+     予定登録・編集
 ============================== -->
 <section class="card">
 
-  <h2>予定登録</h2>
+  <h2 id="scheduleFormTitle">
+    予定登録
+  </h2>
+
+  <!-- 編集中の予定IDを一時的に保持 -->
+  <input
+    id="editingScheduleId"
+    type="hidden"
+    value=""
+  >
 
   <label>
     日付
@@ -160,12 +169,38 @@
       予定を登録
     </button>
 
+    <button
+      id="cancelScheduleEdit"
+      type="button"
+      hidden
+    >
+      編集をやめる
+    </button>
+
   </div>
 
   <p
     id="scheduleMessage"
     class="schedule-message"
   ></p>
+
+</section>
+
+
+<!-- ==============================
+     登録済み予定
+============================== -->
+<section class="card">
+
+  <h2>登録済み予定</h2>
+
+  <div id="adminScheduleList">
+
+    <p class="schedule-empty-message">
+      予定を読み込み中...
+    </p>
+
+  </div>
 
 </section>
 

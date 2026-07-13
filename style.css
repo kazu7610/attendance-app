@@ -866,3 +866,35 @@ body {
 .schedule-card-footer span {
   font-size: 24px;
 }
+.today-date-icon {
+  width: 64px;
+  height: 68px;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #ffffff;
+  border: 2px solid #2563eb;
+  box-shadow: 0 5px 14px rgba(37, 99, 235, 0.16);
+  text-align: center;
+}
+
+.today-date-icon span {
+  display: block;
+  padding: 4px 0;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.today-date-icon strong {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 43px;
+  color: #1e293b;
+  font-size: 27px;
+  font-weight: 800;
+  line-height: 1;
+}
