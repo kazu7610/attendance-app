@@ -223,15 +223,15 @@
 .home-page {
   max-width: 960px;
   margin: 0 auto;
-  padding: 16px;
+  padding: 12px;
 }
 
 .home-header {
   background: #0f172a;
   color: #ffffff;
-  padding: 20px;
+  padding: 16px;
   border-radius: 12px;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
 }
 
 .home-header h1 {
@@ -239,33 +239,161 @@
 }
 
 .home-header p {
-  margin: 0 0 16px;
+  margin: 0 0 12px;
 }
 
 .logout-button {
   width: 100%;
-  padding: 14px;
+  padding: 12px;
   border: none;
   border-radius: 10px;
   background: #2563eb;
   color: #ffffff;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: bold;
 }
 
+
+/* ホームメニュー全体 */
 .home-menu {
-  display: grid;
-  gap: 12px;
+  display: block;
+  width: 100%;
 }
 
+
+/* 上の4つのメニュー */
+.home-menu-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  width: 100%;
+}
+
+
+/* 2列で並ぶカード */
+.home-square-card {
+  width: 100%;
+  min-width: 0;
+  min-height: 112px;
+  padding: 12px 8px 10px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  background: #ffffff;
+  color: #0f172a;
+
+  border: none;
+  border-radius: 16px;
+
+  box-shadow:
+    0 6px 18px
+    rgba(15, 23, 42, 0.08);
+
+  box-sizing: border-box;
+  text-decoration: none;
+  text-align: center;
+  font-family: inherit;
+}
+
+
+/* アイコンの共通枠 */
+.home-square-icon {
+  width: 34px;
+  height: 34px;
+  margin-bottom: 5px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #2563eb;
+  font-size: 28px;
+  line-height: 1;
+}
+
+
+/* SVGアイコンを使う場合 */
+.home-square-icon svg {
+  width: 27px;
+  height: 27px;
+
+  display: block;
+
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+
+/* カード内文字 */
+.home-square-text {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+.home-square-text h2 {
+  height: 38px;
+  margin: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #0f172a;
+  font-size: 15px;
+  line-height: 1.2;
+}
+
+
+.home-square-text p {
+  min-height: 26px;
+  margin: 3px 0 0;
+
+  color: #64748b;
+  font-size: 10px;
+  line-height: 1.3;
+}
+
+
+/* 押したとき */
+.home-square-card:active {
+  transform: scale(0.98);
+}
+
+
+/* 準備中カード */
+.home-square-card.coming-soon {
+  opacity: 0.6;
+}
+
+
+/* 今日・明日の予定 */
+.schedule-card {
+  width: 100%;
+  margin-top: 10px;
+  box-sizing: border-box;
+}
+
+
+/* 下に表示する管理画面カード */
 .home-menu-card {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
 
   width: 100%;
-  min-height: 110px;
-  padding: 20px;
+  min-height: 84px;
+  margin-top: 10px;
+  padding: 16px;
 
   background: #2563eb;
   color: #ffffff;
@@ -275,62 +403,111 @@
 
   text-decoration: none;
   text-align: left;
-
   box-sizing: border-box;
 }
+
 
 .home-menu-card:hover {
   opacity: 0.9;
 }
 
+
 .home-menu-icon {
-  font-size: 32px;
+  font-size: 28px;
   flex-shrink: 0;
 }
+
 
 .home-menu-text {
   flex: 1;
 }
 
+
 .home-menu-text h2 {
-  margin: 0 0 6px;
+  margin: 0 0 4px;
   color: #ffffff;
+  font-size: 18px;
 }
+
 
 .home-menu-text p {
   margin: 0;
   color: #ffffff;
+  font-size: 13px;
 }
 
+
 .home-menu-arrow {
-  font-size: 28px;
+  font-size: 24px;
   flex-shrink: 0;
 }
 
-.coming-soon {
-  opacity: 0.8;
-}
 
 .hidden {
   display: none !important;
 }
 
+
 @media (max-width: 600px) {
   .home-page {
-    padding: 12px;
+    padding: 10px;
+  }
+
+  .home-header {
+    padding: 14px;
+    margin-bottom: 10px;
+  }
+
+  .home-menu-grid {
+  column-gap: 10px;
+  row-gap: 10px;
+}
+
+  .home-square-card {
+  min-height: 106px;
+  padding: 10px 6px 8px;
+  border-radius: 14px;
+}
+
+  .home-square-icon {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 4px;
+    font-size: 26px;
+  }
+
+  .home-square-icon svg {
+    width: 25px;
+    height: 25px;
+  }
+
+  .home-square-text h2 {
+    min-height: 36px;
+    font-size: 14px;
+  }
+
+  .home-square-text p {
+    min-height: 24px;
+    font-size: 9px;
+  }
+
+  .schedule-card {
+    margin-top: 8px;
   }
 
   .home-menu-card {
-    min-height: 100px;
-    padding: 16px;
+    min-height: 78px;
+    margin-top: 8px;
+    padding: 14px;
   }
 }
 /* =========================================
-   ホーム画面 おしゃれ版
+   ホーム画面 背景
 ========================================= */
 
 body {
   margin: 0;
+
   background:
     linear-gradient(
       180deg,
@@ -338,215 +515,15 @@ body {
       #f7f9fc 35%,
       #f3f4f6 100%
     );
+
   color: #1f2937;
+
   font-family:
     "Yu Gothic",
     "Meiryo",
     sans-serif;
 }
 
-.home-page {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 20px 16px 40px;
-}
-
-.home-header {
-  background:
-    linear-gradient(
-      135deg,
-      #0b1736 0%,
-      #132850 55%,
-      #1d3a72 100%
-    );
-  color: #ffffff;
-  padding: 24px 22px;
-  border-radius: 22px;
-  margin-bottom: 22px;
-  box-shadow:
-    0 18px 40px rgba(15, 23, 42, 0.20);
-}
-
-.home-header h1 {
-  margin: 0 0 10px;
-  font-size: 20px;
-  font-weight: 700;
-  letter-spacing: 0.03em;
-}
-
-.home-header p {
-  margin: 0 0 18px;
-  color: rgba(255, 255, 255, 0.88);
-  font-size: 14px;
-}
-
-.logout-button {
-  width: 100%;
-  min-height: 54px;
-  padding: 14px 18px;
-  border: none;
-  border-radius: 16px;
-  background:
-    linear-gradient(
-      135deg,
-      #3b82f6 0%,
-      #2563eb 100%
-    );
-  color: #ffffff;
-  font-size: 16px;
-  font-weight: bold;
-  box-shadow:
-    0 10px 24px rgba(37, 99, 235, 0.30);
-}
-
-.logout-button:hover {
-  opacity: 0.94;
-}
-
-.home-menu {
-  display: grid;
-  gap: 16px;
-}
-
-.home-menu-card {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-
-  width: 100%;
-  min-height: 110px;
-  padding: 18px 20px;
-
-  background:
-    linear-gradient(
-      135deg,
-      #4f86ff 0%,
-      #3e73ea 100%
-    );
-  color: #ffffff;
-
-  border: none;
-  border-radius: 22px;
-  text-decoration: none;
-  text-align: left;
-  box-sizing: border-box;
-
-  box-shadow:
-    0 14px 30px rgba(59, 130, 246, 0.22);
-
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease,
-    opacity 0.15s ease;
-}
-
-.home-menu-card:hover {
-  transform: translateY(-2px);
-  box-shadow:
-    0 18px 34px rgba(59, 130, 246, 0.28);
-  opacity: 0.98;
-}
-
-.home-menu-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  width: 60px;
-  height: 60px;
-  border-radius: 18px;
-
-  background: rgba(255, 255, 255, 0.16);
-  backdrop-filter: blur(4px);
-
-  font-size: 30px;
-  flex-shrink: 0;
-}
-
-.home-menu-text {
-  flex: 1;
-}
-
-.home-menu-text h2 {
-  margin: 0 0 8px;
-  color: #ffffff;
-  font-size: 18px;
-  font-weight: 700;
-}
-
-.home-menu-text p {
-  margin: 0;
-  color: rgba(255, 255, 255, 0.90);
-  font-size: 14px;
-}
-
-.home-menu-arrow {
-  font-size: 34px;
-  font-weight: bold;
-  color: rgba(255, 255, 255, 0.92);
-  flex-shrink: 0;
-}
-
-.coming-soon {
-  background:
-    linear-gradient(
-      135deg,
-      #5c89e8 0%,
-      #4f7fdf 100%
-    );
-  opacity: 0.92;
-}
-
-#adminMenu {
-  background:
-    linear-gradient(
-      135deg,
-      #475569 0%,
-      #334155 100%
-    );
-  box-shadow:
-    0 14px 30px rgba(51, 65, 85, 0.22);
-}
-
-.hidden {
-  display: none !important;
-}
-
-@media (max-width: 600px) {
-  .home-page {
-    padding: 16px 12px 32px;
-  }
-
-  .home-header {
-    padding: 22px 18px;
-    border-radius: 18px;
-  }
-
-  .home-menu-card {
-    min-height: 102px;
-    padding: 16px;
-    border-radius: 18px;
-  }
-
-  .home-menu-icon {
-    width: 54px;
-    height: 54px;
-    border-radius: 16px;
-    font-size: 28px;
-  }
-
-  .home-menu-text h2 {
-    font-size: 17px;
-  }
-
-  .home-menu-text p {
-    font-size: 13px;
-  }
-
-  .home-menu-arrow {
-    font-size: 30px;
-  }
-}
 /* =========================================
    ポータル名のサブタイトル
 ========================================= */
