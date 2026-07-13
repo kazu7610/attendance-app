@@ -547,3 +547,38 @@ body {
     font-size: 30px;
   }
 }
+/* =========================================
+   ポータル名のサブタイトル
+========================================= */
+
+.portal-subtitle {
+  display: block;
+  margin-top: 4px;
+
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+
+  color: rgba(255, 255, 255, 0.82);
+}
+/* Staff Portal を少し大きくする */
+
+.portal-subtitle {
+  font-size: 17px;
+  font-weight: 600;
+}
+
+
+/* ○○さん、お疲れさまです を大きくする */
+
+#welcomeMessage {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+/* 綜合エンジニアリング㈱ を少し大きくする */
+
+.home-header h1 {
+  font-size: 23px;
+  line-height: 1.35;
+}
