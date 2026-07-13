@@ -875,3 +875,19 @@ body {
   font-weight: 800;
   line-height: 1;
 }
+/* SVGアイコンの見た目位置を微調整 */
+.home-square-card:nth-child(1) svg {
+  transform: translateY(1px);
+}
+
+.home-square-card:nth-child(2) svg {
+  transform: translateY(2px);
+}
+
+.home-square-card:nth-child(3) svg {
+  transform: translateY(1px);
+}
+
+.home-square-card:nth-child(4) svg {
+  transform: translateY(2px);
+}
