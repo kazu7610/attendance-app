@@ -690,7 +690,7 @@ function findMiscSite(
 
 
 /* =========================================
-   一般・雑工事の表示切替
+   会社勤務・一般・雑工事・休みの表示切替
 ========================================= */
 
 function changeSiteType(row) {
@@ -698,6 +698,16 @@ function changeSiteType(row) {
     row
       .querySelector(".site-type")
       .value;
+
+  const companyWorkWrap =
+    row.querySelector(
+      ".company-work-wrap"
+    );
+
+  const companyWorkSelect =
+    row.querySelector(
+      ".company-work"
+    );
 
   const generalSiteWrap =
     row.querySelector(
@@ -739,7 +749,12 @@ function changeSiteType(row) {
     いったん全部隠す
   */
 
-  row.classList.remove("leave-day"); 
+  row.classList.remove("leave-day");
+
+  companyWorkWrap
+    .classList
+    .add("hidden");
+
   generalSiteWrap
     .classList
     .add("hidden");
@@ -761,6 +776,31 @@ function changeSiteType(row) {
     .add("hidden");
 
   /*
+    会社勤務
+  */
+
+  if (siteType === "会社勤務") {
+    companyWorkWrap
+      .classList
+      .remove("hidden");
+
+    if (!startSelect.value) {
+      startSelect.value = "8:00";
+    }
+
+    if (!endSelect.value) {
+      endSelect.value = "17:00";
+    }
+
+    leaveTypeSelect.value = "";
+
+    startSelect.disabled = false;
+    endSelect.disabled = false;
+
+    return;
+  }
+
+  /*
     一般
   */
 
@@ -768,6 +808,8 @@ function changeSiteType(row) {
     generalSiteWrap
       .classList
       .remove("hidden");
+
+    companyWorkSelect.value = "";
 
     if (!startSelect.value) {
       startSelect.value = "8:00";
@@ -794,6 +836,8 @@ function changeSiteType(row) {
       .classList
       .remove("hidden");
 
+    companyWorkSelect.value = "";
+
     changeMiscCompany(row);
 
     if (!startSelect.value) {
@@ -817,9 +861,10 @@ function changeSiteType(row) {
   */
 
   if (siteType === "休み") {
+    row.classList.add("leave-day");
 
-     row.classList.add("leave-day");
-     
+    companyWorkSelect.value = "";
+
     leaveTypeWrap
       .classList
       .remove("hidden");
@@ -837,6 +882,7 @@ function changeSiteType(row) {
     未選択
   */
 
+  companyWorkSelect.value = "";
   leaveTypeSelect.value = "";
 
   startSelect.value = "";
@@ -893,15 +939,37 @@ function changeMiscCompany(row) {
 }
 
 
-/* =========================================
-   1日分の現場情報取得
-========================================= */
-
 function getRowSiteData(row) {
   const siteType =
     row
       .querySelector(".site-type")
       .value;
+
+  /*
+    会社勤務
+  */
+
+  if (siteType === "会社勤務") {
+    const companyWork =
+      row
+        .querySelector(".company-work")
+        .value;
+
+    return {
+      siteType: "会社勤務",
+      siteId: "",
+      siteDisplayName: companyWork,
+      siteInputCode: "",
+      companyWork: companyWork,
+      miscCompany: "",
+      miscDepartment: "",
+      miscName: ""
+    };
+  }
+
+  /*
+    一般
+  */
 
   if (siteType === "一般") {
     const selectElement =
@@ -930,11 +998,16 @@ function getRowSiteData(row) {
           ?.dataset
           ?.inputCode || "",
 
+      companyWork: "",
       miscCompany: "",
       miscDepartment: "",
       miscName: ""
     };
   }
+
+  /*
+    雑工事
+  */
 
   if (siteType === "雑工事") {
     const company =
@@ -977,6 +1050,8 @@ function getRowSiteData(row) {
           ? matchedSite.input_code || ""
           : "",
 
+      companyWork: "",
+
       miscCompany:
         company,
 
@@ -988,28 +1063,38 @@ function getRowSiteData(row) {
     };
   }
 
-   if (siteType === "休み") {
-  const leaveType =
-    row
-      .querySelector(".leave-type")
-      .value;
+  /*
+    休み
+  */
 
-  return {
-    siteType: "休み",
-    siteId: "",
-    siteDisplayName: leaveType,
-    siteInputCode: "",
-    miscCompany: "",
-    miscDepartment: "",
-    miscName: ""
-  };
-}
-   
+  if (siteType === "休み") {
+    const leaveType =
+      row
+        .querySelector(".leave-type")
+        .value;
+
+    return {
+      siteType: "休み",
+      siteId: "",
+      siteDisplayName: leaveType,
+      siteInputCode: "",
+      companyWork: "",
+      miscCompany: "",
+      miscDepartment: "",
+      miscName: ""
+    };
+  }
+
+  /*
+    未選択
+  */
+
   return {
     siteType: "",
     siteId: "",
     siteDisplayName: "",
     siteInputCode: "",
+    companyWork: "",
     miscCompany: "",
     miscDepartment: "",
     miscName: ""
@@ -1257,6 +1342,9 @@ function collectData() {
         miscName:
           siteData.miscName,
 
+          companyWork:
+         siteData.companyWork,
+
          leaveType:
   row
     .querySelector(".leave-type")
@@ -1316,6 +1404,9 @@ function makeAttendanceRecords(status) {
 
       misc_department:
         item.miscDepartment || "",
+      
+      company_work:
+        item.companyWork || "",  
 
       misc_name:
         item.miscName || "",
@@ -1574,6 +1665,16 @@ function restoreAttendanceRow(
     item.site_type || "";
 
   changeSiteType(row);
+
+/* 会社勤務 */
+  if (
+     item.site_type === "会社勤務"
+  ) {
+    row
+    .querySelector(".company-work")
+    .value =
+    item.company_work || "";
+}
 
   /* 一般 */
   if (

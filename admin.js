@@ -588,6 +588,17 @@ function getConstructionNo(siteId) {
 
 function makeDisplaySiteName(item) {
 
+    /*
+    会社勤務
+  */
+
+  if (item.site_type === "会社勤務") {
+    return (
+      item.company_work ||
+      "勤務内容未選択"
+    );
+  }
+
   /*
     一般現場
   */
@@ -891,6 +902,7 @@ function exportAllCsv() {
     "区分",
     "工事番号",
     "現場名",
+    "勤務内容",
     "雑工事区分",
     "担当部",
     "雑工事名",
@@ -941,6 +953,7 @@ function exportAllCsv() {
       item.site_type || "",
       siteCode,
       siteName,
+      item.company_work || "",
       item.misc_company || "",
       item.misc_department || "",
       item.misc_name || "",
