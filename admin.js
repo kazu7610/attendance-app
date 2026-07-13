@@ -894,6 +894,10 @@ function exportAllCsv() {
 
   const csvRows = [];
 
+  /*
+    CSVの見出し
+  */
+
   csvRows.push([
     "部",
     "氏名",
@@ -903,6 +907,7 @@ function exportAllCsv() {
     "工事番号",
     "現場名",
     "勤務内容",
+    "休暇区分",
     "雑工事区分",
     "担当部",
     "雑工事名",
@@ -929,6 +934,10 @@ function exportAllCsv() {
     let siteCode = "";
     let siteName = "";
 
+    /*
+      一般現場
+    */
+
     if (item.site_type === "一般") {
       siteCode =
         getConstructionNo(item.site_id);
@@ -937,6 +946,10 @@ function exportAllCsv() {
         getSiteName(item.site_id);
     }
 
+    /*
+      雑工事
+    */
+
     if (item.site_type === "雑工事") {
       siteCode =
         getConstructionNo(item.site_id);
@@ -944,6 +957,28 @@ function exportAllCsv() {
       siteName =
         makeDisplaySiteName(item);
     }
+
+    /*
+      会社勤務
+    */
+
+    if (item.site_type === "会社勤務") {
+      siteName =
+        item.company_work || "";
+    }
+
+    /*
+      休み
+    */
+
+    if (item.site_type === "休み") {
+      siteName =
+        item.leave_type || "";
+    }
+
+    /*
+      1日分をCSVへ追加
+    */
 
     csvRows.push([
       employee.department || "",
@@ -954,6 +989,7 @@ function exportAllCsv() {
       siteCode,
       siteName,
       item.company_work || "",
+      item.leave_type || "",
       item.misc_company || "",
       item.misc_department || "",
       item.misc_name || "",
