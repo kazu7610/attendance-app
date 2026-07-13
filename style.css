@@ -582,3 +582,30 @@ body {
   font-size: 23px;
   line-height: 1.35;
 }
+/* =========================================
+   ホームヘッダー 文字バランス調整
+========================================= */
+
+.home-header h1 {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.35;
+}
+
+.portal-subtitle {
+  display: inline-block;
+  margin-top: 6px;
+
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+#welcomeMessage {
+  margin-top: 18px;
+  margin-bottom: 18px;
+
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.5;
+}
