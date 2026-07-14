@@ -43,7 +43,10 @@ const todayScheduleList =
   document.getElementById(
     "todayScheduleList"
   );
-
+const improvementThemeSummary =
+  document.getElementById(
+    "improvementThemeSummary"
+  );
 
 /* =========================================
    ログイン情報取得
@@ -119,6 +122,19 @@ loadTodaySchedules(loginUser)
       '<p class="schedule-empty-message">' +
       `${escapeHtml(error.message)}` +
       '</p>';
+  });
+  /*
+  公開中の向上提案テーマを読み込む
+*/
+
+loadImprovementTheme()
+  .catch(error => {
+    console.error(error);
+
+    if (improvementThemeSummary) {
+      improvementThemeSummary.textContent =
+        "今月のテーマを読み込めませんでした";
+    }
   });
   
 }
@@ -425,6 +441,74 @@ function renderTodaySchedules(
     tomorrowSchedules,
     "明日の予定はありません。"
   );
+}
+/* =========================================
+   向上提案テーマ読込
+========================================= */
+
+async function loadImprovementTheme() {
+  if (!improvementThemeSummary) {
+    return;
+  }
+
+  improvementThemeSummary.textContent =
+    "今月のテーマを読み込み中...";
+
+  const url =
+    `${SUPABASE_URL}/rest/v1/improvement_settings` +
+    `?select=target_month,monthly_theme,deadline,issue_number` +
+    `&is_published=eq.true` +
+    `&order=target_month.desc` +
+    `&limit=1`;
+
+  const response =
+    await fetch(url, {
+      headers:
+        supabaseHeaders()
+    });
+
+  if (!response.ok) {
+    const errorText =
+      await response.text();
+
+    console.error(errorText);
+
+    throw new Error(
+      "向上提案テーマを取得できませんでした"
+    );
+  }
+
+  const settings =
+    await response.json();
+
+  if (settings.length === 0) {
+    improvementThemeSummary.textContent =
+      "今月のテーマは準備中です";
+
+    return;
+  }
+
+  const setting =
+    settings[0];
+
+  const targetDate =
+    new Date(
+      `${setting.target_month}T00:00:00`
+    );
+
+  const targetMonth =
+    targetDate.getMonth() + 1;
+
+  const themeText =
+    setting.monthly_theme || "";
+
+  const summaryText =
+    themeText.length > 28
+      ? `${themeText.slice(0, 28)}…`
+      : themeText;
+
+  improvementThemeSummary.textContent =
+    `${targetMonth}月のテーマ：${summaryText}`;
 }
 
 /* =========================================

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>
+    向上提案｜綜合エンジニアリング㈱
+  </title>
+
+  <link
+    rel="stylesheet"
+    href="style.css?v=4"
+  >
+</head>
+
+<body>
+
+  <main class="improvement-page">
+
+    <!-- ==============================
+         ヘッダー
+    ============================== -->
+    <header class="improvement-header">
+
+      <div class="improvement-header-title">
+
+        <p class="page-label">
+          IMPROVEMENT PROPOSAL
+        </p>
+
+        <h1>
+          向上提案
+        </h1>
+
+      </div>
+
+      <button
+        id="backHomeButton"
+        type="button"
+        class="page-back-button"
+      >
+        〈 ホーム
+      </button>
+
+    </header>
+
+
+    <!-- ==============================
+         ログイン社員情報
+    ============================== -->
+    <section class="improvement-user-card">
+
+      <div>
+        <span class="improvement-user-label">
+          部署
+        </span>
+
+        <strong id="departmentDisplay">
+          読み込み中...
+        </strong>
+      </div>
+
+      <div>
+        <span class="improvement-user-label">
+          氏名
+        </span>
+
+        <strong id="employeeNameDisplay">
+          読み込み中...
+        </strong>
+      </div>
+
+    </section>
+
+
+    <!-- ==============================
+         月別設定
+    ============================== -->
+    <section class="improvement-setting-card">
+
+      <div class="improvement-setting-row">
+
+        <div>
+          <span class="improvement-setting-label">
+            対象月
+          </span>
+
+          <strong id="targetMonthDisplay">
+            読み込み中...
+          </strong>
+        </div>
+
+        <div>
+          <span class="improvement-setting-label">
+            提出期限
+          </span>
+
+          <strong id="deadlineDisplay">
+            読み込み中...
+          </strong>
+        </div>
+
+      </div>
+
+
+      <!-- 今月のテーマ表示 -->
+      <div class="improvement-theme-box">
+
+        <p class="improvement-theme-label">
+          <strong>
+            今月のテーマ
+          </strong>
+        </p>
+
+        <p id="monthlyThemeDisplay">
+          読み込み中...
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- ==============================
+         メッセージ表示
+    ============================== -->
+    <div
+      id="messageBox"
+      class="form-message hidden"
+    ></div>
+
+
+    <!-- ==============================
+         入力フォーム
+    ============================== -->
+    <form
+      id="improvementForm"
+      class="improvement-form"
+    >
+
+      <!-- 今月のテーマ本文 -->
+      <section class="improvement-form-card">
+
+        <label
+          for="monthlyThemeAnswer"
+          class="form-field-label"
+        >
+          本文
+
+          <span class="required-mark">
+            必須
+          </span>
+        </label>
+
+        <textarea
+          id="monthlyThemeAnswer"
+          name="monthlyThemeAnswer"
+          class="improvement-textarea improvement-textarea-large"
+          placeholder="ここに入力してください"
+          required
+          style="
+            width: 100%;
+            min-height: 140px;
+            box-sizing: border-box;
+            resize: vertical;
+          "
+        ></textarea>
+
+      </section>
+
+
+      <!-- テーマ① -->
+      <section class="improvement-form-card">
+
+        <div class="form-section-title">
+
+          <div>
+            <h2>
+              テーマ①
+            </h2>
+
+            <p>
+              分類を選び、内容を入力してください
+            </p>
+          </div>
+
+        </div>
+
+        <label
+          for="theme1Category"
+          class="form-field-label"
+        >
+          分類
+
+          <span class="required-mark">
+            必須
+          </span>
+        </label>
+
+        <select
+          id="theme1Category"
+          name="theme1Category"
+          class="improvement-select"
+          required
+        >
+          <option value="">
+            選択してください
+          </option>
+        </select>
+
+        <label
+          for="theme1Body"
+          class="form-field-label"
+        >
+          本文
+
+          <span class="required-mark">
+            必須
+          </span>
+        </label>
+
+        <textarea
+          id="theme1Body"
+          name="theme1Body"
+          class="improvement-textarea"
+          placeholder="ここに入力してください"
+          required
+          style="
+            width: 100%;
+            min-height: 120px;
+            box-sizing: border-box;
+            resize: vertical;
+          "
+        ></textarea>
+
+      </section>
+
+
+      <!-- テーマ② -->
+      <section class="improvement-form-card">
+
+        <div class="form-section-title">
+
+          <div>
+            <h2>
+              テーマ②
+            </h2>
+
+            <p>
+              分類を選び、内容を入力してください
+            </p>
+          </div>
+
+        </div>
+
+        <label
+          for="theme2Category"
+          class="form-field-label"
+        >
+          分類
+        </label>
+
+        <select
+          id="theme2Category"
+          name="theme2Category"
+          class="improvement-select"
+        >
+          <option value="">
+            選択してください
+          </option>
+        </select>
+
+        <label
+          for="theme2Body"
+          class="form-field-label"
+        >
+          本文
+        </label>
+
+        <textarea
+          id="theme2Body"
+          name="theme2Body"
+          class="improvement-textarea"
+          placeholder="ここに入力してください"
+          style="
+            width: 100%;
+            min-height: 120px;
+            box-sizing: border-box;
+            resize: vertical;
+          "
+        ></textarea>
+
+      </section>
+
+
+      <!-- テーマ③ -->
+      <section class="improvement-form-card">
+
+        <div class="form-section-title">
+
+          <div>
+            <h2>
+              テーマ③
+            </h2>
+
+            <p>
+              分類を選び、内容を入力してください
+            </p>
+          </div>
+
+        </div>
+
+        <label
+          for="theme3Category"
+          class="form-field-label"
+        >
+          分類
+        </label>
+
+        <select
+          id="theme3Category"
+          name="theme3Category"
+          class="improvement-select"
+        >
+          <option value="">
+            選択してください
+          </option>
+        </select>
+
+        <label
+          for="theme3Body"
+          class="form-field-label"
+        >
+          本文
+        </label>
+
+        <textarea
+          id="theme3Body"
+          name="theme3Body"
+          class="improvement-textarea"
+          placeholder="ここに入力してください"
+          style="
+            width: 100%;
+            min-height: 120px;
+            box-sizing: border-box;
+            resize: vertical;
+          "
+        ></textarea>
+
+      </section>
+
+
+      <!-- ==============================
+           操作ボタン
+      ============================== -->
+      <div class="improvement-action-area">
+
+        <button
+          id="draftButton"
+          type="button"
+          class="secondary-action-button"
+        >
+          一時保存
+        </button>
+
+        <button
+          id="submitButton"
+          type="submit"
+          class="primary-action-button"
+        >
+          提出する
+        </button>
+
+      </div>
+
+    </form>
+
+  </main>
+
+
+  <!-- ==============================
+       読み込み中表示
+  ============================== -->
+  <div
+    id="loadingOverlay"
+    class="loading-overlay hidden"
+  >
+
+    <div class="loading-box">
+
+      <div class="loading-spinner"></div>
+
+      <p id="loadingMessage">
+        読み込み中...
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <script src="improvement.js"></script>
+
+</body>
+</html>
