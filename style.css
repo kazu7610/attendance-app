@@ -296,22 +296,47 @@
   text-decoration: none;
   text-align: center;
   font-family: inherit;
+
+  position: relative;
+  overflow: hidden;
+}
+
+.home-square-card::after {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border: 2px solid #7fa2ff;
+  border-radius: 11px;
+  pointer-events: none;
 }
 
 
 /* アイコンの共通枠 */
 .home-square-icon {
-  width: 34px;
-  height: 34px;
-  margin-bottom: 5px;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 2px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
+  border-radius: 50%;
+  background: #eef4ff;
   color: #2563eb;
-  font-size: 28px;
-  line-height: 1;
+}
+
+.home-square-icon svg {
+  width: 22px;
+  height: 22px;
+
+  display: block;
+
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 
@@ -341,7 +366,7 @@
 
 
 .home-square-text h2 {
-  height: 38px;
+  height: 32px;
   margin: 0;
 
   display: flex;
@@ -355,8 +380,9 @@
 
 
 .home-square-text p {
-  min-height: 26px;
-  margin: 3px 0 0;
+  width: 100%;
+  height: 22px;
+  margin: 1px 0 0;
 
   color: #64748b;
   font-size: 10px;
@@ -874,20 +900,4 @@ body {
   font-size: 27px;
   font-weight: 800;
   line-height: 1;
-}
-/* SVGアイコンの見た目位置を微調整 */
-.home-square-card:nth-child(1) svg {
-  transform: translateY(1px);
-}
-
-.home-square-card:nth-child(2) svg {
-  transform: translateY(2px);
-}
-
-.home-square-card:nth-child(3) svg {
-  transform: translateY(1px);
-}
-
-.home-square-card:nth-child(4) svg {
-  transform: translateY(2px);
 }

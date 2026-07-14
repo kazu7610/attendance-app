@@ -175,7 +175,7 @@ function escapeHtml(value) {
 
 
 /* =========================================
-   本日の予定読込
+   今日・明日の予定読込
 ========================================= */
 
 async function loadTodaySchedules(
@@ -191,18 +191,61 @@ async function loadTodaySchedules(
     '</p>';
 
   const today =
-    todayDateValue();
+    new Date();
 
+  const tomorrow =
+    new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() + 1
+    );
+
+
+  /*
+    YYYY-MM-DD形式へ変換
+  */
+  function toLocalDateString(date) {
+    const year =
+      date.getFullYear();
+
+    const month =
+      String(
+        date.getMonth() + 1
+      ).padStart(2, "0");
+
+    const day =
+      String(
+        date.getDate()
+      ).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+  }
+
+
+  const todayText =
+    toLocalDateString(today);
+
+  const tomorrowText =
+    toLocalDateString(tomorrow);
+
+
+  /*
+    今日〜明日の予定を取得
+  */
   const url =
     `${SUPABASE_URL}/rest/v1/schedules` +
     `?select=*` +
-    `&schedule_date=eq.${today}` +
-    `&order=start_time.asc`;
+    `&schedule_date=gte.${todayText}` +
+    `&schedule_date=lte.${tomorrowText}` +
+    `&order=schedule_date.asc,start_time.asc`;
+
 
   const response =
     await fetch(url, {
-      headers: supabaseHeaders()
+      headers:
+        supabaseHeaders()
     });
+
 
   if (!response.ok) {
     const errorText =
@@ -211,9 +254,10 @@ async function loadTodaySchedules(
     console.error(errorText);
 
     throw new Error(
-      "本日の予定を読み込めませんでした"
+      "今日・明日の予定を読み込めませんでした"
     );
   }
+
 
   const schedules =
     await response.json();
@@ -221,11 +265,11 @@ async function loadTodaySchedules(
   const userDepartment =
     loginUser.department || "";
 
+
   /*
     全員向け、または
     ログインした人の部署向けだけ表示
   */
-
   const visibleSchedules =
     schedules.filter(item => {
       return (
@@ -234,6 +278,7 @@ async function loadTodaySchedules(
       );
     });
 
+
   renderTodaySchedules(
     visibleSchedules
   );
@@ -241,7 +286,7 @@ async function loadTodaySchedules(
 
 
 /* =========================================
-   本日の予定表示
+   今日・明日の予定表示
 ========================================= */
 
 function renderTodaySchedules(
@@ -249,51 +294,137 @@ function renderTodaySchedules(
 ) {
   todayScheduleList.innerHTML = "";
 
-  if (schedules.length === 0) {
-    todayScheduleList.innerHTML =
-      '<p class="schedule-empty-message">' +
-      '本日の予定はありません。' +
-      '</p>';
+  const today = new Date();
 
-    return;
+  const tomorrow = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate() + 1
+  );
+
+
+  /*
+    日付を YYYY-MM-DD 形式へ変換
+  */
+  function toLocalDateString(date) {
+    const year =
+      date.getFullYear();
+
+    const month =
+      String(
+        date.getMonth() + 1
+      ).padStart(2, "0");
+
+    const day =
+      String(
+        date.getDate()
+      ).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
   }
 
-  schedules.forEach(item => {
-    const scheduleRow =
-      document.createElement("div");
 
-    scheduleRow.className =
-      "today-schedule-row";
+  const todayText =
+    toLocalDateString(today);
 
-    const timeText =
-      formatScheduleTime(
-        item.start_time
+  const tomorrowText =
+    toLocalDateString(tomorrow);
+
+
+  /*
+    今日と明日の予定を分ける
+  */
+  const todaySchedules =
+    schedules.filter(
+      item =>
+        item.schedule_date ===
+        todayText
+    );
+
+  const tomorrowSchedules =
+    schedules.filter(
+      item =>
+        item.schedule_date ===
+        tomorrowText
+    );
+
+
+  /*
+    1日分の予定を表示
+  */
+  function renderDaySchedules(
+    label,
+    daySchedules,
+    emptyMessage
+  ) {
+    if (daySchedules.length === 0) {
+      const emptyRow =
+        document.createElement("p");
+
+      emptyRow.className =
+        "schedule-empty-message";
+
+      emptyRow.textContent =
+        emptyMessage;
+
+      todayScheduleList.appendChild(
+        emptyRow
       );
 
-    scheduleRow.innerHTML = `
-      ${
-        timeText
-          ? `
-            <span class="today-schedule-time">
-              ${escapeHtml(timeText)}
-            </span>
-          `
-          : `
-            <span class="today-schedule-time">
-              終日
-            </span>
-          `
-      }
+      return;
+    }
 
-      <span class="today-schedule-title">
-        ${escapeHtml(item.title)}
-      </span>
-    `;
 
-    todayScheduleList.appendChild(
-      scheduleRow
-    );
-  });
+    daySchedules.forEach(item => {
+      const scheduleRow =
+        document.createElement("div");
+
+      scheduleRow.className =
+        "today-schedule-row";
+
+      const timeText =
+        formatScheduleTime(
+          item.start_time
+        );
+
+      scheduleRow.innerHTML = `
+        <span class="today-schedule-day">
+          ${label}
+        </span>
+
+        ${
+          timeText
+            ? `
+              <span class="today-schedule-time">
+                ${escapeHtml(timeText)}
+              </span>
+            `
+            : ""
+        }
+
+        <span class="today-schedule-title">
+          ${escapeHtml(item.title)}
+        </span>
+      `;
+
+      todayScheduleList.appendChild(
+        scheduleRow
+      );
+    });
+  }
+
+
+  renderDaySchedules(
+    "本日",
+    todaySchedules,
+    "本日の予定はありません。"
+  );
+
+  renderDaySchedules(
+    "明日",
+    tomorrowSchedules,
+    "明日の予定はありません。"
+  );
 }
 
 /* =========================================
