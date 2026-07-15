@@ -68,7 +68,7 @@
 
         <!-- 出勤簿管理 -->
         <a
-          href="#attendanceManagement"
+          href="attendance-admin.html"
           class="admin-menu-card"
         >
 
@@ -216,53 +216,6 @@
           </span>
 
         </a>
-
-      </div>
-
-    </section>
-
-
-    <!-- ==============================
-         出勤簿管理
-    ============================== -->
-    <section
-      id="attendanceManagement"
-      class="admin-section-card"
-    >
-
-      <h2>
-        出勤簿管理
-      </h2>
-
-      <label class="admin-form-label">
-
-        対象月
-
-        <input
-          id="month"
-          type="month"
-          class="admin-form-control"
-        >
-
-      </label>
-
-      <div class="admin-action-buttons">
-
-        <button
-          id="reload"
-          type="button"
-          class="admin-primary-button"
-        >
-          更新
-        </button>
-
-        <button
-          id="exportAllCsv"
-          type="button"
-          class="admin-primary-button"
-        >
-          全員分CSV出力
-        </button>
 
       </div>
 
@@ -418,78 +371,10 @@
 
     </section>
 
-
-    <!-- ==============================
-         提出状況一覧
-    ============================== -->
-    <section
-      id="statusSection"
-      class="admin-section-card"
-    >
-
-      <div class="admin-section-title-row">
-
-        <h2>
-          提出状況
-        </h2>
-
-        <span
-          id="submissionSummary"
-          class="admin-submission-summary"
-        >
-          0 / 0人
-        </span>
-
-      </div>
-
-      <div id="attendanceList">
-        読込中...
-      </div>
-
-    </section>
-
-
-    <!-- ==============================
-         個人出勤簿詳細
-    ============================== -->
-    <section
-      id="detailSection"
-      class="admin-section-card hidden"
-    >
-
-      <div class="admin-detail-header">
-
-        <div>
-
-          <h2 id="detailEmployeeName">
-            出勤簿詳細
-          </h2>
-
-          <p id="detailStatus"></p>
-
-        </div>
-
-        <button
-          id="closeDetail"
-          class="admin-secondary-button"
-          type="button"
-        >
-          一覧へ戻る
-        </button>
-
-      </div>
-
-      <div
-        id="attendanceDetail"
-        class="attendance-detail"
-      ></div>
-
-    </section>
-
   </main>
 
 
-  <script src="admin.js?v=2"></script>
+  <script src="admin.js?v=3"></script>
 
 </body>
 
