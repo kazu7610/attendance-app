@@ -1452,3 +1452,74 @@ body {
   background-color: #2563eb !important;
   border-color: #2563eb !important;
 }
+/* ==============================
+   向上提案 管理画面ヘッダー
+============================== */
+.improvement-admin-header {
+  margin-bottom: 34px;
+  padding: 36px 34px;
+  background: #0b1238;
+  border-radius: 28px;
+}
+
+.improvement-admin-header-text h1 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 54px;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.improvement-admin-header-text p {
+  margin: 14px 0 0;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.improvement-admin-back-button {
+  display: block;
+  width: 100%;
+  margin-top: 28px;
+  padding: 20px 16px;
+  box-sizing: border-box;
+
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 800;
+  text-align: center;
+  text-decoration: none;
+
+  background: #2563eb;
+  border: 1px solid #2563eb;
+  border-radius: 18px;
+}
+
+.improvement-admin-back-button:hover {
+  opacity: 0.92;
+}
+
+/* スマホ */
+@media (max-width: 768px) {
+  .improvement-admin-header {
+    padding: 26px 22px;
+    border-radius: 24px;
+  }
+
+  .improvement-admin-header-text h1 {
+    font-size: 32px;
+  }
+
+  .improvement-admin-header-text p {
+    font-size: 16px;
+    margin-top: 10px;
+  }
+
+  .improvement-admin-back-button {
+    margin-top: 22px;
+    padding: 18px 14px;
+    font-size: 16px;
+    border-radius: 18px;
+  }
+}

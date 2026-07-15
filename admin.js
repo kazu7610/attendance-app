@@ -310,18 +310,23 @@ function formatDate(dateText) {
 /* =========================================
    社員一覧読込
 ========================================= */
-
 async function loadEmployees() {
   const url =
     `${SUPABASE_URL}/rest/v1/employees` +
-    `?select=id,name,department,active` +
+    `?select=` +
+    `id,name,department,active,attendance_required` +
     `&active=eq.true` +
+    `&attendance_required=eq.true` +
     `&order=department.asc,id.asc`;
 
   const response =
-    await fetch(url, {
-      headers: supabaseHeaders()
-    });
+    await fetch(
+      url,
+      {
+        headers:
+          supabaseHeaders()
+      }
+    );
 
   if (!response.ok) {
     const errorText =
@@ -337,7 +342,6 @@ async function loadEmployees() {
   employees =
     await response.json();
 }
-
 
 /* =========================================
    現場マスタ読込

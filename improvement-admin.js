@@ -464,8 +464,9 @@ async function loadMonthlySetting() {
 async function loadEmployees() {
   let url =
     `${SUPABASE_URL}/rest/v1/employees` +
-    `?select=name,department,active` +
+    `?select=name,department,active,improvement_required` +
     `&active=eq.true` +
+    `&improvement_required=eq.true` +
     `&order=department.asc,name.asc`;
 
   /*
