@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>
+    ヒヤリハット管理｜綜合エンジニアリング㈱
+  </title>
+
+  <link
+    rel="stylesheet"
+    href="style.css?v=6"
+  >
+
+  <style>
+    /* =========================================
+       ヒヤリハット管理画面
+    ========================================= */
+
+    .near-miss-admin-page {
+      width: min(100% - 24px, 960px);
+      margin: 0 auto;
+      padding: 20px 0 60px;
+      box-sizing: border-box;
+    }
+
+    .near-miss-admin-header {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 18px;
+      padding: 20px;
+
+      color: #ffffff;
+
+      background: #0f172a;
+      border-radius: 16px;
+    }
+
+    .near-miss-admin-header h1 {
+      margin: 0;
+
+      color: #ffffff;
+      font-size: 24px;
+      line-height: 1.3;
+    }
+
+    .near-miss-admin-header p {
+      margin: 4px 0 0;
+
+      color: #cbd5e1;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+   .near-miss-admin-back-button {
+  display: block;
+  width: 100%;
+  margin-top: 28px;
+  padding: 20px 16px;
+  box-sizing: border-box;
+
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 800;
+  text-align: center;
+
+  background: #2563eb;
+  border: 1px solid #2563eb;
+  border-radius: 18px;
+  cursor: pointer;
+}
+
+.near-miss-admin-back-button:hover {
+  opacity: 0.95;
+}
+
+    .near-miss-admin-card {
+      margin-bottom: 16px;
+      padding: 18px;
+
+      background: #ffffff;
+      border: 1px solid #dbeafe;
+      border-radius: 14px;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+    }
+
+    .near-miss-admin-card h2 {
+      margin: 0 0 14px;
+
+      color: #0f172a;
+      font-size: 18px;
+      line-height: 1.4;
+    }
+
+    .near-miss-admin-toolbar {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .near-miss-admin-toolbar label {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+
+      color: #334155;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .near-miss-admin-toolbar input,
+    .near-miss-admin-toolbar select {
+      width: 100%;
+      padding: 11px 12px;
+
+      box-sizing: border-box;
+
+      color: #0f172a;
+      font: inherit;
+
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+    }
+
+    .near-miss-admin-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .near-miss-admin-buttons button {
+      min-height: 42px;
+      padding: 10px 16px;
+
+      font-size: 14px;
+      font-weight: 700;
+
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .near-miss-admin-primary-button {
+      color: #ffffff;
+      background: #2563eb;
+      border: 1px solid #2563eb;
+    }
+
+    .near-miss-admin-secondary-button {
+      color: #1d4ed8;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+    }
+
+    .near-miss-admin-summary {
+      margin: 0;
+
+      color: #475569;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.6;
+    }
+
+    .near-miss-admin-message {
+      margin: 14px 0 0;
+      padding: 12px 14px;
+
+      font-size: 14px;
+      font-weight: 700;
+      text-align: center;
+      line-height: 1.6;
+
+      border-radius: 10px;
+    }
+
+    .near-miss-admin-message.success {
+      color: #166534;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+    }
+
+    .near-miss-admin-message.error {
+      color: #b91c1c;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+    }
+
+    .near-miss-admin-message.info {
+      color: #1d4ed8;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+    }
+
+    .near-miss-admin-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .near-miss-admin-row {
+      width: 100%;
+      padding: 13px 14px;
+
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+
+      text-align: left;
+
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 11px;
+      cursor: pointer;
+    }
+
+    .near-miss-admin-row:hover {
+      background: #f8fafc;
+    }
+
+    .near-miss-admin-row-main {
+      min-width: 0;
+    }
+
+    .near-miss-admin-row-title {
+      margin: 0 0 4px;
+
+      color: #0f172a;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+
+    .near-miss-admin-row-sub {
+      margin: 0;
+
+      color: #64748b;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .near-miss-admin-row-count {
+      padding: 5px 10px;
+
+      color: #1d4ed8;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 999px;
+    }
+
+    .near-miss-admin-detail-header {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .near-miss-admin-detail-header h2 {
+      margin: 0;
+    }
+
+    .near-miss-admin-detail-meta {
+      margin: 4px 0 0;
+
+      color: #475569;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.6;
+    }
+
+    .near-miss-admin-detail-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .near-miss-admin-detail-item {
+      padding: 13px 14px;
+
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+    }
+
+    .near-miss-admin-detail-item span {
+      display: block;
+      margin-bottom: 5px;
+
+      color: #64748b;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .near-miss-admin-detail-item strong,
+    .near-miss-admin-detail-item p {
+      margin: 0;
+
+      color: #0f172a;
+      font-size: 14px;
+      line-height: 1.7;
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
+    }
+
+    .near-miss-admin-detail-wide {
+      grid-column: 1 / -1;
+    }
+
+    .near-miss-admin-empty {
+      margin: 0;
+
+      color: #64748b;
+      font-size: 14px;
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    .near-miss-admin-loading-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      padding: 20px;
+
+      background: rgba(15, 23, 42, 0.45);
+    }
+
+    .near-miss-admin-loading-overlay.hidden {
+      display: none;
+    }
+
+    .near-miss-admin-loading-box {
+      min-width: 190px;
+      padding: 22px;
+
+      text-align: center;
+
+      background: #ffffff;
+      border-radius: 14px;
+      box-shadow: 0 14px 40px rgba(15, 23, 42, 0.22);
+    }
+
+    .near-miss-admin-loading-spinner {
+      width: 34px;
+      height: 34px;
+      margin: 0 auto 12px;
+
+      border: 4px solid #dbeafe;
+      border-top-color: #2563eb;
+      border-radius: 50%;
+
+      animation: nearMissAdminSpin 0.8s linear infinite;
+    }
+
+    .near-miss-admin-loading-box p {
+      margin: 0;
+
+      color: #334155;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @keyframes nearMissAdminSpin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (min-width: 700px) {
+      .near-miss-admin-header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .near-miss-admin-toolbar {
+        grid-template-columns: minmax(220px, 1fr) minmax(180px, 0.6fr);
+        align-items: end;
+      }
+
+      .near-miss-admin-detail-header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+
+      .near-miss-admin-detail-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="near-miss-admin-page">
+
+    <!-- ヘッダー -->
+<header class="near-miss-admin-header">
+
+  <div class="near-miss-admin-header-text">
+
+    <h1>
+      綜合エンジニアリング㈱
+
+      <span class="near-miss-admin-portal-title">
+        Staff Portal
+      </span>
+    </h1>
+
+    <p>
+      ヒヤリハット管理
+    </p>
+
+  </div>
+
+<button
+  type="button"
+  onclick="window.location.href='admin.html';"
+  style="
+    display: block;
+    width: 100%;
+    margin-top: 28px;
+    padding: 20px 16px;
+    box-sizing: border-box;
+    color: #ffffff !important;
+    font-size: 18px;
+    font-weight: 800;
+    text-align: center;
+    background-color: #2563eb !important;
+    border: 1px solid #2563eb !important;
+    border-radius: 18px;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+  "
+>
+  管理画面へ戻る
+</button>
+
+</header>
+
+
+    <!-- 対象月・絞り込み -->
+    <section class="near-miss-admin-card">
+
+      <h2>
+        対象月・絞り込み
+      </h2>
+
+      <div class="near-miss-admin-toolbar">
+
+        <label>
+          対象月
+
+          <input
+            id="nearMissAdminMonth"
+            type="month"
+          >
+        </label>
+
+        <label>
+          部署
+
+          <select id="nearMissAdminDepartment">
+
+            <option value="">
+              全部署
+            </option>
+
+          </select>
+        </label>
+
+      </div>
+
+      <div class="near-miss-admin-buttons">
+
+        <button
+          id="nearMissAdminReload"
+          type="button"
+          class="near-miss-admin-primary-button"
+        >
+          更新
+        </button>
+
+        <button
+          id="nearMissAdminExportCsv"
+          type="button"
+          class="near-miss-admin-secondary-button"
+        >
+          CSV出力
+        </button>
+
+      </div>
+
+      <div
+        id="nearMissAdminMessage"
+        class="near-miss-admin-message hidden"
+      ></div>
+
+    </section>
+
+
+    <!-- 集計 -->
+    <section class="near-miss-admin-card">
+
+      <h2>
+        提出状況
+      </h2>
+
+      <p
+        id="nearMissAdminSummary"
+        class="near-miss-admin-summary"
+      >
+        読み込み中...
+      </p>
+
+    </section>
+
+
+    <!-- 提出一覧 -->
+    <section
+      id="nearMissAdminListSection"
+      class="near-miss-admin-card"
+    >
+
+      <h2>
+        提出一覧
+      </h2>
+
+      <div
+        id="nearMissAdminList"
+        class="near-miss-admin-list"
+      >
+
+        <p class="near-miss-admin-empty">
+          読み込み中...
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- 詳細 -->
+    <section
+      id="nearMissAdminDetailSection"
+      class="near-miss-admin-card hidden"
+    >
+
+      <div class="near-miss-admin-detail-header">
+
+        <div>
+
+          <h2>
+            ヒヤリハット詳細
+          </h2>
+
+          <p
+            id="nearMissAdminDetailMeta"
+            class="near-miss-admin-detail-meta"
+          ></p>
+
+        </div>
+
+        <button
+          id="nearMissAdminCloseDetail"
+          type="button"
+          class="near-miss-admin-secondary-button"
+        >
+          一覧へ戻る
+        </button>
+
+      </div>
+
+
+      <div class="near-miss-admin-detail-grid">
+
+        <div class="near-miss-admin-detail-item">
+          <span>部署</span>
+          <strong id="nearMissDetailDepartment">-</strong>
+        </div>
+
+        <div class="near-miss-admin-detail-item">
+          <span>氏名</span>
+          <strong id="nearMissDetailEmployeeName">-</strong>
+        </div>
+
+        <div class="near-miss-admin-detail-item">
+          <span>提出月</span>
+          <strong id="nearMissDetailTargetMonth">-</strong>
+        </div>
+
+        <div class="near-miss-admin-detail-item">
+          <span>提出日時</span>
+          <strong id="nearMissDetailSubmittedAt">-</strong>
+        </div>
+
+        <div class="near-miss-admin-detail-item">
+          <span>現場名</span>
+          <strong id="nearMissDetailSiteName">-</strong>
+        </div>
+
+        <div class="near-miss-admin-detail-item">
+          <span>元請</span>
+          <strong id="nearMissDetailClientName">-</strong>
+        </div>
+
+        <div class="near-miss-admin-detail-item">
+          <span>発生日</span>
+          <strong id="nearMissDetailOccurredDate">-</strong>
+        </div>
+
+        <div class="near-miss-admin-detail-item">
+          <span>時刻</span>
+          <strong id="nearMissDetailOccurredTime">-</strong>
+        </div>
+
+        <div class="near-miss-admin-detail-item">
+          <span>天気</span>
+          <strong id="nearMissDetailWeather">-</strong>
+        </div>
+
+        <div class="near-miss-admin-detail-item">
+          <span>作業の種別</span>
+          <strong id="nearMissDetailWorkType">-</strong>
+        </div>
+
+        <div class="near-miss-admin-detail-item">
+          <span>場所・物</span>
+          <strong id="nearMissDetailPlaceType">-</strong>
+        </div>
+
+        <div class="near-miss-admin-detail-item">
+          <span>どうしたか</span>
+          <strong id="nearMissDetailActionType">-</strong>
+        </div>
+
+        <div class="near-miss-admin-detail-item">
+          <span>状態</span>
+          <strong id="nearMissDetailStateType">-</strong>
+        </div>
+
+        <div class="near-miss-admin-detail-item">
+          <span>対策</span>
+          <strong id="nearMissDetailMeasureType">-</strong>
+        </div>
+
+        <div class="near-miss-admin-detail-item near-miss-admin-detail-wide">
+          <span>対策・反省点等</span>
+
+          <p id="nearMissDetailReflection">
+            -
+          </p>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- 読み込み中 -->
+  <div
+    id="nearMissAdminLoadingOverlay"
+    class="near-miss-admin-loading-overlay hidden"
+  >
+
+    <div class="near-miss-admin-loading-box">
+
+      <div class="near-miss-admin-loading-spinner"></div>
+
+      <p id="nearMissAdminLoadingMessage">
+        読み込み中...
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <script src="near-miss-admin.js?v=1"></script>
+
+</body>
+
+</html>

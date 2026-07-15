@@ -1300,3 +1300,155 @@ body {
   }
 
 }
+/* =========================================
+   ヒヤリハット管理画面 ヘッダー調整
+   管理者ホーム画面とデザインをそろえる
+========================================= */
+
+.near-miss-admin-page .near-miss-admin-header {
+  margin-bottom: 24px;
+  padding: 28px 26px;
+  color: #ffffff;
+  background: #0b1233;
+  border-radius: 28px;
+  box-sizing: border-box;
+}
+
+.near-miss-admin-page .near-miss-admin-header-title h1 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.near-miss-admin-page .near-miss-admin-portal-title {
+  display: inline;
+  margin-left: 6px;
+  color: #ffffff;
+  font-size: 0.95em;
+  font-weight: 800;
+}
+
+.near-miss-admin-page .near-miss-admin-header-title p {
+  margin: 14px 0 0;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.near-miss-admin-page .near-miss-admin-back-button {
+  display: block;
+  width: 100%;
+  margin-top: 28px;
+  padding: 22px 20px;
+  box-sizing: border-box;
+
+  color: #ffffff !important;
+  font-size: 18px;
+  font-weight: 800;
+  text-align: center;
+  text-decoration: none;
+
+  background: #5a67e8 !important;
+  border: none;
+  border-radius: 20px;
+}
+
+.near-miss-admin-page .near-miss-admin-back-button:hover {
+  opacity: 0.95;
+}
+
+@media (max-width: 640px) {
+  .near-miss-admin-page .near-miss-admin-header {
+    padding: 24px 22px;
+    border-radius: 24px;
+  }
+
+  .near-miss-admin-page .near-miss-admin-header-title h1 {
+    font-size: 24px;
+    line-height: 1.35;
+  }
+
+  .near-miss-admin-page .near-miss-admin-header-title p {
+    margin-top: 12px;
+    font-size: 16px;
+  }
+
+  .near-miss-admin-page .near-miss-admin-back-button {
+    margin-top: 22px;
+    padding: 20px 18px;
+    font-size: 17px;
+    border-radius: 18px;
+  }
+}
+/* 管理者ホームと同じ見た目に調整 */
+
+.near-miss-admin-header {
+  display: block;
+  margin-bottom: 24px;
+  padding: 28px 26px;
+  background: #0f172a;
+  border-radius: 28px;
+}
+
+.near-miss-admin-header-text h1 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 28px;
+  line-height: 1.4;
+}
+
+.near-miss-admin-portal-title {
+  margin-left: 6px;
+  color: #ffffff;
+  font-size: 0.9em;
+}
+
+.near-miss-admin-header-text p {
+  margin: 14px 0 0;
+  color: #cbd5e1;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.near-miss-admin-back-button {
+  display: block;
+  width: 100%;
+  margin-top: 28px;
+  padding: 20px 16px;
+  box-sizing: border-box;
+
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 800;
+  text-align: center;
+  text-decoration: none;
+
+  background: #2563eb;
+  border: none;
+  border-radius: 18px;
+}
+
+@media (max-width: 640px) {
+  .near-miss-admin-header {
+    padding: 24px 22px;
+    border-radius: 24px;
+  }
+
+  .near-miss-admin-header-text h1 {
+    font-size: 24px;
+  }
+
+  .near-miss-admin-header-text p {
+    font-size: 16px;
+  }
+}
+/* 戻るボタンと更新ボタンを完全に同じ色にする */
+.near-miss-admin-back-button,
+#nearMissAdminReload {
+  color: #ffffff !important;
+  background-color: #2563eb !important;
+  border-color: #2563eb !important;
+}
