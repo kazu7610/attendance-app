@@ -3,66 +3,211 @@
 
 <head>
   <meta charset="utf-8">
+
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1"
   >
 
-  <title>工事部ポータル - 管理画面</title>
+  <title>
+    工事部ポータル - 管理画面
+  </title>
 
   <link
     rel="stylesheet"
-    href="style.css"
+    href="style.css?v=7"
   >
 </head>
 
+
 <body>
 
-  <header class="page-header">
-
-  <div>
-    <h1>
-  綜合エンジニアリング㈱
-  <span class="portal-subtitle">
-    Staff Portal
-  </span>
-</h1>
-
-<p>出勤簿管理</p>
-  </div>
-
-  <a
-    href="home.html"
-    class="home-back-button"
-  >
-    ホームへ戻る
-  </a>
-
-</header>
-
-  <main>
+  <main class="admin-home-page">
 
     <!-- ==============================
-         対象月
+         ヘッダー
     ============================== -->
-    <section class="card">
+    <header class="admin-home-header">
 
-      <h2>出勤簿管理</h2>
+      <div class="admin-home-header-text">
 
-      <label>
+        <h1>
+          綜合エンジニアリング㈱
+
+          <span class="admin-home-portal-title">
+            Staff Portal
+          </span>
+        </h1>
+
+        <p>
+          管理者メニュー
+        </p>
+
+      </div>
+
+      <a
+        href="home.html"
+        class="admin-home-back-button"
+      >
+        ホームへ戻る
+      </a>
+
+    </header>
+
+
+    <!-- ==============================
+         管理メニュー
+    ============================== -->
+    <section class="admin-menu-section">
+
+      <h2>
+        管理メニュー
+      </h2>
+
+      <div class="admin-menu-list">
+
+        <!-- 出勤簿管理 -->
+        <a
+          href="#attendanceManagement"
+          class="admin-menu-card"
+        >
+
+          <div class="admin-menu-card-icon">
+            <svg
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path
+                d="M9 5h6m-7 4h8m-8 4h8m-8 4h5M9 3h6l1 2h3v16H5V5h3l1-2Z"
+              />
+            </svg>
+          </div>
+
+          <div class="admin-menu-card-text">
+
+            <h3>
+              出勤簿管理
+            </h3>
+
+            <p>
+              提出状況の確認・CSV出力
+            </p>
+
+          </div>
+
+          <span class="admin-menu-card-arrow">
+            〉
+          </span>
+
+        </a>
+
+
+        <!-- 向上提案管理 -->
+        <a
+          href="improvement-admin.html"
+          class="admin-menu-card"
+        >
+
+          <div class="admin-menu-card-icon">
+            <svg
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path
+                d="M9 18h6m-5 3h4M8.5 14.5C7 13.4 6 11.7 6 9.5a6 6 0 1 1 12 0c0 2.2-1 3.9-2.5 5-1 .8-1.5 1.6-1.5 2.5h-4c0-.9-.5-1.7-1.5-2.5Z"
+              />
+            </svg>
+          </div>
+
+          <div class="admin-menu-card-text">
+
+            <h3>
+              向上提案管理
+            </h3>
+
+            <p>
+              提出確認・内容修正・CSV出力
+            </p>
+
+          </div>
+
+          <span class="admin-menu-card-arrow">
+            〉
+          </span>
+
+        </a>
+
+
+        <!-- 予定管理 -->
+        <a
+          href="#scheduleManagement"
+          class="admin-menu-card"
+        >
+
+          <div class="admin-menu-card-icon">
+            <svg
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path
+                d="M6 3v3m12-3v3M4 8h16v12H4V8Zm4 4h3m2 0h3m-8 4h3m2 0h3"
+              />
+            </svg>
+          </div>
+
+          <div class="admin-menu-card-text">
+
+            <h3>
+              予定管理
+            </h3>
+
+            <p>
+              社内予定の登録・編集・削除
+            </p>
+
+          </div>
+
+          <span class="admin-menu-card-arrow">
+            〉
+          </span>
+
+        </a>
+
+      </div>
+
+    </section>
+
+
+    <!-- ==============================
+         出勤簿管理
+    ============================== -->
+    <section
+      id="attendanceManagement"
+      class="admin-section-card"
+    >
+
+      <h2>
+        出勤簿管理
+      </h2>
+
+      <label class="admin-form-label">
+
         対象月
 
         <input
           id="month"
           type="month"
+          class="admin-form-control"
         >
+
       </label>
 
-      <div class="buttons">
+      <div class="admin-action-buttons">
 
         <button
           id="reload"
           type="button"
+          class="admin-primary-button"
         >
           更新
         </button>
@@ -70,6 +215,7 @@
         <button
           id="exportAllCsv"
           type="button"
+          class="admin-primary-button"
         >
           全員分CSV出力
         </button>
@@ -78,145 +224,175 @@
 
     </section>
 
-   <!-- ==============================
-     予定登録・編集
-============================== -->
-<section class="card">
 
-  <h2 id="scheduleFormTitle">
-    予定登録
-  </h2>
-
-  <!-- 編集中の予定IDを一時的に保持 -->
-  <input
-    id="editingScheduleId"
-    type="hidden"
-    value=""
-  >
-
-  <label>
-    日付
-
-    <input
-      id="scheduleDate"
-      type="date"
+    <!-- ==============================
+         予定登録・編集
+    ============================== -->
+    <section
+      id="scheduleManagement"
+      class="admin-section-card"
     >
-  </label>
 
-  <label>
-    開始時刻
+      <h2 id="scheduleFormTitle">
+        予定登録
+      </h2>
 
-    <input
-      id="scheduleStartTime"
-      type="time"
-    >
-  </label>
+      <input
+        id="editingScheduleId"
+        type="hidden"
+        value=""
+      >
 
-  <label>
-    予定名
+      <label class="admin-form-label">
 
-    <input
-      id="scheduleTitle"
-      type="text"
-      placeholder="例：安全会議"
-    >
-  </label>
+        日付
 
-  <label>
-    詳細
+        <input
+          id="scheduleDate"
+          type="date"
+          class="admin-form-control"
+        >
 
-    <input
-      id="scheduleDetails"
-      type="text"
-      placeholder="例：会議室で実施"
-    >
-  </label>
+      </label>
 
-  <label>
-    対象
+      <label class="admin-form-label">
 
-    <select id="scheduleTargetScope">
+        開始時刻
 
-      <option value="all">
-        全員
-      </option>
+        <input
+          id="scheduleStartTime"
+          type="time"
+          class="admin-form-control"
+        >
 
-      <option value="工事部">
-        工事部
-      </option>
+      </label>
 
-      <option value="技術部">
-        技術部
-      </option>
+      <label class="admin-form-label">
 
-      <option value="営業">
-        営業
-      </option>
+        予定名
 
-      <option value="総務">
-        総務
-      </option>
+        <input
+          id="scheduleTitle"
+          type="text"
+          class="admin-form-control"
+          placeholder="例：安全会議"
+        >
 
-    </select>
-  </label>
+      </label>
 
-  <div class="buttons">
+      <label class="admin-form-label">
 
-    <button
-      id="addSchedule"
-      type="button"
-    >
-      予定を登録
-    </button>
+        詳細
 
-    <button
-      id="cancelScheduleEdit"
-      type="button"
-      hidden
-    >
-      編集をやめる
-    </button>
+        <input
+          id="scheduleDetails"
+          type="text"
+          class="admin-form-control"
+          placeholder="例：会議室で実施"
+        >
 
-  </div>
+      </label>
 
-  <p
-    id="scheduleMessage"
-    class="schedule-message"
-  ></p>
+      <label class="admin-form-label">
 
-</section>
+        対象
+
+        <select
+          id="scheduleTargetScope"
+          class="admin-form-control"
+        >
+
+          <option value="all">
+            全員
+          </option>
+
+          <option value="工事部">
+            工事部
+          </option>
+
+          <option value="技術部">
+            技術部
+          </option>
+
+          <option value="営業">
+            営業
+          </option>
+
+          <option value="総務">
+            総務
+          </option>
+
+        </select>
+
+      </label>
+
+      <div class="admin-action-buttons">
+
+        <button
+          id="addSchedule"
+          type="button"
+          class="admin-primary-button"
+        >
+          予定を登録
+        </button>
+
+        <button
+          id="cancelScheduleEdit"
+          type="button"
+          class="admin-secondary-button"
+          hidden
+        >
+          編集をやめる
+        </button>
+
+      </div>
+
+      <p
+        id="scheduleMessage"
+        class="schedule-message"
+      ></p>
+
+    </section>
 
 
-<!-- ==============================
-     登録済み予定
-============================== -->
-<section class="card">
+    <!-- ==============================
+         登録済み予定
+    ============================== -->
+    <section class="admin-section-card">
 
-  <h2>登録済み予定</h2>
+      <h2>
+        登録済み予定
+      </h2>
 
-  <div id="adminScheduleList">
+      <div id="adminScheduleList">
 
-    <p class="schedule-empty-message">
-      予定を読み込み中...
-    </p>
+        <p class="schedule-empty-message">
+          予定を読み込み中...
+        </p>
 
-  </div>
+      </div>
 
-</section>
+    </section>
+
 
     <!-- ==============================
          提出状況一覧
     ============================== -->
     <section
       id="statusSection"
-      class="card"
+      class="admin-section-card"
     >
 
-      <div class="title">
+      <div class="admin-section-title-row">
 
-        <h2>提出状況</h2>
+        <h2>
+          提出状況
+        </h2>
 
-        <span id="submissionSummary">
+        <span
+          id="submissionSummary"
+          class="admin-submission-summary"
+        >
           0 / 0人
         </span>
 
@@ -234,7 +410,7 @@
     ============================== -->
     <section
       id="detailSection"
-      class="card hidden"
+      class="admin-section-card hidden"
     >
 
       <div class="admin-detail-header">
@@ -251,7 +427,7 @@
 
         <button
           id="closeDetail"
-          class="secondary-button"
+          class="admin-secondary-button"
           type="button"
         >
           一覧へ戻る
@@ -268,7 +444,8 @@
 
   </main>
 
-  <script src="admin.js"></script>
+
+  <script src="admin.js?v=2"></script>
 
 </body>
 

@@ -911,3 +911,392 @@ body {
   font-weight: 800;
   line-height: 1;
 }
+
+/* =========================================
+   向上提案：通知・エラーメッセージ
+========================================= */
+
+.form-message {
+  width: 100%;
+  margin: 14px 0;
+  padding: 12px 14px;
+
+  box-sizing: border-box;
+
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.5;
+  text-align: center;
+
+  border-radius: 10px;
+}
+
+.form-message.hidden {
+  display: none;
+}
+
+.form-message.info {
+  color: #1d4ed8;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+}
+
+.form-message.success {
+  color: #166534;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+}
+
+.form-message.error {
+  color: #b91c1c;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+}
+
+/* =========================================
+   管理者ホーム画面
+========================================= */
+
+.admin-home-page {
+  width: min(100% - 24px, 900px);
+  margin: 0 auto;
+  padding: 12px 0 60px;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================
+   管理者ヘッダー
+========================================= */
+
+.admin-home-header {
+  margin-bottom: 16px;
+  padding: 24px 20px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  background: #0f172a;
+  border-radius: 16px;
+}
+
+
+.admin-home-header-text h1 {
+  margin: 0;
+
+  color: #ffffff;
+  font-size: 21px;
+  line-height: 1.4;
+}
+
+
+.admin-home-portal-title {
+  margin-left: 4px;
+
+  color: #ffffff;
+  font-size: 15px;
+  letter-spacing: 0.04em;
+}
+
+
+.admin-home-header-text p {
+  margin: 6px 0 0;
+
+  color: #cbd5e1;
+  font-size: 13px;
+}
+
+
+.admin-home-back-button {
+  width: 100%;
+  min-height: 46px;
+  padding: 11px 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-sizing: border-box;
+
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+
+  background: #2563eb;
+  border: 1px solid #2563eb;
+  border-radius: 10px;
+}
+
+
+/* =========================================
+   管理メニュー
+   ※管理者ページ内だけに適用
+========================================= */
+
+.admin-home-page .admin-menu-section {
+  margin-bottom: 18px;
+}
+
+
+.admin-home-page .admin-menu-section > h2 {
+  margin: 0 0 12px;
+
+  color: #0f172a;
+  font-size: 18px;
+}
+
+
+.admin-home-page .admin-menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+
+.admin-home-page .admin-menu-card {
+  width: 100%;
+  min-height: 92px;
+  padding: 16px;
+
+  display: grid;
+  grid-template-columns: 54px 1fr auto;
+  gap: 14px;
+  align-items: center;
+
+  box-sizing: border-box;
+
+  color: inherit;
+  text-decoration: none;
+
+  background: #ffffff;
+  border: 1px solid #bfdbfe;
+  border-radius: 14px;
+  box-shadow: 0 5px 15px rgba(15, 23, 42, 0.06);
+}
+
+
+.admin-home-page .admin-menu-card:hover {
+  background: #f8fbff;
+  border-color: #93c5fd;
+}
+
+
+.admin-home-page .admin-menu-card-icon {
+  width: 52px;
+  height: 52px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #eff6ff;
+  border-radius: 50%;
+}
+
+
+.admin-home-page .admin-menu-card-icon svg {
+  width: 27px;
+  height: 27px;
+
+  fill: none;
+  stroke: #2563eb;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+
+.admin-home-page .admin-menu-card-text h3 {
+  margin: 0;
+
+  color: #0f172a;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+
+.admin-home-page .admin-menu-card-text p {
+  margin: 4px 0 0;
+
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+
+.admin-home-page .admin-menu-card-arrow {
+  color: #2563eb;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+/* =========================================
+   管理画面共通カード
+========================================= */
+
+.admin-section-card {
+  margin-bottom: 16px;
+  padding: 18px;
+
+  background: #ffffff;
+  border: 1px solid #dbeafe;
+  border-radius: 14px;
+  box-shadow: 0 5px 15px rgba(15, 23, 42, 0.05);
+}
+
+
+.admin-section-card h2 {
+  margin: 0 0 14px;
+
+  color: #0f172a;
+  font-size: 18px;
+}
+
+
+/* =========================================
+   管理画面フォーム
+========================================= */
+
+.admin-form-label {
+  margin-bottom: 14px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+
+  color: #334155;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+
+.admin-form-control {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+
+  box-sizing: border-box;
+
+  color: #0f172a;
+  font: inherit;
+
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+}
+
+
+/* =========================================
+   管理画面ボタン
+========================================= */
+
+.admin-action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+
+.admin-primary-button,
+.admin-secondary-button {
+  min-height: 44px;
+  padding: 10px 16px;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+
+.admin-primary-button {
+  color: #ffffff;
+
+  background: #2563eb;
+  border: 1px solid #2563eb;
+}
+
+
+.admin-secondary-button {
+  color: #1d4ed8;
+
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+}
+
+
+/* =========================================
+   提出状況・詳細
+========================================= */
+
+.admin-section-title-row {
+  margin-bottom: 14px;
+
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+
+.admin-section-title-row h2 {
+  margin: 0;
+}
+
+
+.admin-submission-summary {
+  color: #2563eb;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+
+.admin-detail-header {
+  margin-bottom: 16px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+
+/* =========================================
+   PC表示
+========================================= */
+
+@media (min-width: 700px) {
+
+  .admin-home-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+
+  .admin-home-back-button {
+    width: auto;
+    min-width: 130px;
+  }
+
+
+  .admin-action-buttons {
+    flex-direction: row;
+  }
+
+
+  .admin-action-buttons button {
+    min-width: 180px;
+  }
+
+
+  .admin-detail-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+}

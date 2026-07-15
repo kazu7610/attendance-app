@@ -14,8 +14,35 @@
 
   <link
     rel="stylesheet"
-    href="style.css?v=4"
+    href="style.css?v=5"
   >
+
+  <style>
+    /*
+      提出済み表示
+    */
+    .submission-status-message {
+      width: 100%;
+      margin: 14px 0 0;
+      padding: 10px 12px;
+
+      box-sizing: border-box;
+
+      color: #2563eb;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.5;
+      text-align: center;
+
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 10px;
+    }
+
+    .submission-status-message.hidden {
+      display: none;
+    }
+  </style>
 </head>
 
 <body>
@@ -108,6 +135,15 @@
       </div>
 
 
+      <!-- 提出済み表示 -->
+      <p
+        id="submissionStatusMessage"
+        class="submission-status-message hidden"
+      >
+        この向上提案は提出済みです
+      </p>
+
+
       <!-- 今月のテーマ表示 -->
       <div class="improvement-theme-box">
 
@@ -127,7 +163,7 @@
 
 
     <!-- ==============================
-         メッセージ表示
+         通知・エラー表示
     ============================== -->
     <div
       id="messageBox"
@@ -141,6 +177,7 @@
     <form
       id="improvementForm"
       class="improvement-form"
+      novalidate
     >
 
       <!-- 今月のテーマ本文 -->
@@ -162,7 +199,6 @@
           name="monthlyThemeAnswer"
           class="improvement-textarea improvement-textarea-large"
           placeholder="ここに入力してください"
-          required
           style="
             width: 100%;
             min-height: 140px;
@@ -206,7 +242,6 @@
           id="theme1Category"
           name="theme1Category"
           class="improvement-select"
-          required
         >
           <option value="">
             選択してください
@@ -229,7 +264,6 @@
           name="theme1Body"
           class="improvement-textarea"
           placeholder="ここに入力してください"
-          required
           style="
             width: 100%;
             min-height: 120px;
@@ -263,6 +297,10 @@
           class="form-field-label"
         >
           分類
+
+          <span class="required-mark">
+            必須
+          </span>
         </label>
 
         <select
@@ -280,6 +318,10 @@
           class="form-field-label"
         >
           本文
+
+          <span class="required-mark">
+            必須
+          </span>
         </label>
 
         <textarea
@@ -320,6 +362,10 @@
           class="form-field-label"
         >
           分類
+
+          <span class="required-mark">
+            必須
+          </span>
         </label>
 
         <select
@@ -337,6 +383,10 @@
           class="form-field-label"
         >
           本文
+
+          <span class="required-mark">
+            必須
+          </span>
         </label>
 
         <textarea
@@ -404,7 +454,7 @@
   </div>
 
 
-  <script src="improvement.js"></script>
+  <script src="improvement.js?v=3"></script>
 
 </body>
 </html>
