@@ -1523,3 +1523,78 @@ body {
     border-radius: 18px;
   }
 }
+
+/* =========================================
+   出勤簿提出一覧 見た目調整
+========================================= */
+
+.employee-status-button{
+  grid-template-columns:1fr auto;
+  gap:8px;
+
+  margin:6px 0;
+  padding:12px 14px;
+
+  border:1px solid #dbe4f0;
+  border-radius:10px;
+
+  background:#ffffff;
+  color:#1f2937;
+}
+
+.employee-status-icon{
+  display:none;
+}
+
+.employee-status-name{
+  color:#111827;
+  font-weight:bold;
+}
+
+.employee-status-text{
+  font-size:13px;
+  white-space:nowrap;
+}
+
+.status-submitted{
+  color:#1f2937;
+}
+
+.status-submitted .employee-status-text{
+  color:#166534;
+  font-weight:bold;
+}
+
+.status-draft{
+  color:#1f2937;
+}
+
+.status-draft .employee-status-text{
+  color:#92400e;
+  font-weight:bold;
+}
+
+.status-locked{
+  color:#1f2937;
+}
+
+.status-locked .employee-status-text{
+  color:#374151;
+  font-weight:bold;
+}
+
+.status-not-saved{
+  color:#1f2937;
+}
+
+.status-not-saved .employee-status-text{
+  padding:3px 9px;
+
+  color:#e11d48;
+  background:#fff1f2;
+
+  border:1px solid #fda4af;
+  border-radius:999px;
+
+  font-weight:bold;
+}
