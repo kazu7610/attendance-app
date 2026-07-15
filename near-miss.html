@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>
+    ヒヤリハット｜綜合エンジニアリング㈱
+  </title>
+
+  <link
+    rel="stylesheet"
+    href="style.css?v=6"
+  >
+
+  <style>
+  /* =========================================
+     ヒヤリハット本人入力画面
+     向上提案に近いデザインへ調整
+  ========================================= */
+
+  .near-miss-page {
+    width: min(100% - 24px, 760px);
+    margin: 0 auto;
+    padding: 14px 0 60px;
+    box-sizing: border-box;
+  }
+
+  .near-miss-header {
+    margin-bottom: 18px;
+    padding: 18px;
+
+    color: #ffffff;
+
+    background: #071633;
+    border-radius: 18px;
+  }
+
+  .near-miss-header-title {
+    margin-bottom: 14px;
+  }
+
+  .near-miss-header .page-label {
+    margin: 0 0 6px;
+
+    color: #93c5fd;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+  }
+
+  .near-miss-header h1 {
+    margin: 0;
+
+    color: #ffffff;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.3;
+    white-space: nowrap;
+  }
+
+  .near-miss-back-button {
+    display: block;
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 14px;
+
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 700;
+
+    background: #3467e3;
+    border: 1px solid #3467e3;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+
+  .near-miss-user-card,
+  .near-miss-setting-card,
+  .near-miss-form-card,
+  .near-miss-history-card {
+    margin-bottom: 16px;
+    padding: 18px 18px 20px;
+
+    background: #ffffff;
+    border: 1px solid #dbe7f7;
+    border-radius: 16px;
+    box-sizing: border-box;
+  }
+
+  .near-miss-user-card,
+  .near-miss-setting-card {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .near-miss-user-card > div,
+  .near-miss-setting-row > div {
+    min-width: 0;
+  }
+
+  .near-miss-user-label,
+  .near-miss-setting-label {
+    display: block;
+    margin-bottom: 8px;
+
+    color: #475569;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  .near-miss-user-card strong,
+  .near-miss-setting-card strong {
+    display: block;
+
+    color: #0f172a;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+
+  .near-miss-setting-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .near-miss-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .near-miss-form-card h2,
+  .near-miss-history-card h2 {
+    margin: 0 0 16px;
+
+    color: #0f172a;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  .near-miss-field {
+    margin-bottom: 18px;
+  }
+
+  .near-miss-field:last-child {
+    margin-bottom: 0;
+  }
+
+  .near-miss-field-label {
+    display: block;
+    margin-bottom: 8px;
+
+    color: #334155;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.5;
+  }
+
+  .near-miss-required {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 2px 7px;
+
+    color: #dc2626;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.3;
+
+    background: #fef2f2;
+    border-radius: 999px;
+    vertical-align: middle;
+  }
+
+  .near-miss-select,
+  .near-miss-input,
+  .near-miss-textarea {
+    width: 100%;
+    padding: 12px 14px;
+
+    box-sizing: border-box;
+
+    color: #0f172a;
+    font: inherit;
+
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+  }
+
+  .near-miss-select:focus,
+  .near-miss-input:focus,
+  .near-miss-textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+  }
+
+  .near-miss-textarea {
+    min-height: 130px;
+    resize: vertical;
+  }
+
+  .near-miss-detail-box {
+    margin-top: -4px;
+    margin-bottom: 18px;
+    padding: 12px;
+
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+  }
+
+  .near-miss-detail-box.hidden {
+    display: none;
+  }
+
+  .near-miss-detail-help {
+    margin: 0 0 8px;
+
+    color: #64748b;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
+  .near-miss-action-area {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 2px;
+  }
+
+  .near-miss-action-area button {
+    min-height: 46px;
+    padding: 10px 14px;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    border-radius: 10px;
+    cursor: pointer;
+  }
+
+  .near-miss-draft-button {
+    color: #2563eb;
+    background: #ffffff;
+    border: 1px solid #93c5fd;
+  }
+
+  .near-miss-submit-button {
+    color: #ffffff;
+    background: #3467e3;
+    border: 1px solid #3467e3;
+  }
+
+  .near-miss-message {
+    margin-bottom: 16px;
+    padding: 12px 14px;
+
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.6;
+    text-align: center;
+
+    border-radius: 10px;
+  }
+
+  .near-miss-message.success {
+    color: #166534;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+  }
+
+  .near-miss-message.error {
+    color: #b91c1c;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+  }
+
+  .near-miss-message.info {
+    color: #1d4ed8;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+  }
+
+  .near-miss-message.hidden {
+    display: none;
+  }
+
+  .near-miss-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .near-miss-history-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 12px;
+
+    color: #334155;
+    font-size: 14px;
+    line-height: 1.5;
+
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+  }
+
+  .near-miss-history-row strong {
+    color: #0f172a;
+    font-weight: 700;
+  }
+
+  .near-miss-history-empty {
+    margin: 0;
+
+    color: #64748b;
+    font-size: 14px;
+    text-align: center;
+  }
+
+  .near-miss-loading-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 20px;
+
+    background: rgba(15, 23, 42, 0.45);
+  }
+
+  .near-miss-loading-overlay.hidden {
+    display: none;
+  }
+
+  .near-miss-loading-box {
+    min-width: 180px;
+    padding: 22px;
+
+    text-align: center;
+
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 14px 40px rgba(15, 23, 42, 0.22);
+  }
+
+  .near-miss-loading-spinner {
+    width: 34px;
+    height: 34px;
+    margin: 0 auto 12px;
+
+    border: 4px solid #dbeafe;
+    border-top-color: #2563eb;
+    border-radius: 50%;
+
+    animation: nearMissSpin 0.8s linear infinite;
+  }
+
+  .near-miss-loading-box p {
+    margin: 0;
+
+    color: #334155;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  @keyframes nearMissSpin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @media (min-width: 640px) {
+    .near-miss-user-card,
+    .near-miss-setting-row {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .near-miss-page {
+      width: min(100% - 16px, 760px);
+      padding-top: 10px;
+    }
+
+    .near-miss-header,
+    .near-miss-user-card,
+    .near-miss-setting-card,
+    .near-miss-form-card,
+    .near-miss-history-card {
+      padding: 16px;
+    }
+
+    .near-miss-header h1 {
+      font-size: 20px;
+    }
+
+    .near-miss-action-area {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+  <main class="near-miss-page">
+
+    <!-- ヘッダー -->
+    <header class="near-miss-header">
+
+      <div class="near-miss-header-title">
+
+        <p class="page-label">
+          NEAR MISS REPORT
+        </p>
+
+        <h1>
+          ヒヤリハット
+        </h1>
+
+      </div>
+
+      <button
+        id="backHomeButton"
+        type="button"
+        class="near-miss-back-button"
+      >
+        〈 ホーム
+      </button>
+
+    </header>
+
+
+    <!-- ログイン社員情報 -->
+    <section class="near-miss-user-card">
+
+      <div>
+        <span class="near-miss-user-label">
+          部署
+        </span>
+
+        <strong id="departmentDisplay">
+          読み込み中...
+        </strong>
+      </div>
+
+      <div>
+        <span class="near-miss-user-label">
+          氏名
+        </span>
+
+        <strong id="employeeNameDisplay">
+          読み込み中...
+        </strong>
+      </div>
+
+    </section>
+
+
+    <!-- 対象月 -->
+    <section class="near-miss-setting-card">
+
+      <div class="near-miss-setting-row">
+
+        <div>
+          <span class="near-miss-setting-label">
+            提出月
+          </span>
+
+          <strong id="targetMonthDisplay">
+            読み込み中...
+          </strong>
+        </div>
+
+        <div>
+          <span class="near-miss-setting-label">
+            今月の提出件数
+          </span>
+
+          <strong id="currentMonthCountDisplay">
+            読み込み中...
+          </strong>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- 通知・エラー -->
+    <div
+      id="messageBox"
+      class="near-miss-message hidden"
+    ></div>
+
+
+    <!-- 入力フォーム -->
+    <form
+      id="nearMissForm"
+      class="near-miss-form"
+      novalidate
+    >
+
+      <!-- 現場情報 -->
+      <section class="near-miss-form-card">
+
+        <h2>
+          現場・発生日時
+        </h2>
+
+        <div class="near-miss-field">
+
+          <label
+            for="siteSelect"
+            class="near-miss-field-label"
+          >
+            現場名
+            <span class="near-miss-required">必須</span>
+          </label>
+
+          <select
+            id="siteSelect"
+            class="near-miss-select"
+          >
+            <option value="">
+              選択してください
+            </option>
+          </select>
+
+        </div>
+
+
+        <div
+          id="siteOtherBox"
+          class="near-miss-detail-box hidden"
+        >
+
+          <p class="near-miss-detail-help">
+            その他の現場名を入力してください。
+          </p>
+
+          <input
+            id="siteOtherInput"
+            type="text"
+            class="near-miss-input"
+            placeholder="現場名を入力"
+          >
+
+        </div>
+
+
+        <div class="near-miss-field">
+
+          <label
+            for="clientSelect"
+            class="near-miss-field-label"
+          >
+            元請
+            <span class="near-miss-required">必須</span>
+          </label>
+
+          <select
+            id="clientSelect"
+            class="near-miss-select"
+          >
+            <option value="">
+              選択してください
+            </option>
+
+            <option value="三機工業">
+              三機工業
+            </option>
+
+            <option value="三晃空調">
+              三晃空調
+            </option>
+
+            <option value="朝日工業社">
+              朝日工業社
+            </option>
+
+            <option value="自社">
+              自社
+            </option>
+
+            <option value="その他">
+              その他
+            </option>
+          </select>
+
+        </div>
+
+
+        <div
+          id="clientOtherBox"
+          class="near-miss-detail-box hidden"
+        >
+
+          <p class="near-miss-detail-help">
+            その他の元請名を入力してください。
+          </p>
+
+          <input
+            id="clientOtherInput"
+            type="text"
+            class="near-miss-input"
+            placeholder="元請名を入力"
+          >
+
+        </div>
+
+
+        <div class="near-miss-field">
+
+          <label
+            for="occurredDate"
+            class="near-miss-field-label"
+          >
+            日付
+            <span class="near-miss-required">必須</span>
+          </label>
+
+          <input
+            id="occurredDate"
+            type="date"
+            class="near-miss-input"
+          >
+
+        </div>
+
+
+        <div class="near-miss-field">
+
+          <label
+            for="occurredTime"
+            class="near-miss-field-label"
+          >
+            時刻
+            <span class="near-miss-required">必須</span>
+          </label>
+
+          <input
+            id="occurredTime"
+            type="time"
+            class="near-miss-input"
+          >
+
+        </div>
+
+
+        <div class="near-miss-field">
+
+          <label
+            for="weatherSelect"
+            class="near-miss-field-label"
+          >
+            天気
+            <span class="near-miss-required">必須</span>
+          </label>
+
+          <select
+            id="weatherSelect"
+            class="near-miss-select"
+          >
+            <option value="">
+              選択してください
+            </option>
+
+            <option value="晴">
+              晴
+            </option>
+
+            <option value="曇り">
+              曇り
+            </option>
+
+            <option value="雨">
+              雨
+            </option>
+
+            <option value="雪">
+              雪
+            </option>
+
+            <option value="その他">
+              その他
+            </option>
+          </select>
+
+        </div>
+
+      </section>
+
+
+      <!-- 作業の種別 -->
+      <section class="near-miss-form-card">
+
+        <h2>
+          作業の種別
+        </h2>
+
+        <div class="near-miss-field">
+
+          <label
+            for="workTypeSelect"
+            class="near-miss-field-label"
+          >
+            作業の種別
+            <span class="near-miss-required">必須</span>
+          </label>
+
+          <select
+            id="workTypeSelect"
+            class="near-miss-select"
+          >
+            <option value="">
+              選択してください
+            </option>
+          </select>
+
+        </div>
+
+        <div
+          id="workTypeDetailBox"
+          class="near-miss-detail-box hidden"
+        >
+
+          <p class="near-miss-detail-help">
+            その他の作業内容を入力してください。
+          </p>
+
+          <input
+            id="workTypeDetail"
+            type="text"
+            class="near-miss-input"
+            placeholder="作業内容を入力"
+          >
+
+        </div>
+
+      </section>
+
+
+      <!-- 場所・物 -->
+      <section class="near-miss-form-card">
+
+        <h2>
+          場所・物
+        </h2>
+
+        <div class="near-miss-field">
+
+          <label
+            for="placeTypeSelect"
+            class="near-miss-field-label"
+          >
+            場所・物
+            <span class="near-miss-required">必須</span>
+          </label>
+
+          <select
+            id="placeTypeSelect"
+            class="near-miss-select"
+          >
+            <option value="">
+              選択してください
+            </option>
+          </select>
+
+        </div>
+
+        <div
+          id="placeDetailBox"
+          class="near-miss-detail-box hidden"
+        >
+
+          <p class="near-miss-detail-help">
+            その他の場所・物を入力してください。
+          </p>
+
+          <input
+            id="placeDetail"
+            type="text"
+            class="near-miss-input"
+            placeholder="場所・物を入力"
+          >
+
+        </div>
+
+      </section>
+
+
+      <!-- どうしたか -->
+      <section class="near-miss-form-card">
+
+        <h2>
+          どうしたか
+        </h2>
+
+        <div class="near-miss-field">
+
+          <label
+            for="actionTypeSelect"
+            class="near-miss-field-label"
+          >
+            どうしたか
+            <span class="near-miss-required">必須</span>
+          </label>
+
+          <select
+            id="actionTypeSelect"
+            class="near-miss-select"
+          >
+            <option value="">
+              選択してください
+            </option>
+          </select>
+
+        </div>
+
+        <div
+          id="actionDetailBox"
+          class="near-miss-detail-box hidden"
+        >
+
+          <p
+            id="actionDetailHelp"
+            class="near-miss-detail-help"
+          >
+            （　）に入る内容、または補足内容を入力してください。
+          </p>
+
+          <input
+            id="actionDetail"
+            type="text"
+            class="near-miss-input"
+            placeholder="例：手、指、パイプなど"
+          >
+
+        </div>
+
+      </section>
+
+
+      <!-- 状態 -->
+      <section class="near-miss-form-card">
+
+        <h2>
+          状態
+        </h2>
+
+        <div class="near-miss-field">
+
+          <label
+            for="stateTypeSelect"
+            class="near-miss-field-label"
+          >
+            状態
+            <span class="near-miss-required">必須</span>
+          </label>
+
+          <select
+            id="stateTypeSelect"
+            class="near-miss-select"
+          >
+            <option value="">
+              選択してください
+            </option>
+          </select>
+
+        </div>
+
+        <div
+          id="stateDetailBox"
+          class="near-miss-detail-box hidden"
+        >
+
+          <p class="near-miss-detail-help">
+            その他の状態を入力してください。
+          </p>
+
+          <input
+            id="stateDetail"
+            type="text"
+            class="near-miss-input"
+            placeholder="状態を入力"
+          >
+
+        </div>
+
+      </section>
+
+
+      <!-- 対策 -->
+      <section class="near-miss-form-card">
+
+        <h2>
+          対策
+        </h2>
+
+        <div class="near-miss-field">
+
+          <label
+            for="measureTypeSelect"
+            class="near-miss-field-label"
+          >
+            対策
+            <span class="near-miss-required">必須</span>
+          </label>
+
+          <select
+            id="measureTypeSelect"
+            class="near-miss-select"
+          >
+            <option value="">
+              選択してください
+            </option>
+          </select>
+
+        </div>
+
+        <div
+          id="measureDetailBox"
+          class="near-miss-detail-box hidden"
+        >
+
+          <p class="near-miss-detail-help">
+            その他の対策を入力してください。
+          </p>
+
+          <input
+            id="measureDetail"
+            type="text"
+            class="near-miss-input"
+            placeholder="対策を入力"
+          >
+
+        </div>
+
+
+        <div class="near-miss-field">
+
+          <label
+            for="reflection"
+            class="near-miss-field-label"
+          >
+            対策・反省点等
+            <span class="near-miss-required">必須</span>
+          </label>
+
+          <textarea
+            id="reflection"
+            class="near-miss-textarea"
+            placeholder="具体的な対策や反省点を入力してください"
+          ></textarea>
+
+        </div>
+
+      </section>
+
+
+      <!-- 操作ボタン -->
+      <div class="near-miss-action-area">
+
+        <button
+          id="draftButton"
+          type="button"
+          class="near-miss-draft-button"
+        >
+          一時保存
+        </button>
+
+        <button
+          id="submitButton"
+          type="submit"
+          class="near-miss-submit-button"
+        >
+          提出する
+        </button>
+
+      </div>
+
+    </form>
+
+
+    <!-- 本人履歴 -->
+    <section class="near-miss-history-card">
+
+      <h2>
+        提出履歴
+      </h2>
+
+      <div
+        id="nearMissHistoryList"
+        class="near-miss-history-list"
+      >
+
+        <p class="near-miss-history-empty">
+          読み込み中...
+        </p>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- 読み込み中表示 -->
+  <div
+    id="loadingOverlay"
+    class="near-miss-loading-overlay hidden"
+  >
+
+    <div class="near-miss-loading-box">
+
+      <div class="near-miss-loading-spinner"></div>
+
+      <p id="loadingMessage">
+        読み込み中...
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <script src="near-miss.js?v=1"></script>
+
+</body>
+
+</html>
