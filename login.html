@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <meta charset="UTF-8">
 
@@ -8,13 +9,16 @@
     content="width=device-width, initial-scale=1.0"
   >
 
-  <title>工事部ポータル ログイン</title>
+  <title>
+    工事部ポータル ログイン
+  </title>
 
   <link
     rel="stylesheet"
-    href="style.css"
+    href="style.css?v=8"
   >
 </head>
+
 
 <body>
 
@@ -23,39 +27,57 @@
     <section class="login-card">
 
       <div class="login-title-area">
-        <h1>綜合エンジニアリング㈱</h1>
-        <p>Staff Portal</p>
+
+        <h1>
+          綜合エンジニアリング㈱
+        </h1>
+
+        <p>
+          Staff Portal
+        </p>
+
       </div>
 
-      <label>
-        部
 
-        <select id="loginDepartment">
-          <option value="">
-            部を選択してください
-          </option>
-        </select>
-      </label>
+      <label for="loginEmployee">
 
-      <label>
         氏名
 
         <select
           id="loginEmployee"
+          autocomplete="username"
           disabled
         >
           <option value="">
-            先に部を選択してください
+            社員一覧を読み込み中...
           </option>
         </select>
+
       </label>
+
+
+      <label for="loginPassword">
+
+        パスワード
+
+        <input
+          id="loginPassword"
+          type="password"
+          autocomplete="current-password"
+          placeholder="パスワードを入力"
+        >
+
+      </label>
+
 
       <button
         id="loginButton"
         type="button"
+        disabled
       >
-        ログイン
+        読み込み中...
       </button>
+
 
       <p
         id="loginMessage"
@@ -66,7 +88,9 @@
 
   </main>
 
-  <script src="login.js"></script>
+
+  <script src="login.js?v=3"></script>
 
 </body>
+
 </html>
