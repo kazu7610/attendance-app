@@ -367,3 +367,40 @@ loadMonthlySchedules()
       `${escapeHtml(error.message)}` +
       `</p>`;
   });
+
+  /* =========================================
+   今日の日付をカレンダーアイコンへ表示
+========================================= */
+
+function displayTodayCalendarIcon() {
+  const calendarIcon =
+    document.getElementById(
+      "todayCalendarIcon"
+    );
+
+  if (!calendarIcon) {
+    return;
+  }
+
+  const today =
+    new Date();
+
+  const month =
+    today.getMonth() + 1;
+
+  const day =
+    today.getDate();
+
+  calendarIcon.innerHTML = `
+    <span class="today-calendar-month">
+      ${month}月
+    </span>
+
+    <span class="today-calendar-day">
+      ${day}
+    </span>
+  `;
+}
+
+
+displayTodayCalendarIcon();
