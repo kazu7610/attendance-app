@@ -3,7 +3,7 @@
 ========================================= */
 
 const CACHE_NAME =
-  "staff-portal-v3";
+  "staff-portal-v4";
 
 const CACHE_FILES = [
   "./",
@@ -13,6 +13,10 @@ const CACHE_FILES = [
   "./improvement.html",
   "./near-miss.html",
   "./schedule.html",
+  "./admin.html",
+  "./attendance-admin.html",
+  "./improvement-admin.html",
+  "./near-miss-admin.html",
   "./style.css",
   "./login.js",
   "./home.js",
@@ -20,7 +24,15 @@ const CACHE_FILES = [
   "./improvement.js",
   "./near-miss.js",
   "./schedule.js",
-  "./manifest.json"
+  "./admin.js",
+  "./attendance-admin.js",
+  "./improvement-admin.js",
+  "./near-miss-admin.js",
+  "./manifest.json",
+  "./icons/se-icon-192.png",
+  "./icons/se-icon-512.png",
+  "./icons/se-icon-512-maskable.png",
+  "./icons/se-apple-touch-icon.png"
 ];
 
 
@@ -35,9 +47,7 @@ self.addEventListener(
       caches
         .open(CACHE_NAME)
         .then(cache =>
-          cache.addAll(
-            CACHE_FILES
-          )
+          cache.addAll(CACHE_FILES)
         )
     );
 
@@ -47,7 +57,7 @@ self.addEventListener(
 
 
 /* =========================================
-   有効化
+   古いキャッシュを削除
 ========================================= */
 
 self.addEventListener(
@@ -61,14 +71,11 @@ self.addEventListener(
             cacheNames
               .filter(
                 cacheName =>
-                  cacheName !==
-                  CACHE_NAME
+                  cacheName !== CACHE_NAME
               )
               .map(
                 cacheName =>
-                  caches.delete(
-                    cacheName
-                  )
+                  caches.delete(cacheName)
               )
           )
         )
@@ -80,7 +87,7 @@ self.addEventListener(
 
 
 /* =========================================
-   通信時の処理
+   通信処理
 ========================================= */
 
 self.addEventListener(
@@ -89,32 +96,89 @@ self.addEventListener(
     const request =
       event.request;
 
+    const requestUrl =
+      new URL(request.url);
+
+    /*
+      GET以外はキャッシュしない
+    */
+
+    if (request.method !== "GET") {
+      return;
+    }
+
+    /*
+      SupabaseやGoogleなど、
+      外部通信はService Workerで触らない
+    */
+
     if (
-      request.method !== "GET"
+      requestUrl.origin !==
+      self.location.origin
     ) {
       return;
     }
 
-    event.respondWith(
-      fetch(request)
-        .then(response => {
-          const responseCopy =
-            response.clone();
+    /*
+      HTMLページはネットを優先する
+      更新があればすぐ反映する
+    */
 
-          caches
-            .open(CACHE_NAME)
-            .then(cache => {
-              cache.put(
-                request,
-                responseCopy
+    if (
+      request.mode === "navigate"
+    ) {
+      event.respondWith(
+        fetch(request)
+          .then(response => {
+            const copy =
+              response.clone();
+
+            caches
+              .open(CACHE_NAME)
+              .then(cache =>
+                cache.put(request, copy)
               );
-            });
 
-          return response;
+            return response;
+          })
+          .catch(() =>
+            caches.match(request)
+          )
+      );
+
+      return;
+    }
+
+    /*
+      CSS・JS・画像はキャッシュを優先し、
+      ボタン操作後の表示を速くする
+    */
+
+    event.respondWith(
+      caches
+        .match(request)
+        .then(cachedResponse => {
+          if (cachedResponse) {
+            return cachedResponse;
+          }
+
+          return fetch(request)
+            .then(response => {
+              const copy =
+                response.clone();
+
+              caches
+                .open(CACHE_NAME)
+                .then(cache =>
+                  cache.put(
+                    request,
+                    copy
+                  )
+                );
+
+              return response;
+            });
         })
-        .catch(() =>
-          caches.match(request)
-        )
     );
   }
 );
