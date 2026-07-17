@@ -5,9 +5,6 @@
 const SUPABASE_URL =
   "https://fgmvmbjnoyagnpygcbky.supabase.co";
 
-const SUPABASE_KEY =
-  "sb_publishable_pePa2xjccUZB6xpneNhCRQ_pJJ5fn6h";
-
 
 /* =========================================
    HTML要素
@@ -99,22 +96,9 @@ const weeks = [
   "火",
   "水",
   "木",
-  "金",
+  "金",   
   "土"
 ];
-
-
-/* =========================================
-   Supabase共通ヘッダー
-========================================= */
-
-function supabaseHeaders() {
-  return {
-    apikey: SUPABASE_KEY,
-    Authorization: `Bearer ${SUPABASE_KEY}`,
-    "Content-Type": "application/json"
-  };
-}
 
 
 /* =========================================
@@ -127,21 +111,28 @@ async function loadEmployees() {
     `?select=id,department,name,active` +
     `&order=department.asc,id.asc`;
 
-  const response = await fetch(url, {
-    headers: supabaseHeaders()
-  });
+  const response =
+    await portalFetch(url);
 
   if (!response.ok) {
+    const errorText =
+      await response.text();
+
+    console.error(errorText);
+
     throw new Error(
       "社員マスタの読込に失敗しました"
     );
   }
 
-  employees = await response.json();
+  employees =
+    await response.json();
 
-  employees = employees.filter(
-    item => item.active !== false
-  );
+  employees =
+    employees.filter(
+      item =>
+        item.active !== false
+    );
 
   makeDepartmentOptions();
 }
@@ -161,17 +152,22 @@ async function loadSites() {
     `&visible=eq.true` +
     `&order=display_order.asc`;
 
-  const response = await fetch(url, {
-    headers: supabaseHeaders()
-  });
+  const response =
+    await portalFetch(url);
 
   if (!response.ok) {
+    const errorText =
+      await response.text();
+
+    console.error(errorText);
+
     throw new Error(
       "現場マスタの読込に失敗しました"
     );
   }
 
-  sites = await response.json();
+  sites =
+    await response.json();
 }
 
 
@@ -185,22 +181,28 @@ async function loadHolidays() {
     `?select=date,day_type,note` +
     `&order=date.asc`;
 
-  const response = await fetch(url, {
-    headers: supabaseHeaders()
-  });
+  const response =
+    await portalFetch(url);
 
   if (!response.ok) {
+    const errorText =
+      await response.text();
+
+    console.error(errorText);
+
     throw new Error(
       "休日カレンダーの読込に失敗しました"
     );
   }
 
-  const data = await response.json();
+  const data =
+    await response.json();
 
   holidays = {};
 
   data.forEach(item => {
-    holidays[item.date] = item;
+    holidays[item.date] =
+      item;
   });
 }
 
@@ -1435,7 +1437,9 @@ function makeAttendanceRecords(status) {
 
 async function deleteExistingAttendance() {
   const range =
-    getAttendanceRange(month.value);
+    getAttendanceRange(
+      month.value
+    );
 
   const url =
     `${SUPABASE_URL}/rest/v1/attendance` +
@@ -1444,14 +1448,17 @@ async function deleteExistingAttendance() {
     `&work_date=lt.${range.nextFirstDay}`;
 
   const response =
-    await fetch(url, {
-      method: "DELETE",
+    await portalFetch(
+      url,
+      {
+        method: "DELETE",
 
-      headers: {
-        ...supabaseHeaders(),
-        Prefer: "return=minimal"
+        headers: {
+          Prefer:
+            "return=minimal"
+        }
       }
-    });
+    );
 
   if (!response.ok) {
     const errorText =
@@ -1498,10 +1505,15 @@ async function saveAttendanceWithStatus(
   }
 
   const records =
-    makeAttendanceRecords(status);
+    makeAttendanceRecords(
+      status
+    );
 
-  saveButton.disabled = true;
-  submitButton.disabled = true;
+  saveButton.disabled =
+    true;
+
+  submitButton.disabled =
+    true;
 
   try {
     await deleteExistingAttendance();
@@ -1510,17 +1522,26 @@ async function saveAttendanceWithStatus(
       `${SUPABASE_URL}/rest/v1/attendance`;
 
     const response =
-      await fetch(url, {
-        method: "POST",
+      await portalFetch(
+        url,
+        {
+          method:
+            "POST",
 
-        headers: {
-          ...supabaseHeaders(),
-          Prefer: "return=minimal"
-        },
+          headers: {
+            "Content-Type":
+              "application/json",
 
-        body:
-          JSON.stringify(records)
-      });
+            Prefer:
+              "return=minimal"
+          },
+
+          body:
+            JSON.stringify(
+              records
+            )
+        }
+      );
 
     if (!response.ok) {
       const errorText =
@@ -1533,22 +1554,30 @@ async function saveAttendanceWithStatus(
       );
     }
 
-    currentStatus = status;
+    currentStatus =
+      status;
 
     applyStatusToScreen();
 
-    alert(successMessage);
+    alert(
+      successMessage
+    );
 
     return true;
 
   } catch (error) {
     console.error(error);
 
-    alert(error.message);
+    alert(
+      error.message
+    );
 
     return false;
 
-  } finally {
+    } finally {
+    saveButton.disabled = false;
+    submitButton.disabled = false;
+
     applyStatusToScreen();
   }
 }
@@ -1744,7 +1773,8 @@ function restoreAttendanceRow(
 ========================================= */
 
 async function loadAttendance() {
-  currentStatus = "draft";
+  currentStatus =
+    "draft";
 
   if (
     !employee.value ||
@@ -1756,16 +1786,10 @@ async function loadAttendance() {
     return;
   }
 
-  /*
-    対象月の締め期間を取得する。
-
-    例：
-    対象月 2026-07
-    2026-06-21 ～ 2026-07-20
-  */
-
   const range =
-    getAttendanceRange(month.value);
+    getAttendanceRange(
+      month.value
+    );
 
   const url =
     `${SUPABASE_URL}/rest/v1/attendance` +
@@ -1776,10 +1800,7 @@ async function loadAttendance() {
     `&order=work_date.asc`;
 
   const response =
-    await fetch(url, {
-      headers:
-        supabaseHeaders()
-    });
+    await portalFetch(url);
 
   if (!response.ok) {
     const errorText =
@@ -1795,11 +1816,6 @@ async function loadAttendance() {
   const attendanceData =
     await response.json();
 
-  /*
-    1件でも保存データがあれば、
-    そのstatusを締め期間全体の状態として使う。
-  */
-
   if (
     attendanceData.length > 0
   ) {
@@ -1810,18 +1826,18 @@ async function loadAttendance() {
 
   const dataByDate = {};
 
-  attendanceData.forEach(item => {
-    dataByDate[item.work_date] =
-      item;
-  });
-
-  /*
-    画面の日付と保存日付を照合し、
-    各日の入力内容を復元する。
-  */
+  attendanceData.forEach(
+    item => {
+      dataByDate[
+        item.work_date
+      ] = item;
+    }
+  );
 
   document
-    .querySelectorAll(".day-row")
+    .querySelectorAll(
+      ".day-row"
+    )
     .forEach(row => {
       const item =
         dataByDate[
@@ -1874,6 +1890,7 @@ document
       row.querySelector(".end").disabled = true;
     }
   });
+    saveButton.disabled = false;
     saveButton.textContent = "一時保存";
 
     submitButton.disabled = false;

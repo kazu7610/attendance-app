@@ -5,9 +5,6 @@
 const SUPABASE_URL =
   "https://fgmvmbjnoyagnpygcbky.supabase.co";
 
-const SUPABASE_KEY =
-  "sb_publishable_pePa2xjccUZB6xpneNhCRQ_pJJ5fn6h";
-
 
 /* =========================================
    HTML要素
@@ -25,19 +22,6 @@ const monthlyScheduleList =
 
 
 /* =========================================
-   Supabase共通ヘッダー
-========================================= */
-
-function supabaseHeaders() {
-  return {
-    apikey: SUPABASE_KEY,
-    Authorization:
-      `Bearer ${SUPABASE_KEY}`
-  };
-}
-
-
-/* =========================================
    ログイン情報取得
 ========================================= */
 
@@ -52,10 +36,15 @@ function getLoginUser() {
   }
 
   try {
-    return JSON.parse(savedUser);
+    return JSON.parse(
+      savedUser
+    );
 
   } catch (error) {
-    console.error(error);
+    console.error(
+      "ログイン情報の読込に失敗しました",
+      error
+    );
 
     return null;
   }
@@ -67,7 +56,8 @@ function getLoginUser() {
 ========================================= */
 
 function currentMonth() {
-  const date = new Date();
+  const date =
+    new Date();
 
   const year =
     date.getFullYear();
@@ -88,7 +78,9 @@ function currentMonth() {
    翌月1日取得
 ========================================= */
 
-function nextMonthFirstDay(yearMonth) {
+function nextMonthFirstDay(
+  yearMonth
+) {
   const [
     year,
     monthValue
@@ -115,7 +107,9 @@ function nextMonthFirstDay(yearMonth) {
       "0"
     );
 
-  return `${nextYear}-${nextMonth}-01`;
+  return (
+    `${nextYear}-${nextMonth}-01`
+  );
 }
 
 
@@ -123,7 +117,9 @@ function nextMonthFirstDay(yearMonth) {
    日付表示
 ========================================= */
 
-function formatScheduleDate(dateText) {
+function formatScheduleDate(
+  dateText
+) {
   const date =
     new Date(
       `${dateText}T00:00:00`
@@ -151,12 +147,17 @@ function formatScheduleDate(dateText) {
    時刻表示
 ========================================= */
 
-function formatScheduleTime(timeText) {
+function formatScheduleTime(
+  timeText
+) {
   if (!timeText) {
     return "";
   }
 
-  return timeText.slice(0, 5);
+  return timeText.slice(
+    0,
+    5
+  );
 }
 
 
@@ -165,12 +166,29 @@ function formatScheduleTime(timeText) {
 ========================================= */
 
 function escapeHtml(value) {
-  return String(value ?? "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+  return String(
+    value ?? ""
+  )
+    .replaceAll(
+      "&",
+      "&amp;"
+    )
+    .replaceAll(
+      "<",
+      "&lt;"
+    )
+    .replaceAll(
+      ">",
+      "&gt;"
+    )
+    .replaceAll(
+      '"',
+      "&quot;"
+    )
+    .replaceAll(
+      "'",
+      "&#039;"
+    );
 }
 
 
@@ -183,6 +201,8 @@ async function loadMonthlySchedules() {
     getLoginUser();
 
   if (!loginUser) {
+    clearPortalLoginInformation();
+
     window.location.href =
       "login.html";
 
@@ -207,52 +227,57 @@ async function loadMonthlySchedules() {
     );
 
   const userDepartment =
-  loginUser.department || "";
+    loginUser.department || "";
 
-const url =
-  `${SUPABASE_URL}/rest/v1/schedules` +
-  `?select=*` +
-  `&schedule_date=gte.${firstDay}` +
-  `&schedule_date=lt.${nextFirstDay}` +
-  `&order=schedule_date.asc,start_time.asc`;
+  const url =
+    `${SUPABASE_URL}/rest/v1/schedules` +
+    `?select=*` +
+    `&schedule_date=gte.${firstDay}` +
+    `&schedule_date=lt.${nextFirstDay}` +
+    `&order=schedule_date.asc,start_time.asc`;
 
   const response =
-    await fetch(url, {
-      headers: supabaseHeaders()
-    });
+    await portalFetch(url);
 
   if (!response.ok) {
     const errorText =
       await response.text();
 
-    console.error(errorText);
+    console.error(
+      errorText
+    );
 
     throw new Error(
       "予定表の読込に失敗しました"
     );
   }
 
-const schedules =
-  await response.json();
+  const schedules =
+    await response.json();
 
-  console.log("取得した予定データ：", schedules);
+  /*
+    現在はRLSがまだOFFなので、
+    画面側でも対象部署を絞り込む。
 
-/*
-  全員向け、または
-  ログインした人の部署向けだけ表示する
-*/
+    RLS対応後はSupabase側でも、
+    全員向けまたは本人の部署向けだけを返す。
+  */
 
-const visibleSchedules =
-  schedules.filter(item => {
-    return (
-      item.target_scope === "all" ||
-      item.target_scope === userDepartment
+  const visibleSchedules =
+    schedules.filter(
+      item => {
+        return (
+          item.target_scope ===
+            "all" ||
+          item.target_scope ===
+            userDepartment
+        );
+      }
     );
-  });
 
-renderMonthlySchedules(
-  visibleSchedules
-);
+  renderMonthlySchedules(
+    visibleSchedules
+  );
 }
 
 
@@ -263,9 +288,12 @@ renderMonthlySchedules(
 function renderMonthlySchedules(
   schedules
 ) {
-  monthlyScheduleList.innerHTML = "";
+  monthlyScheduleList.innerHTML =
+    "";
 
-  if (schedules.length === 0) {
+  if (
+    schedules.length === 0
+  ) {
     monthlyScheduleList.innerHTML =
       '<p class="schedule-empty-message">' +
       'この月の予定はありません。' +
@@ -274,60 +302,91 @@ function renderMonthlySchedules(
     return;
   }
 
-  schedules.forEach(item => {
-    const scheduleItem =
-      document.createElement("article");
+  schedules.forEach(
+    item => {
+      const scheduleItem =
+        document.createElement(
+          "article"
+        );
 
-    scheduleItem.className =
-      "monthly-schedule-item";
+      scheduleItem.className =
+        "monthly-schedule-item";
 
-    const timeText =
-      formatScheduleTime(
-        item.start_time
-      );
+      const timeText =
+        formatScheduleTime(
+          item.start_time
+        );
 
-    scheduleItem.innerHTML = `
-      <div class="monthly-schedule-date">
-        ${escapeHtml(
-          formatScheduleDate(
-            item.schedule_date
-          )
-        )}
-      </div>
+      scheduleItem.innerHTML = `
+        <div class="monthly-schedule-date">
+          ${escapeHtml(
+            formatScheduleDate(
+              item.schedule_date
+            )
+          )}
+        </div>
 
-      <div class="monthly-schedule-content">
+        <div class="monthly-schedule-content">
 
-        ${
-          timeText
-            ? `
-              <div class="monthly-schedule-time">
-                ${escapeHtml(timeText)}
-              </div>
-            `
-            : ""
-        }
+          ${
+            timeText
+              ? `
+                <div class="monthly-schedule-time">
+                  ${escapeHtml(
+                    timeText
+                  )}
+                </div>
+              `
+              : ""
+          }
 
-        <h3>
-          ${escapeHtml(item.title)}
-        </h3>
+          <h3>
+            ${escapeHtml(
+              item.title
+            )}
+          </h3>
 
-        ${
-          item.details
-            ? `
-              <p>
-                ${escapeHtml(item.details)}
-              </p>
-            `
-            : ""
-        }
+          ${
+            item.details
+              ? `
+                <p>
+                  ${escapeHtml(
+                    item.details
+                  )}
+                </p>
+              `
+              : ""
+          }
 
-      </div>
-    `;
+        </div>
+      `;
 
-    monthlyScheduleList.appendChild(
-      scheduleItem
-    );
-  });
+      monthlyScheduleList
+        .appendChild(
+          scheduleItem
+        );
+    }
+  );
+}
+
+
+/* =========================================
+   エラー表示
+========================================= */
+
+function showScheduleError(
+  error
+) {
+  console.error(
+    error
+  );
+
+  monthlyScheduleList.innerHTML =
+    '<p class="schedule-empty-message">' +
+    `${escapeHtml(
+      error.message
+    )}` +
+    '</p>';
 }
 
 
@@ -339,14 +398,9 @@ scheduleMonth.addEventListener(
   "change",
   () => {
     loadMonthlySchedules()
-      .catch(error => {
-        console.error(error);
-
-        monthlyScheduleList.innerHTML =
-          `<p class="schedule-empty-message">` +
-          `${escapeHtml(error.message)}` +
-          `</p>`;
-      });
+      .catch(
+        showScheduleError
+      );
   }
 );
 
@@ -359,16 +413,12 @@ scheduleMonth.value =
   currentMonth();
 
 loadMonthlySchedules()
-  .catch(error => {
-    console.error(error);
+  .catch(
+    showScheduleError
+  );
 
-    monthlyScheduleList.innerHTML =
-      `<p class="schedule-empty-message">` +
-      `${escapeHtml(error.message)}` +
-      `</p>`;
-  });
 
-  /* =========================================
+/* =========================================
    今日の日付をカレンダーアイコンへ表示
 ========================================= */
 
@@ -401,6 +451,5 @@ function displayTodayCalendarIcon() {
     </span>
   `;
 }
-
 
 displayTodayCalendarIcon();

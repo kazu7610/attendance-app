@@ -5,21 +5,7 @@
 const SUPABASE_URL =
   "https://fgmvmbjnoyagnpygcbky.supabase.co";
 
-const SUPABASE_KEY =
-  "sb_publishable_pePa2xjccUZB6xpneNhCRQ_pJJ5fn6h";
 
-
-/* =========================================
-   Supabase共通ヘッダー
-========================================= */
-
-function supabaseHeaders() {
-  return {
-    apikey: SUPABASE_KEY,
-    Authorization:
-      `Bearer ${SUPABASE_KEY}`
-  };
-}
 /* =========================================
    HTML要素
 ========================================= */
@@ -38,15 +24,17 @@ const adminMenu =
   document.getElementById(
     "adminMenu"
   );
-  
+
 const todayScheduleList =
   document.getElementById(
     "todayScheduleList"
   );
+
 const improvementThemeSummary =
   document.getElementById(
     "improvementThemeSummary"
   );
+
 
 /* =========================================
    ログイン情報取得
@@ -97,47 +85,48 @@ function showHomeScreen() {
     `${loginUser.name}さん、お疲れさまです`;
 
   /*
-    ひとまず工事部を管理者として表示
-    あとで管理者専用項目を社員マスタへ追加する
+    管理権限がある場合だけ、
+    管理画面メニューを表示する。
   */
 
   if (
-  loginUser.adminScope &&
-  loginUser.adminScope !== "none"
-) {
-  adminMenu.classList.remove(
-    "hidden"
-  );
-}
+    loginUser.adminScope &&
+    loginUser.adminScope !== "none"
+  ) {
+    adminMenu.classList.remove(
+      "hidden"
+    );
+  }
 
-/*
-  本日の予定を読み込む
-*/
-
-loadTodaySchedules(loginUser)
-  .catch(error => {
-    console.error(error);
-
-    todayScheduleList.innerHTML =
-      '<p class="schedule-empty-message">' +
-      `${escapeHtml(error.message)}` +
-      '</p>';
-  });
   /*
-  公開中の向上提案テーマを読み込む
-*/
+    本日の予定を読み込む
+  */
 
-loadImprovementTheme()
-  .catch(error => {
-    console.error(error);
+  loadTodaySchedules(loginUser)
+    .catch(error => {
+      console.error(error);
 
-    if (improvementThemeSummary) {
-      improvementThemeSummary.textContent =
-        "今月のテーマを読み込めませんでした";
-    }
-  });
-  
+      todayScheduleList.innerHTML =
+        '<p class="schedule-empty-message">' +
+        `${escapeHtml(error.message)}` +
+        '</p>';
+    });
+
+  /*
+    公開中の向上提案テーマを読み込む
+  */
+
+  loadImprovementTheme()
+    .catch(error => {
+      console.error(error);
+
+      if (improvementThemeSummary) {
+        improvementThemeSummary.textContent =
+          "今月のテーマを読み込めませんでした";
+      }
+    });
 }
+
 
 /* =========================================
    今日の日付取得
@@ -167,7 +156,9 @@ function todayDateValue() {
    時刻表示
 ========================================= */
 
-function formatScheduleTime(timeText) {
+function formatScheduleTime(
+  timeText
+) {
   if (!timeText) {
     return "";
   }
@@ -216,11 +207,13 @@ async function loadTodaySchedules(
       today.getDate() + 1
     );
 
-
   /*
     YYYY-MM-DD形式へ変換
   */
-  function toLocalDateString(date) {
+
+  function toLocalDateString(
+    date
+  ) {
     const year =
       date.getFullYear();
 
@@ -237,17 +230,16 @@ async function loadTodaySchedules(
     return `${year}-${month}-${day}`;
   }
 
-
   const todayText =
     toLocalDateString(today);
 
   const tomorrowText =
     toLocalDateString(tomorrow);
 
-
   /*
     今日〜明日の予定を取得
   */
+
   const url =
     `${SUPABASE_URL}/rest/v1/schedules` +
     `?select=*` +
@@ -255,13 +247,8 @@ async function loadTodaySchedules(
     `&schedule_date=lte.${tomorrowText}` +
     `&order=schedule_date.asc,start_time.asc`;
 
-
   const response =
-    await fetch(url, {
-      headers:
-        supabaseHeaders()
-    });
-
+    await portalFetch(url);
 
   if (!response.ok) {
     const errorText =
@@ -274,26 +261,25 @@ async function loadTodaySchedules(
     );
   }
 
-
   const schedules =
     await response.json();
 
   const userDepartment =
     loginUser.department || "";
 
-
   /*
     全員向け、または
     ログインした人の部署向けだけ表示
   */
+
   const visibleSchedules =
     schedules.filter(item => {
       return (
         item.target_scope === "all" ||
-        item.target_scope === userDepartment
+        item.target_scope ===
+          userDepartment
       );
     });
-
 
   renderTodaySchedules(
     visibleSchedules
@@ -310,19 +296,23 @@ function renderTodaySchedules(
 ) {
   todayScheduleList.innerHTML = "";
 
-  const today = new Date();
+  const today =
+    new Date();
 
-  const tomorrow = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    today.getDate() + 1
-  );
-
+  const tomorrow =
+    new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() + 1
+    );
 
   /*
-    日付を YYYY-MM-DD 形式へ変換
+    日付をYYYY-MM-DD形式へ変換
   */
-  function toLocalDateString(date) {
+
+  function toLocalDateString(
+    date
+  ) {
     const year =
       date.getFullYear();
 
@@ -339,17 +329,16 @@ function renderTodaySchedules(
     return `${year}-${month}-${day}`;
   }
 
-
   const todayText =
     toLocalDateString(today);
 
   const tomorrowText =
     toLocalDateString(tomorrow);
 
-
   /*
     今日と明日の予定を分ける
   */
+
   const todaySchedules =
     schedules.filter(
       item =>
@@ -364,18 +353,22 @@ function renderTodaySchedules(
         tomorrowText
     );
 
-
   /*
     1日分の予定を表示
   */
+
   function renderDaySchedules(
     label,
     daySchedules,
     emptyMessage
   ) {
-    if (daySchedules.length === 0) {
+    if (
+      daySchedules.length === 0
+    ) {
       const emptyRow =
-        document.createElement("p");
+        document.createElement(
+          "p"
+        );
 
       emptyRow.className =
         "schedule-empty-message";
@@ -390,10 +383,11 @@ function renderTodaySchedules(
       return;
     }
 
-
     daySchedules.forEach(item => {
       const scheduleRow =
-        document.createElement("div");
+        document.createElement(
+          "div"
+        );
 
       scheduleRow.className =
         "today-schedule-row";
@@ -429,7 +423,6 @@ function renderTodaySchedules(
     });
   }
 
-
   renderDaySchedules(
     "本日",
     todaySchedules,
@@ -442,6 +435,8 @@ function renderTodaySchedules(
     "明日の予定はありません。"
   );
 }
+
+
 /* =========================================
    向上提案テーマ読込
 ========================================= */
@@ -462,10 +457,7 @@ async function loadImprovementTheme() {
     `&limit=1`;
 
   const response =
-    await fetch(url, {
-      headers:
-        supabaseHeaders()
-    });
+    await portalFetch(url);
 
   if (!response.ok) {
     const errorText =
@@ -481,7 +473,9 @@ async function loadImprovementTheme() {
   const settings =
     await response.json();
 
-  if (settings.length === 0) {
+  if (
+    settings.length === 0
+  ) {
     improvementThemeSummary.textContent =
       "今月のテーマは準備中です";
 
@@ -511,6 +505,7 @@ async function loadImprovementTheme() {
     `${targetMonth}月のテーマ：${summaryText}`;
 }
 
+
 /* =========================================
    ログアウト
 ========================================= */
@@ -525,9 +520,7 @@ function logout() {
     return;
   }
 
-  localStorage.removeItem(
-    "portalLoginUser"
-  );
+  clearPortalLoginInformation();
 
   window.location.href =
     "login.html";
@@ -550,31 +543,56 @@ logoutButton.addEventListener(
 
 showHomeScreen();
 
-// 本日の予定カードに今日の日付を表示
+
+/* =========================================
+   本日の予定カードに日付表示
+========================================= */
+
 function displayTodayDate() {
-  const today = new Date();
+  const today =
+    new Date();
 
-  const monthElement = document.getElementById("todayDateMonth");
-  const dayElement = document.getElementById("todayDateDay");
+  const monthElement =
+    document.getElementById(
+      "todayDateMonth"
+    );
 
-  if (!monthElement || !dayElement) return;
+  const dayElement =
+    document.getElementById(
+      "todayDateDay"
+    );
 
-  monthElement.textContent = `${today.getMonth() + 1}月`;
-  dayElement.textContent = today.getDate();
+  if (
+    !monthElement ||
+    !dayElement
+  ) {
+    return;
+  }
+
+  monthElement.textContent =
+    `${today.getMonth() + 1}月`;
+
+  dayElement.textContent =
+    today.getDate();
 }
 
 displayTodayDate();
+
 
 /* =========================================
    Service Worker登録
 ========================================= */
 
-if ("serviceWorker" in navigator) {
+if (
+  "serviceWorker" in navigator
+) {
   window.addEventListener(
     "load",
     () => {
       navigator.serviceWorker
-        .register("./service-worker.js")
+        .register(
+          "./service-worker.js"
+        )
         .then(registration => {
           console.log(
             "Service Worker登録成功",
@@ -591,6 +609,7 @@ if ("serviceWorker" in navigator) {
   );
 }
 
+
 /* =========================================
    Googleカレンダーアプリを開く
 ========================================= */
@@ -600,14 +619,18 @@ const deliveryCalendarLink =
     "deliveryCalendarLink"
   );
 
-function openGoogleCalendar(event) {
+function openGoogleCalendar(
+  event
+) {
   event.preventDefault();
 
   const userAgent =
     navigator.userAgent || "";
 
   const isAndroid =
-    /Android/i.test(userAgent);
+    /Android/i.test(
+      userAgent
+    );
 
   const isIPhoneOrIPad =
     /iPhone|iPad|iPod/i.test(
@@ -655,8 +678,9 @@ function openGoogleCalendar(event) {
 }
 
 if (deliveryCalendarLink) {
-  deliveryCalendarLink.addEventListener(
-    "click",
-    openGoogleCalendar
-  );
+  deliveryCalendarLink
+    .addEventListener(
+      "click",
+      openGoogleCalendar
+    );
 }

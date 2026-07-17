@@ -261,8 +261,8 @@ function saveLoginInformation(
   authData
 ) {
   /*
-    今までの画面との互換性を保つため、
-    portalLoginUserはそのまま使用する。
+    既存画面との互換性を保つため、
+    portalLoginUserは引き続き保存する。
   */
 
   const loginUser = {
@@ -289,36 +289,12 @@ function saveLoginInformation(
 
 
   /*
-    今後RLSで使う認証セッション。
+    accessToken・refreshTokenなどは、
+    portal-auth.jsの共通処理で保存する。
   */
 
-  const authSession = {
-    accessToken:
-      authData.access_token,
-
-    refreshToken:
-      authData.refresh_token,
-
-    expiresIn:
-      authData.expires_in,
-
-    expiresAt:
-      Date.now() +
-      Number(
-        authData.expires_in || 0
-      ) *
-      1000,
-
-    tokenType:
-      authData.token_type || "bearer",
-
-    user:
-      authData.user
-  };
-
-  localStorage.setItem(
-    "portalAuthSession",
-    JSON.stringify(authSession)
+  savePortalAuthSession(
+    authData
   );
 }
 
@@ -328,13 +304,7 @@ function saveLoginInformation(
 ========================================= */
 
 function clearLoginInformation() {
-  localStorage.removeItem(
-    "portalLoginUser"
-  );
-
-  localStorage.removeItem(
-    "portalAuthSession"
-  );
+  clearPortalLoginInformation();
 }
 
 
