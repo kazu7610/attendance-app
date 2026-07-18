@@ -58,10 +58,6 @@ function checkAdminAccess() {
 const SUPABASE_URL =
   "https://fgmvmbjnoyagnpygcbky.supabase.co";
 
-const SUPABASE_KEY =
-  "sb_publishable_pePa2xjccUZB6xpneNhCRQ_pJJ5fn6h";
-
-
 /* =========================================
    HTML要素
 ========================================= */
@@ -120,20 +116,6 @@ const adminScheduleList =
   document.getElementById(
     "adminScheduleList"
   );
-
-
-/* =========================================
-   Supabase共通ヘッダー
-========================================= */
-
-function supabaseHeaders() {
-  return {
-    apikey: SUPABASE_KEY,
-
-    Authorization:
-      `Bearer ${SUPABASE_KEY}`
-  };
-}
 
 
 /* =========================================
@@ -213,22 +195,23 @@ async function addSchedule() {
     }
 
     const response =
-      await fetch(url, {
-        method,
+      await portalFetch(
+        url,
+        {
+          method,
 
-        headers: {
-          ...supabaseHeaders(),
+          headers: {
+            "Content-Type":
+              "application/json",
 
-          "Content-Type":
-            "application/json",
+            Prefer:
+              "return=minimal"
+          },
 
-          Prefer:
-            "return=minimal"
-        },
-
-        body:
-          JSON.stringify(record)
-      });
+          body:
+            JSON.stringify(record)
+        }
+      );
 
     if (!response.ok) {
       const errorText =
@@ -313,10 +296,7 @@ async function loadAdminSchedules() {
       `&order=schedule_date.desc,start_time.asc`;
 
     const response =
-      await fetch(url, {
-        headers:
-          supabaseHeaders()
-      });
+      await portalFetch(url);
 
     if (!response.ok) {
       const errorText =
@@ -345,7 +325,6 @@ async function loadAdminSchedules() {
       `</p>`;
   }
 }
-
 
 /* =========================================
    予定一覧表示
@@ -537,16 +516,18 @@ async function deleteSchedule(
       `?id=eq.${schedule.id}`;
 
     const response =
-      await fetch(url, {
-        method: "DELETE",
+      await portalFetch(
+        url,
+        {
+          method:
+            "DELETE",
 
-        headers: {
-          ...supabaseHeaders(),
-
-          Prefer:
-            "return=minimal"
+          headers: {
+            Prefer:
+              "return=minimal"
+          }
         }
-      });
+      );
 
     if (!response.ok) {
       const errorText =

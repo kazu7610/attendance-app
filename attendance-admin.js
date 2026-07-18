@@ -64,9 +64,6 @@ function checkAdminAccess() {
 const SUPABASE_URL =
   "https://fgmvmbjnoyagnpygcbky.supabase.co";
 
-const SUPABASE_KEY =
-  "sb_publishable_pePa2xjccUZB6xpneNhCRQ_pJJ5fn6h";
-
 
 /* =========================================
    HTML要素
@@ -113,18 +110,6 @@ const closeDetailButton =
 let employees = [];
 let sites = [];
 let monthlyAttendance = [];
-
-
-/* =========================================
-   Supabase共通ヘッダー
-========================================= */
-
-function supabaseHeaders() {
-  return {
-    apikey: SUPABASE_KEY,
-    Authorization: `Bearer ${SUPABASE_KEY}`
-  };
-}
 
 
 /* =========================================
@@ -256,6 +241,7 @@ function formatDate(dateText) {
 /* =========================================
    社員一覧読込
 ========================================= */
+
 async function loadEmployees() {
   const url =
     `${SUPABASE_URL}/rest/v1/employees` +
@@ -266,13 +252,7 @@ async function loadEmployees() {
     `&order=department.asc,id.asc`;
 
   const response =
-    await fetch(
-      url,
-      {
-        headers:
-          supabaseHeaders()
-      }
-    );
+    await portalFetch(url);
 
   if (!response.ok) {
     const errorText =
@@ -300,9 +280,7 @@ async function loadSites() {
     `id,display_name,input_code,construction_no,site_type`;
 
   const response =
-    await fetch(url, {
-      headers: supabaseHeaders()
-    });
+    await portalFetch(url);
 
   if (!response.ok) {
     const errorText =
@@ -327,19 +305,14 @@ async function loadSites() {
 async function loadMonthlyAttendance() {
   if (!month.value) {
     monthlyAttendance = [];
+
     return;
   }
 
-  /*
-    20日締めの検索期間を取得する。
-
-    例：
-    対象月 2026-07
-    2026-06-21 ～ 2026-07-20
-  */
-
   const range =
-    getAttendanceRange(month.value);
+    getAttendanceRange(
+      month.value
+    );
 
   const url =
     `${SUPABASE_URL}/rest/v1/attendance` +
@@ -349,9 +322,7 @@ async function loadMonthlyAttendance() {
     `&order=employee_id.asc,work_date.asc`;
 
   const response =
-    await fetch(url, {
-      headers: supabaseHeaders()
-    });
+    await portalFetch(url);
 
   if (!response.ok) {
     const errorText =
@@ -1160,9 +1131,3 @@ if (checkAdminAccess()) {
   loadAdminScreen();
 }
 
-
-/* =========================================
-   初期読込
-========================================= */
-
-loadAdminSchedules();

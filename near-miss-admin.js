@@ -59,22 +59,6 @@ function checkAdminAccess() {
 const SUPABASE_URL =
   "https://fgmvmbjnoyagnpygcbky.supabase.co";
 
-const SUPABASE_KEY =
-  "sb_publishable_pePa2xjccUZB6xpneNhCRQ_pJJ5fn6h";
-
-
-function supabaseHeaders() {
-  return {
-    apikey:
-      SUPABASE_KEY,
-
-    Authorization:
-      `Bearer ${SUPABASE_KEY}`,
-
-    "Content-Type":
-      "application/json"
-  };
-}
 
 
 /* =========================================
@@ -479,13 +463,7 @@ async function loadDepartmentOptions() {
   }
 
   const response =
-    await fetch(
-      url,
-      {
-        headers:
-          supabaseHeaders()
-      }
-    );
+    await portalFetch(url);
 
   if (!response.ok) {
     const errorText =
@@ -501,16 +479,15 @@ async function loadDepartmentOptions() {
   const employees =
     await response.json();
 
-  const departments =
-    [
-      ...new Set(
-        employees
-          .map(employee =>
-            employee.department
-          )
-          .filter(Boolean)
-      )
-    ];
+  const departments = [
+    ...new Set(
+      employees
+        .map(employee =>
+          employee.department
+        )
+        .filter(Boolean)
+    )
+  ];
 
   departmentSelect.innerHTML = "";
 
@@ -608,13 +585,7 @@ async function loadNearMissRecords() {
   }
 
   const response =
-    await fetch(
-      url,
-      {
-        headers:
-          supabaseHeaders()
-      }
-    );
+    await portalFetch(url);
 
   if (!response.ok) {
     const errorText =

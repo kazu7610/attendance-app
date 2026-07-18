@@ -5,25 +5,6 @@
 const SUPABASE_URL =
   "https://fgmvmbjnoyagnpygcbky.supabase.co";
 
-const SUPABASE_KEY =
-  "sb_publishable_pePa2xjccUZB6xpneNhCRQ_pJJ5fn6h";
-
-
-/* =========================================
-   Supabase共通ヘッダー
-========================================= */
-
-function supabaseHeaders() {
-  return {
-    apikey: SUPABASE_KEY,
-
-    Authorization:
-      `Bearer ${SUPABASE_KEY}`,
-
-    "Content-Type":
-      "application/json"
-  };
-}
 
 
 /* =========================================
@@ -641,13 +622,7 @@ async function loadSites() {
     `?select=*`;
 
   const response =
-    await fetch(
-      url,
-      {
-        headers:
-          supabaseHeaders()
-      }
-    );
+    await portalFetch(url);
 
   if (!response.ok) {
     const errorText =
@@ -1112,13 +1087,7 @@ async function loadCurrentDraft() {
     `&limit=1`;
 
   const response =
-    await fetch(
-      url,
-      {
-        headers:
-          supabaseHeaders()
-      }
-    );
+    await portalFetch(url);
 
   if (!response.ok) {
     const errorText =
@@ -1351,13 +1320,7 @@ async function loadSubmissionHistory() {
     `&order=submitted_at.desc`;
 
   const response =
-    await fetch(
-      url,
-      {
-        headers:
-          supabaseHeaders()
-      }
-    );
+    await portalFetch(url);
 
   if (!response.ok) {
     const errorText =
@@ -1741,14 +1704,15 @@ async function saveDraft() {
       `?id=eq.${currentDraft.id}`;
 
     const response =
-      await fetch(
+      await portalFetch(
         url,
         {
           method:
             "PATCH",
 
           headers: {
-            ...supabaseHeaders(),
+            "Content-Type":
+              "application/json",
 
             Prefer:
               "return=representation"
@@ -1785,14 +1749,15 @@ async function saveDraft() {
     `${SUPABASE_URL}/rest/v1/near_misses`;
 
   const response =
-    await fetch(
+    await portalFetch(
       url,
       {
         method:
           "POST",
 
         headers: {
-          ...supabaseHeaders(),
+          "Content-Type":
+            "application/json",
 
           Prefer:
             "return=representation"
@@ -1823,7 +1788,6 @@ async function saveDraft() {
   }
 }
 
-
 /* =========================================
    今月の次回提出番号取得
 ========================================= */
@@ -1848,12 +1812,10 @@ async function getNextSubmissionNumber() {
     `&status=eq.submitted`;
 
   const response =
-    await fetch(
+    await portalFetch(
       url,
       {
         headers: {
-          ...supabaseHeaders(),
-
           Prefer:
             "count=exact"
         }
@@ -1915,14 +1877,15 @@ async function submitNearMiss() {
       `?id=eq.${currentDraft.id}`;
 
     const response =
-      await fetch(
+      await portalFetch(
         url,
         {
           method:
             "PATCH",
 
           headers: {
-            ...supabaseHeaders(),
+            "Content-Type":
+              "application/json",
 
             Prefer:
               "return=representation"
@@ -1953,14 +1916,15 @@ async function submitNearMiss() {
     `${SUPABASE_URL}/rest/v1/near_misses`;
 
   const response =
-    await fetch(
+    await portalFetch(
       url,
       {
         method:
           "POST",
 
         headers: {
-          ...supabaseHeaders(),
+          "Content-Type":
+            "application/json",
 
           Prefer:
             "return=representation"
@@ -1982,7 +1946,6 @@ async function submitNearMiss() {
     );
   }
 }
-
 
 /* =========================================
    フォーム初期化

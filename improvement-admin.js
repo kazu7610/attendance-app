@@ -51,30 +51,6 @@ function checkAdminAccess() {
 }
 
 
-/* =========================================
-   Supabase接続設定
-========================================= */
-
-const SUPABASE_URL =
-  "https://fgmvmbjnoyagnpygcbky.supabase.co";
-
-const SUPABASE_KEY =
-  "sb_publishable_pePa2xjccUZB6xpneNhCRQ_pJJ5fn6h";
-
-
-function supabaseHeaders() {
-  return {
-    apikey:
-      SUPABASE_KEY,
-
-    Authorization:
-      `Bearer ${SUPABASE_KEY}`,
-
-    "Content-Type":
-      "application/json"
-  };
-}
-
 
 /* =========================================
    HTML要素
@@ -370,13 +346,7 @@ async function loadLatestPublishedSetting() {
     `&limit=1`;
 
   const response =
-    await fetch(
-      url,
-      {
-        headers:
-          supabaseHeaders()
-      }
-    );
+    await portalFetch(url);
 
   if (!response.ok) {
     const errorText =
@@ -428,13 +398,7 @@ async function loadMonthlySetting() {
     `&limit=1`;
 
   const response =
-    await fetch(
-      url,
-      {
-        headers:
-          supabaseHeaders()
-      }
-    );
+    await portalFetch(url);
 
   if (!response.ok) {
     const errorText =
@@ -469,11 +433,6 @@ async function loadEmployees() {
     `&improvement_required=eq.true` +
     `&order=department.asc,name.asc`;
 
-  /*
-    adminScopeがall以外なら、
-    その部署だけを表示する
-  */
-
   if (
     loginUser.adminScope !== "all"
   ) {
@@ -484,13 +443,7 @@ async function loadEmployees() {
   }
 
   const response =
-    await fetch(
-      url,
-      {
-        headers:
-          supabaseHeaders()
-      }
-    );
+    await portalFetch(url);
 
   if (!response.ok) {
     const errorText =
@@ -530,10 +483,6 @@ async function loadImprovements() {
     `&target_month=eq.${targetMonth}` +
     `&order=department.asc,employee_name.asc`;
 
-  /*
-    部署管理者は自部署分のみ
-  */
-
   if (
     loginUser.adminScope !== "all"
   ) {
@@ -544,13 +493,7 @@ async function loadImprovements() {
   }
 
   const response =
-    await fetch(
-      url,
-      {
-        headers:
-          supabaseHeaders()
-      }
-    );
+    await portalFetch(url);
 
   if (!response.ok) {
     const errorText =
@@ -1002,14 +945,15 @@ async function saveAdminChanges(
       `?id=eq.${selectedRecord.id}`;
 
     const response =
-      await fetch(
+      await portalFetch(
         url,
         {
           method:
             "PATCH",
 
           headers: {
-            ...supabaseHeaders(),
+            "Content-Type":
+              "application/json",
 
             Prefer:
               "return=representation"
@@ -1129,14 +1073,15 @@ async function returnRecordToDraft() {
       `?id=eq.${selectedRecord.id}`;
 
     const response =
-      await fetch(
+      await portalFetch(
         url,
         {
           method:
             "PATCH",
 
           headers: {
-            ...supabaseHeaders(),
+            "Content-Type":
+              "application/json",
 
             Prefer:
               "return=representation"

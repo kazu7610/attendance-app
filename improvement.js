@@ -5,25 +5,6 @@
 const SUPABASE_URL =
   "https://fgmvmbjnoyagnpygcbky.supabase.co";
 
-const SUPABASE_KEY =
-  "sb_publishable_pePa2xjccUZB6xpneNhCRQ_pJJ5fn6h";
-
-
-/* =========================================
-   Supabase共通ヘッダー
-========================================= */
-
-function supabaseHeaders() {
-  return {
-    apikey: SUPABASE_KEY,
-
-    Authorization:
-      `Bearer ${SUPABASE_KEY}`,
-
-    "Content-Type":
-      "application/json"
-  };
-}
 
 
 /* =========================================
@@ -497,13 +478,7 @@ async function loadPublishedSetting() {
     `&limit=1`;
 
   const response =
-    await fetch(
-      url,
-      {
-        headers:
-          supabaseHeaders()
-      }
-    );
+    await portalFetch(url);
 
   if (!response.ok) {
     const errorText =
@@ -528,7 +503,6 @@ async function loadPublishedSetting() {
   currentSetting =
     settings[0];
 }
-
 
 /* =========================================
    画面へ設定を表示
@@ -592,13 +566,7 @@ async function loadExistingImprovement() {
     `&limit=1`;
 
   const response =
-    await fetch(
-      url,
-      {
-        headers:
-          supabaseHeaders()
-      }
-    );
+    await portalFetch(url);
 
   if (!response.ok) {
     const errorText =
@@ -641,7 +609,6 @@ async function loadExistingImprovement() {
 
   theme3Body.value =
     currentRecord.theme3_body || "";
-
 
   if (
     currentRecord.status ===
@@ -803,14 +770,15 @@ async function saveImprovement(
     `?on_conflict=target_month,department,employee_name`;
 
   const response =
-    await fetch(
+    await portalFetch(
       url,
       {
         method:
           "POST",
 
         headers: {
-          ...supabaseHeaders(),
+          "Content-Type":
+            "application/json",
 
           Prefer:
             "resolution=merge-duplicates,return=representation"
@@ -842,7 +810,6 @@ async function saveImprovement(
       savedRecords[0];
   }
 }
-
 
 /* =========================================
    一時保存
