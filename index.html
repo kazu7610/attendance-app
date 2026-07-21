@@ -292,11 +292,15 @@
   </select>
 </label>
 
-      <!-- 開始時刻 -->
+            <!-- 開始時刻 -->
       <label>
         開始
 
-        <select class="start"></select>
+        <input
+          class="start"
+          type="time"
+          step="1800"
+        >
       </label>
 
 
@@ -304,7 +308,11 @@
       <label>
         終了
 
-        <select class="end"></select>
+        <input
+          class="end"
+          type="time"
+          step="1800"
+        >
       </label>
 
 
@@ -323,7 +331,7 @@
   </template>
 
   <script src="portal-auth.js"></script>
-  <script src="app.js"></script>
+  <script src="app.js?v=4"></script>
 
 </body>
 

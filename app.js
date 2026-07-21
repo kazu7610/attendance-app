@@ -62,34 +62,6 @@ const CLOSING_DAY = 20;
    時刻・曜日
 ========================================= */
 
-const times = [
-  "",
-  "休み",
-  "0:00",
-  "1:00",
-  "2:00",
-  "3:00",
-  "4:00",
-  "5:00",
-  "6:00",
-  "7:00",
-  "8:00",
-  "9:00",
-  "10:00",
-  "11:00",
-  "12:00",
-  "13:00",
-  "14:00",
-  "15:00",
-  "16:00",
-  "17:00",
-  "18:00",
-  "19:00",
-  "20:00",
-  "21:00",
-  "22:00",
-  "23:00"
-];
 const weeks = [
   "日",
   "月",
@@ -552,27 +524,6 @@ function dateInfo(
 
 
 /* =========================================
-   時刻プルダウン作成
-========================================= */
-
-function setTimeOptions(
-  selectElement
-) {
-  selectElement.innerHTML = "";
-
-  times.forEach(time => {
-    const option =
-      document.createElement("option");
-
-    option.value = time;
-    option.textContent = time;
-
-    selectElement.appendChild(option);
-  });
-}
-
-
-/* =========================================
    一般現場プルダウン作成
 ========================================= */
 
@@ -787,7 +738,7 @@ function changeSiteType(row) {
       .remove("hidden");
 
     if (!startSelect.value) {
-      startSelect.value = "8:00";
+      startSelect.value = "08:00";
     }
 
     if (!endSelect.value) {
@@ -814,7 +765,7 @@ function changeSiteType(row) {
     companyWorkSelect.value = "";
 
     if (!startSelect.value) {
-      startSelect.value = "8:00";
+      startSelect.value = "08:00";
     }
 
     if (!endSelect.value) {
@@ -843,7 +794,7 @@ function changeSiteType(row) {
     changeMiscCompany(row);
 
     if (!startSelect.value) {
-      startSelect.value = "8:00";
+      startSelect.value = "08:00";
     }
 
     if (!endSelect.value) {
@@ -1195,17 +1146,7 @@ function renderRows() {
         .textContent =
         `(${periodDay.weekText})`;
 
-      /*
-        時刻プルダウン
-      */
-
-      setTimeOptions(
-        row.querySelector(".start")
-      );
-
-      setTimeOptions(
-        row.querySelector(".end")
-      );
+      
 
       /*
         一般現場プルダウン
@@ -1272,6 +1213,48 @@ if (
             updateSummary();
           }
         );
+
+            /*
+        開始・終了時刻を30分単位へ補正
+      */
+
+      row
+        .querySelectorAll(".start, .end")
+        .forEach(timeInput => {
+          timeInput.addEventListener(
+            "change",
+            () => {
+              if (!timeInput.value) {
+                return;
+              }
+
+              const [
+                hour,
+                minute
+              ] = timeInput.value
+                .split(":")
+                .map(Number);
+
+              const roundedMinute =
+                minute < 15
+                  ? 0
+                  : minute < 45
+                    ? 30
+                    : 0;
+
+              let roundedHour = hour;
+
+              if (minute >= 45) {
+                roundedHour =
+                  (hour + 1) % 24;
+              }
+
+              timeInput.value =
+                `${String(roundedHour).padStart(2, "0")}:` +
+                `${String(roundedMinute).padStart(2, "0")}`;
+            }
+          );
+        });  
 
       /*
         入力件数の更新
@@ -1504,6 +1487,38 @@ async function saveAttendanceWithStatus(
     return false;
   }
 
+    const invalidTimeRow =
+    collectData().find(item => {
+
+      const isInvalidTime = timeValue => {
+        if (!timeValue) {
+          return false;
+        }
+
+        const minute =
+          timeValue.split(":")[1];
+
+        return (
+          minute !== "00" &&
+          minute !== "30"
+        );
+      };
+
+      return (
+        isInvalidTime(item.start) ||
+        isInvalidTime(item.end)
+      );
+    });
+
+  if (invalidTimeRow) {
+    alert(
+      `${invalidTimeRow.date}の時刻は、` +
+      `00分または30分で入力してください`
+    );
+
+    return false;
+  }
+
   const records =
     makeAttendanceRecords(
       status
@@ -1675,6 +1690,26 @@ async function toggleSubmit() {
   }
 }
 
+/* =========================================
+   時刻をinput type="time"用に整える
+========================================= */
+
+function normalizeTimeValue(timeValue) {
+  if (!timeValue) {
+    return "";
+  }
+
+  const parts =
+    String(timeValue).split(":");
+
+  const hour =
+    String(parts[0]).padStart(2, "0");
+
+  const minute =
+    String(parts[1] || "00").padStart(2, "0");
+
+  return `${hour}:${minute}`;
+}
 
 /* =========================================
    1日分の保存データを画面へ反映
@@ -1750,16 +1785,20 @@ function restoreAttendanceRow(
       item.leave_type || "";
   }
 
-  /* 時間 */
+    /* 時間 */
   row
     .querySelector(".start")
     .value =
-    item.start_time || "";
+    normalizeTimeValue(
+      item.start_time
+    );
 
   row
     .querySelector(".end")
     .value =
-    item.end_time || "";
+    normalizeTimeValue(
+      item.end_time
+    );
 
   /* 備考 */
   row
