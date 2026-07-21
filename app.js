@@ -1471,6 +1471,14 @@ async function saveAttendanceWithStatus(
     return false;
   }
 
+  if (department.value !== "工事部") {
+    alert(
+      "出勤簿は現在、工事部のみ提出できます"
+    );
+
+    return false;
+  }
+
   if (!employee.value) {
     alert(
       "氏名を選択してください"
@@ -1487,7 +1495,7 @@ async function saveAttendanceWithStatus(
     return false;
   }
 
-    const invalidTimeRow =
+  const invalidTimeRow =
     collectData().find(item => {
 
       const isInvalidTime = timeValue => {
@@ -1524,11 +1532,8 @@ async function saveAttendanceWithStatus(
       status
     );
 
-  saveButton.disabled =
-    true;
-
-  submitButton.disabled =
-    true;
+  saveButton.disabled = true;
+  submitButton.disabled = true;
 
   try {
     await deleteExistingAttendance();
@@ -1540,8 +1545,7 @@ async function saveAttendanceWithStatus(
       await portalFetch(
         url,
         {
-          method:
-            "POST",
+          method: "POST",
 
           headers: {
             "Content-Type":
@@ -1569,8 +1573,7 @@ async function saveAttendanceWithStatus(
       );
     }
 
-    currentStatus =
-      status;
+    currentStatus = status;
 
     applyStatusToScreen();
 
@@ -1589,7 +1592,7 @@ async function saveAttendanceWithStatus(
 
     return false;
 
-    } finally {
+  } finally {
     saveButton.disabled = false;
     submitButton.disabled = false;
 

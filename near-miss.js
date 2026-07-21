@@ -1996,6 +1996,22 @@ function resetFormForNextEntry() {
 ========================================= */
 
 async function handleDraftSave() {
+  if (
+    loginUser?.department === "総務"
+  ) {
+    showMessage(
+      "ヒヤリハットは現在、総務からは提出できません。",
+      "error"
+    );
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+
+    return;
+  }
+
   const confirmed =
     window.confirm(
       "入力内容を一時保存しますか？"
@@ -2050,6 +2066,22 @@ async function handleDraftSave() {
 async function handleSubmit(event) {
   event.preventDefault();
 
+  if (
+    loginUser?.department === "総務"
+  ) {
+    showMessage(
+      "ヒヤリハットは現在、総務からは提出できません。",
+      "error"
+    );
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+
+    return;
+  }
+
   hideMessage();
 
   try {
@@ -2071,7 +2103,8 @@ async function handleSubmit(event) {
 
   const confirmed =
     window.confirm(
-      "ヒヤリハットを提出しますか？\n提出後は本人も管理者も内容を変更できません。"
+      "ヒヤリハットを提出しますか？\n" +
+      "提出後は本人も管理者も内容を変更できません。"
     );
 
   if (!confirmed) {
@@ -2090,7 +2123,8 @@ async function handleSubmit(event) {
     resetFormForNextEntry();
 
     showMessage(
-      "ヒヤリハットを提出しました。続けてもう1件入力できます。",
+      "ヒヤリハットを提出しました。" +
+      "続けてもう1件入力できます。",
       "success"
     );
 
