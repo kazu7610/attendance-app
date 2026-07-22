@@ -74,6 +74,16 @@ const exportCsvButton =
     "improvementAdminExportCsv"
   );
 
+const themeSettingInput =
+  document.getElementById(
+    "improvementAdminThemeSetting"
+  );
+
+const saveThemeButton =
+  document.getElementById(
+    "improvementAdminSaveTheme"
+  );  
+
 const messageBox =
   document.getElementById(
     "improvementAdminMessage"
@@ -390,6 +400,8 @@ async function loadMonthlySetting() {
       monthInput.value
     );
 
+  themeSettingInput.value = "";
+
   if (!targetMonth) {
     return;
   }
@@ -420,6 +432,9 @@ async function loadMonthlySetting() {
   if (settings.length > 0) {
     currentSetting =
       settings[0];
+
+    themeSettingInput.value =
+      currentSetting.monthly_theme || "";
   }
 }
 
@@ -1437,6 +1452,10 @@ exportCsvButton.addEventListener(
   exportImprovementCsv
 );
 
+saveThemeButton.addEventListener(
+  "click",
+  saveMonthlyTheme
+);
 
 closeDetailButton.addEventListener(
   "click",
