@@ -1424,6 +1424,147 @@ function exportImprovementCsv() {
   );
 }
 
+/* =========================================
+   今月のテーマ保存
+========================================= */
+
+async function saveMonthlyTheme() {
+  hideMessage();
+
+  const targetMonth =
+    monthValueToDate(
+      monthInput.value
+    );
+
+  const monthlyTheme =
+    themeSettingInput.value.trim();
+
+  if (!targetMonth) {
+    showMessage(
+      "対象月を選択してください",
+      "error"
+    );
+
+    return;
+  }
+
+  if (!monthlyTheme) {
+    showMessage(
+      "今月のテーマを入力してください",
+      "error"
+    );
+
+    return;
+  }
+
+  const confirmed =
+    window.confirm(
+      `${monthInput.value}の今月のテーマを保存しますか？`
+    );
+
+  if (!confirmed) {
+    return;
+  }
+
+  saveThemeButton.disabled = true;
+
+  saveThemeButton.textContent =
+    "保存中...";
+
+  const saveData = {
+    target_month:
+      targetMonth,
+
+    monthly_theme:
+      monthlyTheme,
+
+    is_published:
+      true,
+
+    updated_at:
+      new Date().toISOString()
+  };
+
+  try {
+    let url =
+      `${SUPABASE_URL}/rest/v1/improvement_settings`;
+
+    let method =
+      "POST";
+
+    if (currentSetting?.id) {
+      url +=
+        `?id=eq.${currentSetting.id}`;
+
+      method =
+        "PATCH";
+    }
+
+    const response =
+      await portalFetch(
+        url,
+        {
+          method,
+
+          headers: {
+            "Content-Type":
+              "application/json",
+
+            Prefer:
+              "return=representation"
+          },
+
+          body:
+            JSON.stringify(
+              saveData
+            )
+        }
+      );
+
+    if (!response.ok) {
+      const errorText =
+        await response.text();
+
+      console.error(errorText);
+
+      throw new Error(
+        "今月のテーマを保存できませんでした"
+      );
+    }
+
+    const savedSettings =
+      await response.json();
+
+    if (savedSettings.length > 0) {
+      currentSetting =
+        savedSettings[0];
+    }
+
+    themeSettingInput.value =
+      currentSetting?.monthly_theme ||
+      monthlyTheme;
+
+    showMessage(
+      "今月のテーマを保存しました。",
+      "success"
+    );
+
+  } catch (error) {
+    console.error(error);
+
+    showMessage(
+      error.message,
+      "error"
+    );
+
+  } finally {
+    saveThemeButton.disabled =
+      false;
+
+    saveThemeButton.textContent =
+      "今月のテーマを保存";
+  }
+}
 
 /* =========================================
    管理画面読込
