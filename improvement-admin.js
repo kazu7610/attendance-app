@@ -1327,6 +1327,20 @@ function exportImprovementCsv() {
 ========================================= */
 
 async function loadAdminScreen() {
+  /*
+    管理者情報がまだ取得できていない場合は、
+    ここで改めて確認する
+  */
+
+  if (!loginUser) {
+    loginUser =
+      checkAdminAccess();
+  }
+
+  if (!loginUser) {
+    return;
+  }
+
   hideMessage();
 
   detailSection.classList.add(
@@ -1345,6 +1359,9 @@ async function loadAdminScreen() {
     true;
 
   exportCsvButton.disabled =
+    true;
+
+  saveThemeButton.disabled =
     true;
 
   reloadButton.textContent =
@@ -1395,11 +1412,13 @@ async function loadAdminScreen() {
     exportCsvButton.disabled =
       false;
 
+    saveThemeButton.disabled =
+      false;
+
     reloadButton.textContent =
       "更新";
   }
 }
-
 
 /* =========================================
    初期表示
