@@ -581,6 +581,44 @@ async function saveMonthlyTheme() {
   }
 }
 
+/* =========================================
+   社員一覧取得
+========================================= */
+
+async function loadEmployees() {
+  let url =
+    `${SUPABASE_URL}/rest/v1/employees` +
+    `?select=name,department,active,improvement_required` +
+    `&active=eq.true` +
+    `&improvement_required=eq.true` +
+    `&order=department.asc,name.asc`;
+
+  if (
+    loginUser.adminScope !== "all"
+  ) {
+    url +=
+      `&department=eq.${encodeURIComponent(
+        loginUser.adminScope
+      )}`;
+  }
+
+  const response =
+    await portalFetch(url);
+
+  if (!response.ok) {
+    const errorText =
+      await response.text();
+
+    console.error(errorText);
+
+    throw new Error(
+      "社員一覧を読み込めませんでした"
+    );
+  }
+
+  employees =
+    await response.json();
+}
 
 /* =========================================
    選択月の向上提案取得
